@@ -14,6 +14,7 @@
  * Copyright (C) Inprise Corporation.
  * All Rights Reserved.
  * Contributor(s): ______________________________________.
+ * 02-Oct-2001 Paul Beach - Handle Windows sockets properly
  */
 //-*-C++-*-
 #ifdef UNIX
@@ -37,7 +38,7 @@
 #endif // UNIX
 
 #ifdef WIN32
-#include <winsock.h>
+#include <winsock2.h> /* Update to new Windows socket header */
 #include <stdio.h>
 #include <fcntl.h>
 #include <io.h>
@@ -55,7 +56,12 @@ static char commandLine[200];
 void
 NetTCP::netClose (int sockfd)
 {
+
+#ifdef WIN32 /* Close Windows sockets properly */
+  closesocket (sockfd);
+#else
   close (sockfd);
+#endif
 }
 
 int
@@ -105,8 +111,13 @@ NetTCP::netInit (const char * const service, // the name of the service we provi
    * accept.....!!
    */
 
+#ifdef WIN32 /*Handle Windows socket errors properly */
+  if ( (sockfd = socket (AF_INET, SOCK_STREAM, 0)) == INVALID_SOCKET)
+    Error::err_sys ("netInit: can't create stream socket");
+#else
   if ( (sockfd = socket (AF_INET, SOCK_STREAM, 0)) < 0)
     Error::err_sys ("netInit: can't create stream socket");
+#endif
 
   // Some systems are painfully long before they allow a port
   // to be reused, so specify REUSEADDR.
@@ -124,11 +135,18 @@ NetTCP::netInit (const char * const service, // the name of the service we provi
 	      TCP_NODELAY,
 	      (char*) &optValue, // Non zero value disables Nagle Algorithm
 	      sizeof (int));
-  
+
+#ifdef WIN32 /*Handle Windows socket errors properly */
+  if (bind(sockfd, 
+	   (struct sockaddr *) &tcpSrvAddr,
+	   sizeof (tcpSrvAddr)) == SOCKET_ERROR)
+    Error::err_sys ("netInit: can't bind local address");
+#else  
   if (bind(sockfd, 
 	   (struct sockaddr *) &tcpSrvAddr,
 	   sizeof (tcpSrvAddr)) < 0)
     Error::err_sys ("netInit: can't bind local address");
+#endif
 
   /*
    * And set the listen parameter, telling the system that we're
@@ -147,9 +165,16 @@ NetTCP::netOpen (int sockfd, int *newSockfd, int inetdflag)
   //david jencks 8-5-2001
   //clilen needs to be int on some systems and uint on others.
   //rh7, 7.1 linux uint == size_t. either will work.
-  //windows int ==???? size_t (thanks to fredt@users.sourceforge.net)
+  //windows int == socklen_t (thanks to fredt@users.sourceforge.net)
   //Please add your system here and what size_t is.
+
+#ifdef WIN32
+#define socklen_t int
+  socklen_t clilen;
+#else
   size_t clilen;
+#endif  
+  
   struct sockaddr_in tcpCliAddr;
 
   on = 1;
@@ -190,7 +215,7 @@ again:
     Error::err_sys ("server can't fork");
   else if (childpid > 0) 
   { /* parent */
-    close (tmpSockfd);	/* close new connection */
+    closesocket (tmpSockfd);	/* close new connection properly*/
     return (childpid);	/* and return */
   }
 #endif
@@ -203,7 +228,11 @@ again:
    * we are going to process.
    */
 
-  close(sockfd);
+#ifdef WIN32
+  closesocket (sockfd);
+#else
+  close (sockfd);
+#endif
   *newSockfd = tmpSockfd;
 
   return(0);		/* return to process the connection */
