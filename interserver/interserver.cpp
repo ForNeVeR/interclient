@@ -94,6 +94,16 @@ void debugTraceAnInt (char* where, int what)
     fflush (traceStream__);
   }
 }
+//fredt@users.sourceforge.net added function
+void debugTraceAPointer (char* where, void* what)
+{
+  if (!traceStream__)
+    traceStream__ = fopen ("debug.log", "w");
+  if (traceStream__) {
+    fprintf (traceStream__, "%s %p\n", where, what);
+    fflush (traceStream__);
+  }
+}
 #endif
 
 // Notice we do not depend on JIBSNet

@@ -24,6 +24,8 @@
 #ifdef TRACEON
 void debugTraceALine (char* where, char* what);
 void debugTraceAnInt (char* where, int what);
+//fredt@users.sourceforge.net added function
+void debugTraceAPointer (char* where, void* what);
 #endif
 
 #ifdef WIN32
@@ -86,7 +88,12 @@ typedef unsigned short UShort;
 #elif SIZEOF_LONG == 8
   typedef long LongLong;
   typedef unsigned long ULongLong;
-#elif defined (_MSC_VER) && _MSC_VER >= 900
+//fredt@users.sourceforge.net
+// brought this in line with other header files to work with bcc32 5.2; was VC++ specific
+//#elif defined (_MSC_VER) && _MSC_VER >= 900
+#elif (defined(_MSC_VER) && defined(_WIN32)) || \
+    (defined(__BORLANDC__) && (defined(__WIN32__) || defined(__OS2__)))
+//end fredt@users.sourceforge.net
   typedef __int64 LongLong;
   typedef unsigned __int64 ULongLong;
 #else

@@ -113,6 +113,8 @@ const IB_BOOLEAN IB_FALSE = 0;
 #ifdef TRACEON
 void debugTraceALine (char* where, char* what);
 void debugTraceAnInt (char* where, int what);
+//fredt@users.sourceforge.net added function
+void debugTraceAPointer (char* where, void* what);
 #endif
 
 void errorLog (char* what);

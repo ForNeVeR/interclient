@@ -142,10 +142,11 @@ int
 NetTCP::netOpen (int sockfd, int *newSockfd, int inetdflag)
 {
   register int tmpSockfd, childpid;
+// fredt@users.sourceforge.net changed socklen_t type to int
   //david jencks 1-19-2001 begin
   //  int clilen, on;
 #ifndef socklen_t //problem on ms compiler
-#define socklen_t size_t  //problem on rhlinux 7, socklen_t is uint, size_t is int
+#define socklen_t int  //problem on rhlinux 7, socklen_t is uint, size_t is int
 #endif
   int on;
   socklen_t clilen;

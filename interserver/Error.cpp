@@ -178,8 +178,12 @@ char 	t_errlist[1];
 #endif
 
 #ifndef linux
-extern int	sys_nerr;	/* # of error message strings in sys table */
-extern char	*sys_errlist[];	/* the system error message table */
+//fredt@users.sourceforge.net
+// commented out as declarations exist in stdlib.h (bcc32 v.5.5)
+// better include with ifdef where necessary
+//extern int	sys_nerr;	/* # of error message strings in sys table */
+//extern char	*sys_errlist[];	/* the system error message table */
+//end fredt@users.sourceforge.net 
 #endif
 
 char *

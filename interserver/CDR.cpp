@@ -112,7 +112,18 @@ CDR::grow (size_t newsize)
   else
     old_realbuf = 0;
   oldMessageCertificate = messageCertificate;
+// fredt@users.sourceforge.net temporary check
+#ifdef TRACEON
+  debugTraceAPointer ("next ", next);
+  debugTraceAPointer ("messageCertificate ", messageCertificate);
+#endif
+/* fredt@users.sourceforge.net
+  ambiguous comparison of signed and unsigned ( UNIT_MAX is often an unsigned type )
+  aborts program on first call with next = 16 and messageCertificate = 0
+
   assert ((next - messageCertificate) < UINT_MAX);
+*/
+
   offset = (unsigned) (next - messageCertificate);
 
   //

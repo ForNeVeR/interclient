@@ -256,7 +256,10 @@ JIBSNet::recvMessage ()
   templen = getLong ();
 
   cdr_.next = cdr_.buffer;
+/* fredt@users.sourceforge.net
   if (!cdr_.buffer) // !!!what is this about?
+*/
+  if (cdr_.buffer == NULL)
     cdr_.grow (0);
 
   if (templen > cdr_.length)
