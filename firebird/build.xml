@@ -35,25 +35,40 @@ This may be used under the MPL or  LGPL (see gnu.org)-->
     <copy file="${jar.dir}/interclient.jar" todir="${dist.dir.jar}"/>
   </target>
   
-  <target name="setup.cpp">
+<!--LINUX_LDLIBS=		 -lgds  -L/usr/local/lib -lstdc++ -lc -ldl -lcrypt
+-->
+<!--Solaris LDLIBS=		-lgdsmt -lnsl -lsocket -ldl -lthread-->
+
+
+  <property name="is${os.name}" value="true"/>
+<!-- Sets os specific options cc, ccflags, includes for compile and  ldlibs for link -->
+  <target name="set.cpp.os.options" depends="set.linux, set.solaris"/>
+  <target name="set.linux" if="isLinux">
+    <property name="cc" value="gcc"/>
+    <property name="ccflags" value="-w -fhandle-exceptions -DUSE_INETD -DUNIX -DARCH_32"/>
+    <!--property name="ccflags" value="-w -ggdb -fhandle-exceptions -DUSE_INETD -DDEBUG -DUNIX -DARCH_32"/--><!--use for debug-->
+    <property name="includes" value="-I/usr/interbase/include"/>
+    <property name="ldlibs" value="-lgds  -L/usr/local/lib -lstdc++ -lc -ldl -lcrypt"/>
+  </target>
+  <target name="set.solaris" if="isSolaris">
+    <property name="cc" value="CC"/>
+    <property name="ccflags" value="-O -DUSE_INETD -DUNIX -DSYS5 -DARCH_32 -DWORDS_BIGENDIAN"/>
+    <!--property name="ccflags" value="-O -DDEBUG -DUSE_INETD -DUNIX -DSYS5 -DARCH_32 -DWORDS_BIGENDIAN"/--><!--use for debug-->
+    <property name="includes" value="-I/usr/local/interbase/include"/>
+    <property name="ldlibs" value="-lgdsmt -lnsl -lsocket -ldl -lthread"/>
+  </target>
+
+  <target name="setup.cpp" depends="set.cpp.os.options">
     <mkdir dir="${build.dir.cpp}"/>
     <mkdir dir="${build.dir.bin}"/>
     <mkdir dir="${dist.dir.bin}"/>
   </target>
   
-<!--		$(CC) $(CCFLAGS) $(INCLUDES) -c $*.cpp -o $*.o
-LINUX_CCFLAGS= 	 -w -fhandle-exceptions -DUSE_INETD -DUNIX -DARCH_32
-INCLUDES=	-I/usr/interbase/include -->
+<!--		$(CC) $(CCFLAGS) $(INCLUDES) -c $*.cpp -o $*.o   -->
   <target name="compile.cpp" depends="setup.cpp">
-    <apply executable="gcc" dest="${build.dir.cpp}" parallel="false">
-       <arg value="-w"/>
-       <!--arg value="-ggdb"/--><!--for debug-->
-       <arg value="-fhandle-exceptions"/>
-       <arg value="-DUSE_INETD"/>
-       <arg value="-DUNIX"/>
-       <!--arg value="-DDEBUG"/--><!--for debug-->
-       <arg value="-DARCH_32"/>
-       <arg value="-I/usr/interbase/include"/>
+    <apply executable="${cc}" dest="${build.dir.cpp}" parallel="false">
+       <arg line="${ccflags}"/>
+       <arg line="${includes}"/>
        <arg value="-c"/>
        <srcfile/>
        <arg value="-o"/>
@@ -64,19 +79,12 @@ INCLUDES=	-I/usr/interbase/include -->
   </target>
 
 <!--		$(CC) $(OBJS) interserver.o -o interserver $(LDLIBS)-->
-<!--LINUX_LDLIBS=		 -lgds  -L/usr/local/lib -lstdc++ -lc -ldl -lcrypt
--->
-    <target name="link.cpp" depends="compile.cpp">
-    <execon executable="gcc" parallel="true">
+  <target name="link.cpp" depends="compile.cpp">
+    <execon executable="${cc}" parallel="true">
        <srcfile/>
        <arg value="-o"/>
        <arg value="${build.dir.bin}/interserver"/>
-       <arg value="-lgds"/>
-       <arg value="-L/usr/local/lib"/>
-       <arg value="-lstdc++"/>
-       <arg value="-lc"/>
-       <arg value="-ldl"/>
-       <arg value="-lcrypt"/>
+       <arg line="${ldlibs}"/>
        <fileset dir="${build.dir.cpp}" includes="*.o"/>
     </execon>  
   </target>
@@ -89,3 +97,5 @@ INCLUDES=	-I/usr/interbase/include -->
   </target>
   
 </project>
+
+
