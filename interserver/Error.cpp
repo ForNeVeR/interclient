@@ -181,8 +181,14 @@ char 	t_errlist[1];
 //fredt@users.sourceforge.net
 // commented out as declarations exist in stdlib.h (bcc32 v.5.5)
 // better include with ifdef where necessary
-//extern int	sys_nerr;	/* # of error message strings in sys table */
-//extern char	*sys_errlist[];	/* the system error message table */
+
+//might help with solaris david jencks 10-26-2001 d_jencks@users.sourceforge.net
+  #ifndef sys_nerr
+    extern int	sys_nerr;	/* # of error message strings in sys table */
+  #endif
+  #ifndef sys_errlist
+    extern char	*sys_errlist[];	/* the system error message table */
+  #endif
 //end fredt@users.sourceforge.net 
 #endif
 
