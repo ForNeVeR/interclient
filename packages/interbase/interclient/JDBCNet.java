@@ -199,17 +199,21 @@ final class JDBCNet
   synchronized private RecvMessage receiveMessage () throws java.sql.SQLException
   {
     try {
-      if (readNativeInt () != interserverMessageCertificate_) 
-	throw new RemoteProtocolException (ErrorKey.remoteProtocol__bad_message_certficate_from_server__);
+        //david jencks 2-5-2001 added more info to message
+      int imc = readNativeInt ();
+      if (imc != interserverMessageCertificate_) {
+        throw new RemoteProtocolException (ErrorKey.remoteProtocol__bad_message_certficate_from_server__, 
+        new Object[] {String.valueOf(interserverMessageCertificate_), String.valueOf(imc)});
+      }
       int messageLength = readNativeInt ();
       if (Globals.debug__) Globals.trace ("incoming message length = " + messageLength);
       int endOfStream = readNativeInt ();
       int reserved = readNativeInt ();
       RecvMessage recvMsg = new RecvMessage (messageLength, inputStream_, byteswap_, endOfStream, reserved, btc_);
       if (streamedMessages_)
-	activeRecvMsgOnWire_ = recvMsg;
+        activeRecvMsgOnWire_ = recvMsg;
       else
-	recvMsg.bufferOut ();
+        recvMsg.bufferOut ();
       return recvMsg;
     }
     catch (java.io.InterruptedIOException e) {
@@ -391,7 +395,7 @@ final class JDBCNet
     if (Globals.debug__) { Globals.startTime__ = System.currentTimeMillis (); }
     int j, value = 0;
     if (byteswap_) {
-      j = inputStream_.read (); value += (j&0xff);
+      j = inputStream_.read (); value += (j&0xff);  //this is readJavaInt
       j = inputStream_.read (); value += (j&0xff)<<8;
       j = inputStream_.read (); value += (j&0xff)<<16;
       j = inputStream_.read (); value += (j&0xff)<<24;

@@ -15,6 +15,12 @@
  * All Rights Reserved.
  * Contributor(s): ______________________________________.
  */
+/**
+ * contributors:
+ *
+ *  @author <a href="mailto:davidjencks@earthlink.net">David Jencks</a>
+ *
+ */
 package interbase.interclient;
 
 class ErrorKey  
@@ -684,6 +690,20 @@ class ErrorKey
   = new ErrorKey (ResourceKeys.outOfMemory, 
 		  "ICJI0", 
 		  ErrorCodes.outOfMemory);
+          
+  //david jencks 1-21-2001
+  // invalid table type in databaseMetaData.getTables()
+  final static ErrorKey dbmd_getTables_invalid_table_type__  // interserver only                        
+  = new ErrorKey (ResourceKeys.dbmd_getTables_invalid_table_type, 
+		  sqlState__featureNotSupported__,
+		  ErrorCodes.invalidArgument__);
+
+  //david jencks 1-26-2001
+  // table name must at least be "" in databaseMetaData.getColumnPrivileges()
+  final static ErrorKey dbmd_getColumnPrivileges_table_name_required__  // interserver only                        
+  = new ErrorKey (ResourceKeys.dbmd_getColumnPrivileges_table_name_required, 
+		  sqlState__featureNotSupported__,
+		  ErrorCodes.invalidArgument__);
 
   // SQLStates ICJJ* are reserved for missing resource bundles, 
   // see Driver class, and ib.ic.utils.CommDiag class.

@@ -15,6 +15,12 @@
  * All Rights Reserved.
  * Contributor(s): ______________________________________.
  */
+/**
+ * contributors:
+ *
+ *  @author <a href="mailto:davidjencks@earthlink.net">David Jencks</a>
+ *
+ */
 package interbase.interclient;
 
 // If the database being accessed contains security classes created 
@@ -635,7 +641,8 @@ final public class DatabaseMetaData implements java.sql.DatabaseMetaData
     checkForClosedConnection ();
 
     // InterBase does not support quoted identifiers
-    return " ";
+    //Firebird does
+    return "\"";
   }
 
   /**
@@ -3147,9 +3154,12 @@ final public class DatabaseMetaData implements java.sql.DatabaseMetaData
 
     sendMsg.writeByte (MessageCodes.EXECUTE_CATALOG_QUERY__);
     sendMsg.writeByte (CATALOG_GET_TABLES__);
+//    System.out.println("tablenamepattern is <" + tableNamePattern + ">");
     if (tableNamePattern == null)
       sendMsg.writeLDSQLText ("%");
     else
+//    System.out.println("modified tablenamepattern is <" +  systemTableValue(tableNamePattern) + ">");
+        
 // CJL-IB6 Convert identifier to System Table entry.
       sendMsg.writeLDSQLText ( systemTableValue(tableNamePattern) );
 
@@ -3165,6 +3175,9 @@ final public class DatabaseMetaData implements java.sql.DatabaseMetaData
           typesVector[1] = true;
         else if ("VIEW".equals (types[i]))
           typesVector[2] = true;
+        else {
+            throw new DriverNotCapableException(ErrorKey.dbmd_getTables_invalid_table_type__);
+        }
       }
     }
 
@@ -3589,7 +3602,11 @@ final public class DatabaseMetaData implements java.sql.DatabaseMetaData
 
     sendMsg.writeByte (MessageCodes.EXECUTE_CATALOG_QUERY__);
     sendMsg.writeByte (CATALOG_GET_COLUMN_PRIVILEGES__);
-// CJL-IB6 Convert identifier to System Table entry.
+    //david jencks 1-25-2001 added null not acceptable check.
+    if (table == null) {
+        throw new DriverNotCapableException(ErrorKey.dbmd_getColumnPrivileges_table_name_required__);
+    }
+    // CJL-IB6 Convert identifier to System Table entry.
     sendMsg.writeLDSQLText ( systemTableValue(table) );
     if (columnNamePattern == null)
       sendMsg.writeLDSQLText ("%");
