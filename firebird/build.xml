@@ -1,0 +1,91 @@
+<!--ant build script for interclient 20/ interserver
+See ant project (jakarta-ant) at www.apache.org
+author: david jencks davidjencks@earthlinkl.net
+copyright 2001 david jencks
+This may be used under the LGPL (see gnu.org)-->
+
+<project name="Interclient" default="dist.all" basedir="../../../../..">
+
+  <property name="build.dir" value="${basedir}/build/interclient/dev"/>
+  <property name="build.dir.java" value="${build.dir}/classes"/>
+  <property name="build.dir.cpp" value="${build.dir}/interserver"/>
+  <property name="build.dir.bin" value="${build.dir}/bin"/>
+  <property name="src.dir.java" value="${basedir}/CVS/interclient/20/dev/packages"/>
+  <property name="src.dir.cpp" value="${basedir}/CVS/interclient/20/dev/interserver"/>
+  <property name="jar.dir" value="${basedir}/build/interclient"/>
+  <property name="dist.dir" value="${basedir}"/>
+  <property name="dist.dir.jar" value="${dist.dir}"/>
+  <property name="dist.dir.bin" value="${dist.dir}/bin"/>
+
+  <target name="setup.java">
+    <mkdir dir="${build.dir.java}"/>
+    <mkdir dir="${jar.dir}"/>
+    <mkdir dir="${dist.dir.jar}"/>
+  </target>
+
+  <target name="compile.java" depends="setup.java">
+    <javac srcdir="${src.dir.java}" destdir="${build.dir.java}"/>
+  </target>
+
+  <target name="jar" depends="compile.java">
+    <jar jarfile="${jar.dir}/interclient.jar" basedir="${build.dir.java}"/>
+  </target>
+
+  <target name="dist.jar" depends="jar">
+    <copy file="${jar.dir}/interclient.jar" todir="${dist.dir.jar}"/>
+  </target>
+  
+  <target name="setup.cpp">
+    <mkdir dir="${build.dir.cpp}"/>
+    <mkdir dir="${build.dir.bin}"/>
+    <mkdir dir="${dist.dir.bin}"/>
+  </target>
+  
+<!--		$(CC) $(CCFLAGS) $(INCLUDES) -c $*.cpp -o $*.o
+LINUX_CCFLAGS= 	 -w -fhandle-exceptions -DUSE_INETD -DUNIX -DARCH_32
+INCLUDES=	-I/usr/interbase/include -->
+  <target name="compile.cpp" depends="setup.cpp">
+    <transform executable="gcc" dest="${build.dir.cpp}" parallel="false">
+       <arg value="-w"/>
+       <!--arg value="-ggdb"/--><!--for debug-->
+       <arg value="-fhandle-exceptions"/>
+       <arg value="-DUSE_INETD"/>
+       <arg value="-DUNIX"/>
+       <!--arg value="-DDEBUG"/--><!--for debug-->
+       <arg value="-DARCH_32"/>
+       <arg value="-I/usr/interbase/include"/>
+       <arg value="-c"/>
+       <srcfile/>
+       <arg value="-o"/>
+       <targetfile/>
+       <fileset dir="${src.dir.cpp}" includes="*.cpp" excludes="Property.cpp, Window.cpp, interservice.cpp"/>
+       <mapper type="glob" from="*.cpp" to="*.o"/>
+    </transform>  
+  </target>
+
+<!--		$(CC) $(OBJS) interserver.o -o interserver $(LDLIBS)-->
+<!--LINUX_LDLIBS=		 -lgds  -L/usr/local/lib -lstdc++ -lc -ldl -lcrypt
+-->
+    <target name="link.cpp" depends="compile.cpp">
+    <execon executable="gcc" parallel="true">
+       <srcfile/>
+       <arg value="-o"/>
+       <arg value="${build.dir.bin}/interserver"/>
+       <arg value="-lgds"/>
+       <arg value="-L/usr/local/lib"/>
+       <arg value="-lstdc++"/>
+       <arg value="-lc"/>
+       <arg value="-ldl"/>
+       <arg value="-lcrypt"/>
+       <fileset dir="${build.dir.cpp}" includes="*.o"/>
+    </execon>  
+  </target>
+
+  <target name="dist.cpp" depends="link.cpp">
+    <copy file="${build.dir.bin}/interserver" todir="${dist.dir.bin}"/>
+  </target>
+
+  <target name="dist.all" depends="dist.jar, dist.cpp">
+  </target>
+  
+</project>
