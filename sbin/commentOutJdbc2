@@ -1,0 +1,2 @@
+s#\*\*/ //\*start jre12\*#//\*start jre12\*#g 
+s#//\*end jre12\*#\*\*/ //\*end jre12\*#g 

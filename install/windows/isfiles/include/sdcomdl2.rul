@@ -1,0 +1,254 @@
+ /*=======================================================================*/
+ /*                 Stirling Technologies, Inc.  (c) 1990-1995            */
+ /*                        Schaumburg, Illinois 60173                     */
+ /*                           All Rights Reserved.                        */
+ /*                             InstallShield (R)                         */
+ /*=======================================================================*/
+
+ //-------------------------------------------------------------------------
+ //
+ //
+ //   File    : sdcomdl2.rul
+ //
+ //   Purpose : This file contains the code for the SdComponentDialog2
+ //             script dialog function.
+ //
+ //-------------------------------------------------------------------------
+
+ /*------------------------------------------------------------------------*/
+ /*                                                                        */
+ /*   Function: SdComponentDialog2                                         */
+ /*                                                                        */
+ /*   Descrip:  This dialog will let user choose different parts of the    */
+ /*             software to install based on the components and sub        */
+ /*             components.                                                */
+ /*   Misc:                                                                */
+ /*                                                                        */
+ /*------------------------------------------------------------------------*/
+function SdComponentDialog2( szTitle, szMsg, szTargetDir, szComponents )
+          STRING  szDlg, szFreeSpace, szReqSpace, szTemp;
+          STRING  svItem[ MAX_STRING ];
+          HWND    hwndDlg;
+          NUMBER  nId, nTemp;
+          NUMBER  nReturn, nMessage;
+          LIST    listComponents, listFinal;
+          BOOL    bDone, bChange, bInsertTab;
+        begin
+
+           szDlg     = SD_DLG_COMPONENTDIALOG2;
+           nSdDialog = SD_NDLG_COMPONENTDIALOG2;
+
+           // record data produced by this dialog
+           if (MODE=SILENTMODE) then
+             SdMakeName( szAppKey, szDlg, szTitle, nSdComponentDialog2 );
+             SilentReadData( szAppKey, "Result", DATA_NUMBER, szTemp, nId );
+             if ((nId != BACK) && (nId != CANCEL)) then
+                SilentReadData( szAppKey, "Component", DATA_COMPONENT, szComponents, nTemp );
+             endif;
+
+             return nId;
+           endif;
+
+           // ensure general initialization is complete
+           if (!bSdInit) then
+              SdInit();
+           endif;
+
+           if (EzDefineDialog( szDlg, "", "", SD_NDLG_COMPONENTDIALOG2 ) = DLG_ERR) then
+              return -1;
+           endif;
+
+
+           // Loop in dialog until the user selects a standard button
+           bDone = FALSE;
+
+           while (!bDone)
+
+              nId = WaitOnDialog( szDlg );
+
+              switch (nId)
+              case DLG_INIT:
+
+                   if( szMsg != "" ) then
+                       SdSetStatic( szDlg, SD_COMPONENT_MSG, szMsg );
+                   endif;
+
+                   hwndDlg = CmdGetHwndDlg( szDlg );
+                   SdGeneralInit( szDlg, hwndDlg, STYLE_NORMAL, szSdProduct );
+
+                   if(szTitle != "") then
+                       SetWindowText(hwndDlg, szTitle);
+                   endif;
+
+                   ComponentLink( szComponents, hwndDlg, SD_LISTBOX, LINK_MAINCONTROL, "", 0, 0 );
+                   ComponentLink( szComponents, hwndDlg, SD_SPACEREQ, LINK_TOTALSIZE, "", 0, 0 );
+                   ComponentLink( szComponents, hwndDlg, SD_STA_MSG2, LINK_DESCRIPTION, "", 0, 0 );
+                   ComponentLink( szComponents, hwndDlg, SD_PBUT_CHANGE, LINK_BUTTON, "", 0, 0 );
+                   ComponentLink( szComponents, hwndDlg, SD_SPACEAVI, LINK_DISKSPACE, szTargetDir, 0, 0 );
+
+              case SD_PBUT_CHANGE:
+                   SdComponentDialogEx( szDlg, szComponents, hwndDlg, SD_LISTBOX, szTargetDir );
+
+              case SD_PBUT_OK:
+                   if( !SdComponentDlgCheckSpace( szComponents, szDlg, szTargetDir ) ) then
+                      MessageBox( szSdStr_NotEnoughSpace, WARNING );
+                   else
+
+                      nId   = OK;
+                      bDone = TRUE;
+
+                   endif;
+
+              case BACK:
+                   nId    = BACK;
+                   bDone  = TRUE;
+
+              case DLG_ERR:
+                   SdError( -1, "SdComponentDialog2" );
+                   nId   = -1;
+                   bDone = TRUE;
+
+              case DLG_CLOSE:
+                   SdCloseDlg( hwndDlg, nId, bDone );
+
+              default:
+                   // check standard handling
+                   if (SdIsStdButton( nId ) && SdDoStdButton( nId )) then
+                       bDone = TRUE;
+                   endif;
+              endswitch;
+
+           endwhile;
+
+           EndDialog( szDlg );
+           ReleaseDialog( szDlg );
+
+           SdUnInit( );
+
+           // record data produced by this dialog
+           SdMakeName( szAppKey, szDlg, szTitle, nSdComponentDialog );
+           SilentWriteData( szAppKey, "Component", DATA_COMPONENT, szComponents, nTemp );
+           SilentWriteData( szAppKey, "Result", DATA_NUMBER, "", nId );
+
+           return nId;
+
+        end;
+
+
+
+ /*------------------------------------------------------------------------*/
+ /*                                                                        */
+ /*   Function: SdComponentDialogEx                                        */
+ /*                                                                        */
+ /*   Descrip:  This dialog will show a 2nd level of componetns based      */
+ /*             on the current selection in the main dialog.               */
+ /*   Misc:                                                                */
+ /*                                                                        */
+ /*------------------------------------------------------------------------*/
+function SdComponentDialogEx( szDlg, szComponents, hwndParentDlg, nLbxId, szTargetDir )
+          NUMBER   nIndex, nId;
+          HWND     hwndLbx, hwndDlg;
+          BOOL     bDone;
+          POINTER  pszItem;
+          STRING   szComponentLevel2, szItem;
+        begin
+
+
+           szDlg = SD_DLG_COMPONENTDIALOGEX;
+
+           // get current selection
+           hwndLbx  = GetDlgItem( hwndParentDlg, nLbxId );
+           pszItem  = AddressString( szItem );
+           if (bInstall16) then
+              nIndex   = SendMessage( hwndLbx, LB_GETCARETINDEX, 0, 0 );
+              SendMessage( hwndLbx, LB_GETTEXT, nIndex, pszItem );
+           else
+              nIndex   = SendMessage( hwndLbx, LB_GETCARETINDEX_32, 0, 0 );
+              SendMessage( hwndLbx, LB_GETTEXT_32, nIndex, pszItem );
+           endif;
+
+           SdGetItemName( szItem );
+
+           ComponentGetItemInfo( szComponents,
+                                 szItem,
+                                 INFO_SUBCOMPONENT,
+                                 szComponentLevel2 );
+           if (szComponentLevel2 = "") then
+              return 0;
+           endif;
+
+           if (EzDefineDialog( szDlg,
+                               "",
+                               "",
+                               SD_NDLG_COMPONENTDIALOGEX ) = DLG_ERR) then
+              return -1;
+           endif;
+
+
+           // Loop in dialog until the user selects a standard button
+           bDone = FALSE;
+
+           while (!bDone)
+
+              nId = WaitOnDialog( szDlg );
+
+              switch (nId)
+              case DLG_INIT:
+
+                   hwndDlg = CmdGetHwndDlg( szDlg );
+                   SdGeneralInit( szDlg, hwndDlg, STYLE_NORMAL, szSdProduct );
+
+                   ComponentLink( szComponentLevel2, hwndDlg, SD_LISTBOX, LINK_MAINCONTROL, "", 0, 0 );
+                   ComponentLink( szComponentLevel2, hwndDlg, SD_SPACEREQ, LINK_TOTALSIZE, "", 0, 0 );
+                   ComponentLink( szComponentLevel2, hwndDlg, SD_STA_MSG2, LINK_DESCRIPTION, "", 0, 0 );
+                   ComponentLink( szComponentLevel2, hwndDlg, SD_SPACEAVI, LINK_DISKSPACE, szTargetDir, 0, 0 );
+                   ComponentLink( szComponentLevel2, hwndDlg, SD_LISTBOX, LINK_SUBCONTROLEX, "", hwndParentDlg, nLbxId );
+
+              case SD_PBUT_CONTINUE:
+                   nId   = OK;
+                   bDone = TRUE;
+
+              case DLG_ERR:
+                   SdError( -1, "SdComponentDialogEx" );
+                   nId   = -1;
+                   bDone = TRUE;
+
+              case DLG_CLOSE:
+                   SdCloseDlg( hwndDlg, nId, bDone );
+
+              default:
+                   // check standard handling
+                   if (SdIsStdButton( nId ) && SdDoStdButton( nId )) then
+                       bDone = TRUE;
+                   endif;
+              endswitch;
+
+           endwhile;
+
+           EndDialog( szDlg );
+           ReleaseDialog( szDlg );
+
+           return nId;
+
+        end;
+
+ /*------------------------------------------------------------------------*/
+ /*                                                                        */
+ /*   Function: SdGetItemName                                              */
+ /*                                                                        */
+ /*   Descrip:  This dialog will get an item name from the string contained*/
+ /*             in the listbox.                                            */
+ /*   Misc:                                                                */
+ /*                                                                        */
+ /*------------------------------------------------------------------------*/
+ function SdGetItemName( szItemName )
+          NUMBER nLoc;
+        begin
+
+          nLoc = StrFind( szItemName, ";" );
+          if (nLoc < 0) then return; endif;
+
+          SetByte( szItemName, nLoc, 0 );
+
+        end;
+

@@ -1,0 +1,44 @@
+# The contents of this file are subject to the Interbase Public
+# License Version 1.0 (the "License"); you may not use this file
+# except in compliance with the License. You may obtain a copy
+# of the License at http://www.Inprise.com/IPL.html
+#
+# Software distributed under the License is distributed on an
+# "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either express
+# or implied. See the License for the specific language governing
+# rights and limitations under the License.
+#
+# The Original Code was created by Inprise Corporation
+# and its predecessors. Portions created by Inprise Corporation are
+# Copyright (C) Inprise Corporation.
+# All Rights Reserved.
+# Contributor(s): ______________________________________.
+# Order of libraries is crucial, -ljibs must precede -lrwtool
+LDLIBS=		+eh -Wl,+s -lgds -lm -ldld
+
+# interserver and interbase directory links should exist in the INCLUDES directory.
+INCLUDES=	-I/usr/local/interbase/include
+
+# ARCH_32/ARCH_64 for 32/64 bit processors
+# WORDS_BIGENDIAN CDR uses this define to determine if the host is BIGENDIAN
+# USE_INETD 	negotiate with inetd
+# DEBUG		Set this if don't like infectious creepy crawlies in your code
+# IB_USER_API   Set this if you want to use JIBS as a user API.
+# NODOUBLEFORK  !!!
+# SYS5		!!!
+# FUTURE_CODE   for experimenting with code that you don't yet want in driver.
+# JDBC_EXTENSION for JDBC extensions.
+
+# For Debug and Development, using inetd
+#CCFLAGS= 	-g -DUNIX -DUSE_INETD -DSYS5 -DARCH_32 -DWORDS_BIGENDIAN
+
+# For Debug and Development, no inetd
+# MMM - HP port: added options
+#CCFLAGS= 	-g +d +eh -DUNIX -DDEBUG -DARCH_32 -DWORDS_BIGENDIAN
+#CCFLAGS= 	-g -DUNIX -DDEBUG -DSYS5 -DARCH_32 -DWORDS_BIGENDIAN
+
+# For Product
+# MMM - HP port: added options
+CCFLAGS= 	-O +d +eh -DUSE_INETD -DUNIX -DARCH_32 -DWORDS_BIGENDIAN +DA1.0 +DS1.0 
+
+CC=		CC

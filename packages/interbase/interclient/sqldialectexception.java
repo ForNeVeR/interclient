@@ -1,0 +1,54 @@
+/*
+ * The contents of this file are subject to the Interbase Public
+ * License Version 1.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy
+ * of the License at http://www.Inprise.com/IPL.html
+ *
+ * Software distributed under the License is distributed on an
+ * "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either express
+ * or implied. See the License for the specific language governing
+ * rights and limitations under the License.
+ *
+ * The Original Code was created by Inprise Corporation
+ * and its predecessors. Portions created by Inprise Corporation are
+ * Copyright (C) Inprise Corporation.
+ * All Rights Reserved.
+ * Contributor(s): ______________________________________.
+ */
+package interbase.interclient;
+
+/**
+ * A warning that the value specified in the sqlDialect connection
+ * property is not valid for the associated database and the
+ * dialect value has been changed.
+ * <p>
+ * An attempt to set a connection SQL dialect to negative value or to
+ * a value that exceeds the database's SQL dialect may throw this warning.
+ * Connection SQL dialects that are too high are adjusted to match the
+ * database's SQL dialect.  A connection SQL dialect of 0 (zero), which is the
+ * default, uses the SQL dialect of the database (but no warning is thrown).
+ * <p>
+// CJL-IB6 change the link to conform <!>
+ * The error code associated with this warning is
+ * always {@link ErrorCodes#unlicensedComponent ErrorCodes.unlicensedComponent}.
+ *
+ * @author Chris Levesque
+ * @docauthor Chris Levesque
+ * @since <font color=red>Extension, since InterClient 2.00</font>
+ **/
+
+final public class SQLDialectException extends InvalidArgumentException
+{
+  final private static String className__ = "SQLDialectException";
+  // *** InterClient constructor ****
+  SQLDialectException ( ErrorKey errorKey, String invalidDialect)
+  {
+    super (className__, errorKey, (Object) invalidDialect);
+  }
+  // *** InterServer constructor as a warning ***
+  SQLDialectException ( int errorKeyIndex, int newDialect)
+  {
+    super (className__, errorKeyIndex, (Object) new Integer(newDialect) );
+  }
+
+}

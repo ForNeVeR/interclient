@@ -1,0 +1,16 @@
+text   packages/interbase/interclient/Array.java
+text   packages/interbase/interclient/ArrayDescriptor.java
+text   packages/interbase/interclient/Blob.java
+text   packages/interbase/interclient/Clob.java
+text   packages/interbase/interclient/DataSource.java
+text   packages/interbase/interclient/ObjectFactory.java
+text   packages/interbase/interclient/ServerManager.java
+binary obfuscatedClasses/interbase/interclient/Array.class
+binary obfuscatedClasses/interbase/interclient/ArrayDescriptor.class
+binary obfuscatedClasses/interbase/interclient/Blob.class
+binary obfuscatedClasses/interbase/interclient/Clob.class
+binary obfuscatedClasses/interbase/interclient/DataSource.class
+binary obfuscatedClasses/interbase/interclient/ObjectFactory.class
+binary obfuscatedClasses/interbase/interclient/ServerManager.class
+
+

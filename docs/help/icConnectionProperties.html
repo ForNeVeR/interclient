@@ -1,0 +1,320 @@
+<html>
+
+<head>
+<title>InterClient Help</title>
+</head>
+
+<body bgcolor="#FFFFFF">
+<table BORDER="0" WIDTH="100%">
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td colspan=3><a href="../specifications/overview-summary.html">Reference</a>&nbsp;| <a href="../help/help.html">Help</a>&nbsp;| <a href="../introduction/introduction.html">Introduction</a>&nbsp;| <a href="../slide_show/coverPage.html">Slide Show</a>&nbsp;| <a href="../customHierarchy.html">Class Hierarchy</a></td>
+<td align=right valign=top rowspan=2><em>
+InterClient</em>
+</td>
+</tr>
+<tr>
+<td><font size="-2">
+<a href="icSQLStates.html">PREV</a>&nbsp;| <a href="icExtensions.html">NEXT</a></font>
+</td>
+<td><font size="-2">
+<a href="../index.html" target="_top">FRAMES</a>
+&nbsp;| <a href="icConnectionProperties.html" target="_top">NO FRAMES</a>
+</font>
+</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+<hr>
+
+<h3>DataSource and Connection Properties</h3>
+
+<p>
+The JDBC 2 Standard Extension
+<a href="../specifications/interbase/interclient/DataSource.html">
+DataSource</a>
+facility provides an alternative to the JDBC DriverManager, essentially
+duplicating all of the driver manager’s useful functionality in the context
+of a Java Bean. Although, both mechanisms
+may be used by the same application if desired, JavaSoft encourages developers to
+regard the DriverManager as a legacy feature of the JDBC API. Applications should
+use the DataSource API whenever possible.
+The DriverManager, Driver, and
+DriverPropertyInfo interfaces may be deprecated in the future.
+<p>
+When using the JDBC 1 DriverManager/Driver API,
+connection properties are passed to the driver
+when a connection is requested with
+<ul>
+<li>
+<a href="../specifications/interbase/interclient/Driver.html#connect(java.lang.String, java.util.Properties)">
+Driver.connect (databaseURL, java.util.Properties)</a> or
+<li>java.sql.DriverManager.getConnection (databaseURL, java.util.Properties).
+</ul>
+<p>
+When using the JDBC 2 Standard Extension API, connections are requested through a
+<a href="../specifications/interbase/interclient/DataSource.html">
+DataSource</a>, and
+connection properties are set and retrieved using setter and getter methods of
+the DataSource bean.  The DataSource, along with its properties, may be manipulated
+as a Java Bean or stored in a JNDI name service.
+<p>
+Regardless of the API used for establishing a connection,
+all DataSource properties are used to tailor a connection, and the connection only;
+these are not properties of the target database itself.
+Persistent properties of the database itself may be
+established using the
+<a href="../specifications/interbase/interclient/ServerManager.html">
+ServerManager</a> API.
+<p>
+Under the JDBC 1 DriverManager/Driver API, the
+<code>databaseName</code>, <code>serverName</code>,
+<code>networkProtocol</code>, and <code>portNumber</code> properties are specified as part of the
+database URL string.  The JDBC 2 Standard Extension DataSource API does
+not use database URLs, and these properties are specified using the
+setter methods of a DataSource bean.
+The first table below indicates properties used by the DataSource API only.
+
+<p><strong>DataSource API Connection Properties (<i>not used by Driver API)</i></strong>
+<table border=1>
+<tr>
+<th>Property Key
+<th>Default
+<th>Description
+</tr>
+
+<tr>
+<td>databaseName
+<td>null
+<td>Absolute path to a database on a server.
+    If the database resides on a different machine than
+    InterServer, then the database server name should also
+    prefixed onto the database path as dictated by the
+    InterBase remote database specification syntax.
+    <br>
+    <font color=red>JDBC 2 Standard Extension, proposed for InterClient 2.0, not yet supported</font>
+</tr>
+
+<tr>
+<td>dataSourceName
+<td>null
+<td>An optional data source name; used to name an
+   underlying XADataSource, or ConnectionPoolDataSource
+   when pooling of connections is done.
+    <br>
+    <font color=red>JDBC 2 Standard Extension, proposed for InterClient 2.0, not yet supported</font>
+</tr>
+
+<tr>
+<td>description
+<td>null
+<td>An optional text description of the data source.
+    <br>
+    <font color=red>JDBC 2 Standard Extension, proposed for InterClient 2.0, not yet supported</font>
+</tr>
+
+<tr>
+<td>networkProtocol
+<td>jdbc:interbase:
+<td>An optional database protocol to use when communicating with InterServer.
+    This can only be <code>jdbc:interbase:</code> for InterClient.
+    <br>
+    <font color=red>JDBC 2 Standard Extension, proposed for InterClient 2.0, not yet supported</font>
+</tr>
+
+<tr>
+<td>portNumber
+<td>3060
+<td>The TCP/IP port number where InterServer listens
+    for connection requests on <code>serverName</code>.
+    <br>
+    <font color=red>JDBC 2 Standard Extension, proposed for InterClient 2.0, not yet supported</font>
+</tr>
+
+<tr>
+<td>serverName
+<td>null
+<td>The server name where InterServer resides.
+    <br>
+    <font color=red>JDBC 2 Standard Extension, proposed for InterClient 2.0, not yet supported</font>
+</tr>
+
+<tr>
+<td>serverManagerHost
+<td>null
+<td>The InterBase host to be serviced by a
+    <a href="../specifications/interbase/interclient/ServerManager.html">ServerManager</a>.
+    InterServer regulates the service requests to the <code>serverManagerHost</code>.
+    See
+    <a href="../specifications/interbase/interclient/DataSource.html#getServerManager()">DataSource.getServerManager()</a>.
+    <br>
+    <font color=red>Extension, proposed for InterClient 2.0, not yet supported</font>
+</tr>
+
+</table>
+
+<p><strong>DataSource and Driver API Connection Properties</strong>
+<table border=1>
+<tr>
+<th>Property Key
+<th>Default
+<th>Description
+</tr>
+
+<tr>
+<td>user
+<td>null
+<td>The user name for the connection.
+    <br>
+    <font color=red>JDBC 2 Standard Extension, proposed for InterClient 2.0, not yet supported</font>
+</tr>
+
+<tr>
+<td>password
+<td>null
+<td>The user's password for the connection.
+    <br>
+    <font color=red>JDBC 2 Standard Extension, proposed for InterClient 2.0, not yet supported</font>
+</tr>
+
+<tr>
+<td>roleName
+<td>null
+<td>The user's SQL role name for the connection.  This is optional.
+    <br>
+    <font color=red>JDBC 2 Standard Extension, proposed for InterClient 2.0, not yet supported</font>
+</tr>
+
+<tr>
+<td>charSet
+<td><a href="../specifications/interbase/interclient/CharacterEncodings.html#NONE">
+    NONE</a>
+<td>The character encoding for the connection.
+    All SQL and character input data will be sent to the database
+    using the specified character encoding.
+    All output data and InterBase messages retrieved from the database
+    will also utilize the specified character encoding.
+    InterClient messages do not utilize <code>charSet</code>,
+    but derive from the resource bundle
+    in use which is based on the locale-specific encoding of the client.
+    The encoding specified must match one of the
+    supported IANA character encoding names detailed
+    in the
+    <a href="../specifications/interbase/interclient/CharacterEncodings.html">
+    CharacterEncodings</a> class.
+    <br>
+    <font color=red>Extension, proposed for InterClient 2.0, not yet supported</font>
+</tr>
+
+<tr>
+<td>interBaseLicense
+<td>null
+<td>The user's string authorization key for an InterBase software license.
+    By default the license file from the InterBase home directory is used.
+    <br>
+    <font color=red>Extension, proposed for InterClient 2.0, not yet supported</font>
+</tr>
+
+<tr>
+<td>sweepOnConnect
+<td>false
+<td>Force garbage collection of outdated record versions
+    immediately upon connection.  See the <i>InterBase
+    Operations Guide</i> for more details.
+    Sweep does not require exclusive access, but
+    if there are no active transactions on the database,
+    then sweep can update certain data and transaction
+    state information. 
+    <br>
+    <font color=red>Extension, proposed for InterClient 2.0, not yet supported</font>
+</tr>
+
+<tr>
+<td>suggestedCachePages
+<td>0
+<td>The suggested number of cache page buffers to use for this connection.
+    This is a transient property of the connection and is overridden
+    by the database-wide default set by
+    <a href="../specifications/interbase/interclient/ServerManager.html#setDatabaseCachePages(java.lang.String, int)">
+    ServerManager.setDatabaseCachePages(database, pages)</a>,
+    but takes precedence over the server-wide default set
+    by <code>DATABASE_CACHE_PAGES</code> in the InterBase
+    <code>ibconfig</code> startup file or by
+    <a href="../specifications/interbase/interclient/ServerManager.html#startInterBase(int, int)">
+    ServerManager.startInterBase(defaultCachePages, defaultPageSize)</a>.
+    <p>
+    On SuperServer, if a database cache already exists due to another
+    attachment to the database then the cache size may be increased
+    but not decreased.  So, although this is a transient property,
+    once the cache size is increased, it stays that way as long as there
+    are active connections.  Once all connections to the database are closed,
+    then subsequent connections will use the database-wide or server-wide defaults.
+    <p>
+    <b>Note:</b> Using this connection property may
+    jeopardize the performance of the server because an arbitrary user can
+    connect and reserve 200MB for <code>foo.gdb</code> while
+    <code>corporate.gdb</code> is forced to accept less.
+    <p>
+    There is an absolute limitation of
+    MAX_PAGE_BUFFERS (65535) pages imposed by InterBase code.
+    So the cache memory size for a database cannot go beyond a maximum of
+    MAX_PAGE_BUFFERS*PageSize bytes which amounts to 512MB for an 8K page size.
+    8K here is the maxiumum database page size currently allowed.
+    If this property is 0 or unspecified, and there is no server-wide or database-wide default set, the default
+    pages used is 256 cache pages.
+    <p>
+    Also see
+    <a href="../specifications/interbase/interclient/DatabaseMetaData.html#getPersistentDatabaseCachePages()">
+    DatabaseMetaData.getPersistentDatabaseCachePages()</a>,
+    and
+    <a href="../specifications/interbase/interclient/DatabaseMetaData.html#getActualCachePagesInUse()">
+    DatabaseMetaData.getActualCachePagesInUse()</a>.
+    <br>
+    <font color=red>Extension, proposed for InterClient 2.0, not yet supported</font>
+</tr>
+
+</table>
+
+
+<p>
+<hr>
+<a name="navbar_bottom"><!-- --></a>
+<table BORDER="0" WIDTH="100%">
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td colspan=3><a href="../specifications/overview-summary.html">Reference</a>&nbsp;| <a href="../help/help.html">Help</a>&nbsp;| <a href="../introduction/introduction.html">Introduction</a>&nbsp;| <a href="../slide_show/coverPage.html">Slide Show</a>&nbsp;| <a href="../customHierarchy.html">Class Hierarchy</a></td>
+<td align=right valign=top rowspan=2><em>
+InterClient</em>
+</td>
+</tr>
+<tr>
+<td><font size="-2">
+<a href="icSQLStates.html">PREV</a>&nbsp;| <a href="icExtensions.html">NEXT</a></font>
+</td>
+<td><font size="-2">
+<a href="../index.html" target="_top">FRAMES</a>
+&nbsp;| <a href="icConnectionProperties.html" target="_top">NO FRAMES</a>
+</font>
+</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+<hr>
+<font size="-1">
+Send comments or suggestions to <a href="mailto:interclient@interbase.com">interclient@interbase.com</a>
+</font>
+
+</BODY>
+</HTML>

@@ -1,0 +1,326 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>InterClient at BorCon '98</title>
+</head>
+
+<body bgcolor="#FFFFFF" background="../images/background.jpg">
+<table BORDER="0" WIDTH="100%">
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td colspan=3><a href="../specifications/overview-summary.html">Reference</a>&nbsp;| <a href="../help/help.html">Help</a>&nbsp;| <a href="../introduction/introduction.html">Introduction</a>&nbsp;| <a href="../slide_show/coverPage.html">Slide Show</a>&nbsp;| <a href="../customHierarchy.html">Class Hierarchy</a></td>
+<td align=right valign=top rowspan=2><em>
+InterClient</em>
+</td>
+</tr>
+<tr>
+<td><font size="-2">
+<a href="driversTested.html">PREV</a>&nbsp;| <a href="demoPerformance.html">NEXT</a></font>
+</td>
+<td><font size="-2">
+<a href="../index.html" target="_top">FRAMES</a>
+&nbsp;| <a href="coverPage.html" target="_top">NO FRAMES</a>
+</font>
+</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+<hr>
+
+<big><big>
+<center>
+<h1>Driver Performance</h1>
+</center>
+<p>
+<small><small><i>
+These tests use straightforward jdbc code using driver defaults.
+There are no optimizations or adaptations for interclient.
+</i></small></small>
+
+<p>
+<small>
+<table>
+<table border="1">
+<tr>
+<th>String Tests
+<th>ODBC
+<th>IC
+<th>jConnect
+<th>DG Broker
+<th>DG Bridge
+<th>dbANYWHERE
+<th>DriverX
+</tr>
+
+<tr>
+<td><b>Insert 10,000 Char(10)</b>
+<td>21,562
+<td>13,437
+<td>64,516
+<td>NP
+<td>262,469
+<td>45,985
+<td>21,922
+</tr>
+
+<tr>
+<td><b>Insert 1,000 Char(100)</b>
+<td>2,312
+<td>1,484
+<td>9,703
+<td>201,375
+<td>31,172
+<td>6,765
+<td>8,687
+</tr>
+
+<tr>
+<td><b>Insert 100 Char(1,000)</b>
+<td>281
+<td>219
+<td>5,500
+<td>20,312
+<td>2,781
+<td>2,250
+<td>250
+</tr>
+
+<tr>
+<td><b>Insert 10 Char(10,000)</b>
+<td>94
+<td>93
+<td>2,859
+<td>2,219
+<td>719
+<td>2,610
+<td>1,937
+</tr>
+
+<tr>
+<td><b>Select 10,000 Char(10)</b>
+<td>3,859
+<td>2,719
+<td>4,609
+<td>?
+<td>3,234
+<td>10,015
+<td>14,907
+</tr>
+
+<tr>
+<td><b>Select 1,000 Char(100)</b>
+<td>422
+<td>329
+<td>2,016
+<td>985
+<td>953
+<td>1,265
+<td>1,313
+</tr>
+
+<tr>
+<td><b>Select 100 Char(1,000)</b>
+<td>109
+<td>109
+<td>563
+<td>40,953
+<td>406
+<td>313
+<td>156
+</tr>
+
+<tr>
+<td><b>Select 10 Char(10,000)</b>
+<td>94
+<td>62
+<td>437
+<td>4,625
+<td>78
+<td>failed
+<td>110
+</tr>
+
+<tr>
+<th>Blob Tests
+<th>ODBC
+<th>IC
+<th>jConnect
+<th>DG Broker
+<th>DG Bridge
+<th>dbANYWHERE
+<th>DriverX
+</tr>
+
+<tr>
+<td><b>Insert 10,000 10-byte Blobs</b>
+<td>81,938
+<td>48,563
+<td>NP
+<td>NP
+<td>NP
+<td>134,125
+<td>27,297
+</tr>
+
+<tr>
+<td><b>Insert 1,000 100-byte Blobs</b>
+<td>6,140
+<td>2,672
+<td>405,781
+<td>201,375
+<td>32,625
+<td>14,110
+<td>1,906
+</tr>
+
+<tr>
+<td><b>Insert 100 1,000-byte Blobs</b>
+<td>2,282
+<td>2,000
+<td>45,860
+<td>20,328
+<td>5,593
+<td>4,547
+<td>326
+</tr>
+
+<tr>
+<td><b>Insert 10 10,000-byte Blobs</b>
+<td>2,250
+<td>875
+<td>3,922
+<td>2,312
+<td>1,391
+<td>2,859
+<td>281
+</tr>
+
+<tr>
+<td><b>Insert 1 100,000-byte Blobs</b>
+<td>1,406
+<td>94
+<td>Overflow
+<td>500
+<td>1,002
+<td>2,906
+<td>78
+</tr>
+
+<tr>
+<td><b>Select 10,000 10-byte Blobs</b>
+<td>45,062
+<td>55,391
+<td>?
+<td>NP
+<td>?
+<td>167,828
+<td>17,500
+</tr>
+
+<tr>
+<td><b>Select 1,000 100-byte Blobs</b>
+<td>5,484
+<td>5,672
+<td>55,812
+<td>404,047
+<td>11,391
+<td>9,078
+<td>1,594
+</tr>
+
+<tr>
+<td><b>Select 100 1,000-byte Blobs</b>
+<td>1,125
+<td>594
+<td>5,218
+<td>40,797
+<td>1,375
+<td>1,719
+<td>156
+</tr>
+
+<tr>
+<td><b>Select 10 10,000-byte Blobs</b>
+<td>4,000
+<td>78
+<td>610
+<td>2,609
+<td>203
+<td>360
+<td>63
+</tr>
+
+<tr>
+<td><b>Select 1 100,000-byte Blobs</b>
+<td>NP
+<td>47
+<td>?
+<td>1,203
+<td>110
+<td>312
+<td>31
+</tr>
+</table>
+</small>
+
+<p>
+<small><small><i>
+You wouldn't see this kind of variation
+with ODBC drivers for a couple reasons:
+they've been around longer and they're
+not networked so you don't see client library
+functionality embedded in the driver as
+you do with JDBC.
+<p>
+This is using the latest 1.50 release, which is quite a lot
+faster than the 1.12 release.
+<p>
+Of course, times will vary depending on hardware;
+it's the relative performance that's important.
+<p>
+NP stands for "no patience", but could be construed as non-polynomial ;-)
+</i></small></small>
+</big></big>
+
+<p>
+<hr>
+<a name="navbar_bottom"><!-- --></a>
+<table BORDER="0" WIDTH="100%">
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td colspan=3><a href="../specifications/overview-summary.html">Reference</a>&nbsp;| <a href="../help/help.html">Help</a>&nbsp;| <a href="../introduction/introduction.html">Introduction</a>&nbsp;| <a href="../slide_show/coverPage.html">Slide Show</a>&nbsp;| <a href="../customHierarchy.html">Class Hierarchy</a></td>
+<td align=right valign=top rowspan=2><em>
+InterClient</em>
+</td>
+</tr>
+<tr>
+<td><font size="-2">
+<a href="driversTested.html">PREV</a>&nbsp;| <a href="demoPerformance.html">NEXT</a></font>
+</td>
+<td><font size="-2">
+<a href="../index.html" target="_top">FRAMES</a>
+&nbsp;| <a href="coverPage.html" target="_top">NO FRAMES</a>
+</font>
+</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+<hr>
+<font size="-1">
+Send comments or suggestions to <a href="mailto:interclient@interbase.com">interclient@interbase.com</a>
+</font>
+
+</body>
+</html>

@@ -1,0 +1,43 @@
+# The contents of this file are subject to the Interbase Public
+# License Version 1.0 (the "License"); you may not use this file
+# except in compliance with the License. You may obtain a copy
+# of the License at http://www.Interbase.com/IPL/
+#
+# Software distributed under the License is distributed on an
+# "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either express
+# or implied. See the License for the specific language governing
+# rights and limitations under the License.
+#
+# The Original Code was created by Inprise Corporation
+# and its predecessors. Portions created by Borland/Inprise are
+# Copyright (C) 1992-1998 and 1999-2000 Borland/Inprise. Portions
+# created by InterBase Software Corporation are Copyright (C)
+# 1998-1999 InterBase Software Corporation.
+#
+# Copyright (C) 2000 InterBase Software Corporation
+# All Rights Reserved.
+# Contributor(s): ______________________________________.
+# This is the certificate directive file for InterBase InterClient CommDiag. 
+
+# the id of the signer
+issuer.name=InterBaseSoftwareCorp
+
+# the cert to use for the signing
+issuer.cert=1
+
+# the id of the subject
+subject.name=InterBaseSoftwareCorp
+
+# the components of the X500 name for the subject
+subject.real.name=InterBaseSoftwareCorp
+subject.org.unit=InterBase Software Corporation
+subject.org=Borland International
+subject.country=US
+
+# Various parameters: start and end date for validity and expiration
+# of the certificate. Serial number. FIle to which to output the
+# certificate (optional).
+start.date=17 Jan 1997
+end.date=16 Jan 1998
+serial.number=1001
+out.file=InterBaseSoftwareCorp.x509

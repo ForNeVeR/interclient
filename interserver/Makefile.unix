@@ -1,0 +1,157 @@
+# The contents of this file are subject to the Interbase Public
+# License Version 1.0 (the "License"); you may not use this file
+# except in compliance with the License. You may obtain a copy
+# of the License at http://www.Inprise.com/IPL.html
+#
+# Software distributed under the License is distributed on an
+# "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either express
+# or implied. See the License for the specific language governing
+# rights and limitations under the License.
+#
+# The Original Code was created by Inprise Corporation
+# and its predecessors. Portions created by Inprise Corporation are
+# Copyright (C) Inprise Corporation.
+# All Rights Reserved.
+# Contributor(s): ______________________________________.
+.SUFFIXES:
+.SUFFIXES: .cpp .o
+
+OBJS=		IB_Connection.o IB_Transaction.o IB_Statement.o \
+		IB_DataBuffer.o IB_InputBuffer.o IB_ResultSet.o \
+		IB_Buffer.o Vector.o \
+		IB_ConnectionConfiguration.o IB_TransactionConfiguration.o \
+		IB_Information.o IB_ConnectionInformation.o IB_TransactionInformation.o \
+		IB_Status.o IB_SQLException.o \
+		IB_Types.o IB_LDString.o IB_LDBytes.o IB_Blob.o IB_Array.o IB_Catalog.o \
+		JIBSRemote.o Session.o \
+		JIBSNet.o NetTCP.o Error.o CDR.o VersionInformation.o \
+		CommunicationSQLException.o \
+		IB_CharacterSets.o
+
+HDRS=		IB_Connection.h IB_Transaction.h IB_Statement.h \
+		IB_DataBuffer.h IB_InputBuffer.h IB_ResultSet.h \
+		IB_Buffer.h Vector.h \
+		IB_ConnectionConfiguration.h IB_TransactionConfiguration.h \
+		IB_Information.h IB_ConnectionInformation.h IB_TransactionInformation.h \
+		IB_Status.h IB_SQLException.h \
+		IB_Types.h IB_LDString.h IB_LDBytes.h IB_Blob.h IB_Array.h \
+		IB_Defines.h IB_Catalog.h \
+		JIBSRemote.h MessageCodes.h Session.h \
+		JIBSNet.h NetTCP.h Error.h CDR.h VersionInformation.h \
+		CommunicationSQLException.h \
+		IB_CharacterSets.h
+
+OBJS_OPTS=	PerformanceStatistics.o EventAlerter.o
+
+OBJS_TESTS=	test_apifull.o test_events.o test_perfs.o test_transactions.o
+
+OBJS_LICS=	VersionInformation.o
+
+.cpp.o:			
+		$(CC) $(CCFLAGS) $(INCLUDES) -c $*.cpp -o $*.o
+
+.o:
+		$(CC) $(CCFLAGS) $(INCLUDES) $*.o -o $* $(LDLIBS)
+
+.cpp:
+		$(CC) $(CCFLAGS) $(INCLUDES) -c $*.cpp -o $*.o
+		$(CC) $(CCFLAGS) $(INCLUDES) $*.o -o $* $(LDLIBS)
+
+interserver:	$(OBJS) interserver.o
+		$(CC) $(OBJS) interserver.o -o interserver $(LDLIBS)
+
+lib:		$(OBJS)
+		$(CC) -xar $(OBJS) -o /usr/local/lib/libjibs.a
+
+tests:		$(OBJS_TESTS)
+
+clean:
+		rm -f *.o core
+		rm -rf Templates.DB
+
+VersionInformation.o:		VersionInformation.h
+
+IB_Connection.o:		IB_Defines.h IB_Connection.h IB_SQLException.h IB_LDString.h \
+				IB_Transaction.h IB_ConnectionConfiguration.h \
+				IB_Status.h IB_Statement.h IB_ResultSet.h Vector.h \
+				IB_Types.h IB_Blob.h IB_Array.h IB_Buffer.h IB_DataBuffer.h
+
+IB_Transaction.o:		IB_Defines.h IB_Transaction.h IB_Connection.h \
+				IB_TransactionConfiguration.h \
+				IB_SQLException.h IB_Status.h 
+
+IB_Statement.o:			IB_Defines.h IB_Statement.h IB_Transaction.h IB_Connection.h IB_ResultSet.h \
+				IB_SQLException.h IB_Status.h IB_Types.h IB_LDString.h \
+				IB_Information.h IB_InputBuffer.h IB_Blob.h IB_Array.h 
+
+IB_DataBuffer.o:		IB_Defines.h IB_DataBuffer.h IB_SQLException.h IB_Status.h \
+				IB_CharacterSets.h
+
+IB_InputBuffer.o:		IB_Defines.h IB_InputBuffer.h IB_SQLException.h IB_DataBuffer.h \
+				IB_Statement.h
+
+IB_ResultSet.o:			IB_Defines.h IB_ResultSet.h IB_Statement.h \
+				IB_SQLException.h IB_DataBuffer.h IB_LDString.h IB_Transaction.h \
+				IB_Status.h IB_Types.h 
+
+IB_Buffer.o:			IB_Defines.h IB_Buffer.h IB_SQLException.h IB_Status.h 
+
+IB_ConnectionConfiguration.o:	IB_Defines.h IB_ConnectionConfiguration.h \
+				IB_SQLException.h IB_LDString.h IB_Status.h 
+
+IB_TransactionConfiguration.o:	IB_Defines.h IB_TransactionConfiguration.h \
+				IB_SQLException.h IB_LDString.h IB_Status.h 
+
+IB_Information.o:		IB_Defines.h IB_Information.h IB_SQLException.h IB_Buffer.h IB_Status.h
+
+IB_ConnectionInformation.o:	IB_Defines.h IB_ConnectionInformation.h IB_Status.h \
+				IB_Information.h IB_Connection.h IB_SQLException.h \
+				IB_LDString.h 
+
+IB_TransactionInformation.o:	IB_Defines.h IB_TransactionInformation.h IB_Status.h \
+				IB_Information.h IB_Transaction.h IB_SQLException.h
+
+IB_Status.o:			IB_Defines.h IB_Status.h IB_SQLException.h
+
+IB_SQLException.o: 		IB_Defines.h IB_SQLException.h IB_Status.h
+
+CommunicationSQLException.o: 	IB_Defines.h IB_SQLException.h
+
+IB_Types.o:			IB_Defines.h IB_Types.h IB_LDBytes.h IB_LDString.h IB_SQLException.h
+
+IB_LDString.o:			IB_Defines.h IB_LDString.h
+
+IB_LDBytes.o:			IB_Defines.h IB_LDBytes.h
+
+IB_Blob.o:			IB_Defines.h IB_Blob.h IB_Statement.h IB_Connection.h \
+				IB_Transaction.h IB_SQLException.h IB_Status.h
+
+IB_Array.o:			IB_Defines.h IB_Array.h IB_Statement.h IB_Connection.h \
+				IB_Transaction.h IB_SQLException.h IB_Status.h 
+
+Vector.o:			Vector.h
+IB_Catalog.o:			IB_Catalog.h IB_Statement.h IB_ResultSet.h IB_Connection.h \
+ 				IB_Transaction.h IB_Status.h IB_SQLException.h IB_Defines.h IB_Types.h
+
+Session.o:	IB_Defines.h Session.h IB_Defines.h IB_Connection.h IB_Transaction.h \
+		IB_ConnectionConfiguration.h IB_TransactionConfiguration.h  \
+		IB_Status.h IB_LDString.h IB_LDBytes.h IB_Statement.h IB_ResultSet.h IB_ConnectionInformation.h
+
+JIBSRemote.o:	IB_Defines.h JIBSRemote.h Session.h JIBSNet.o IB_Statement.h IB_ResultSet.h \
+		IB_SQLException.h MessageCodes.h IB_Blob.h IB_Array.h IB_Types.h IB_Catalog.h \
+		event_msgs.h \
+		CommunicationSQLException.h 
+
+NetTCP.o:	NetTCP.h Error.h
+interserver.o:	JIBSRemote.h Error.h NetTCP.h
+Error.o:	Error.h
+JIBSNet.o:   	IB_Defines.h JIBSNet.h IB_LDString.h IB_LDBytes.h MessageCodes.h CDR.h \
+		Error.h NetTCP.h IB_Blob.h IB_Array.h VersionInformation.h \
+		CommunicationSQLException.h 
+CDR.o: 		CDR.h
+IB_CharacterSets.o:	IB_CharacterSets.h IB_Defines.h IB_SQLException.h 
+
+# IBPP_OPTS
+PerformanceStatistics.o:    PerformanceStatistics.h IB_Connection.h
+EventAlerter.o:		    EventAlerter.h IB_Connection.h IB_SQLException.h IB_Status.h
+

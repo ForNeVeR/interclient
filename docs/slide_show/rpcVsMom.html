@@ -1,0 +1,116 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>InterClient at BorCon '98</title>
+</head>
+
+<body bgcolor="#FFFFFF" background="../images/background.jpg">
+<table BORDER="0" WIDTH="100%">
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td colspan=3><a href="../specifications/overview-summary.html">Reference</a>&nbsp;| <a href="../help/help.html">Help</a>&nbsp;| <a href="../introduction/introduction.html">Introduction</a>&nbsp;| <a href="../slide_show/coverPage.html">Slide Show</a>&nbsp;| <a href="../customHierarchy.html">Class Hierarchy</a></td>
+<td align=right valign=top rowspan=2><em>
+InterClient</em>
+</td>
+</tr>
+<tr>
+<td><font size="-2">
+<a href="tieredArch.html">PREV</a>&nbsp;| <a href="corba.html">NEXT</a></font>
+</td>
+<td><font size="-2">
+<a href="../index.html" target="_top">FRAMES</a>
+&nbsp;| <a href="coverPage.html" target="_top">NO FRAMES</a>
+</font>
+</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+<hr>
+
+<big><big>
+<center>
+<h1>RPCs vs. MOMs</h1>
+</center>
+<p>
+From <a href="http://www.javaworld.com/javaworld/jw-05-1998/jw-05-step.html">Java World, May 1998, "Write your own MOM"</a>
+<p>
+<img src="images/momvsrpc.gif" border="0" align=left>
+<p>
+RPCs - language call model, blocks
+<p>
+MOMs - event model, non-blocking
+<p>
+<small><small><i>
+All RPCs are based on the concept of using remote procedure calls or methods as though
+they were local.  So if a client wants to send a request for service to a remote machine,
+the client simply invokes a method.
+<p>
+RPCs include RMI and CORBA as well as your traditional non-object oriented RPCs.
+CORBA provides a language independent RPC as well as other services.
+<p>
+Message-oriented middleware doesn't model network requests on method calls.
+Rather, messages are sent and received in an event model.
+So under the RPC model, a client invokes a remote method and waits for it to return.
+But under a MOM (Message Oriented Middleware), a client sends a message and is then
+free to do as it wills asynchronously.  This accomodates pipelining, and
+asynchronous event handling. Message passing is non-blocking.
+<p>
+Most distributed drivers are message oriented,
+eg. the datagateway broker, and interclient/interserver, but
+there is at least one jdbc driver i'm aware of that uses RPCs, it's called RmiJdbc.
+A DBMS message-based communication protocol is proprietary, and
+allows for efficient row prefetching, blob streaming, etc... that would
+not be possible using synchronous RPCs.
+<p>
+MOMs are becoming very popular in Java because of their flexibility and performance.
+JavaSoft has recently released for public review an enterprise api for message based middleware
+known as JMS (Java Messaging Service).
+<p>
+RPCs have the advantage of ease of use; modelling requests as method invocations gives
+good programming language integration.  But often the setup requirements for
+ORBs and other RPC based systems is extensive.
+</i></small></small>
+</big></big>
+
+<p>
+<hr>
+<a name="navbar_bottom"><!-- --></a>
+<table BORDER="0" WIDTH="100%">
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td colspan=3><a href="../specifications/overview-summary.html">Reference</a>&nbsp;| <a href="../help/help.html">Help</a>&nbsp;| <a href="../introduction/introduction.html">Introduction</a>&nbsp;| <a href="../slide_show/coverPage.html">Slide Show</a>&nbsp;| <a href="../customHierarchy.html">Class Hierarchy</a></td>
+<td align=right valign=top rowspan=2><em>
+InterClient</em>
+</td>
+</tr>
+<tr>
+<td><font size="-2">
+<a href="tieredArch.html">PREV</a>&nbsp;| <a href="corba.html">NEXT</a></font>
+</td>
+<td><font size="-2">
+<a href="../index.html" target="_top">FRAMES</a>
+&nbsp;| <a href="coverPage.html" target="_top">NO FRAMES</a>
+</font>
+</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+<hr>
+<font size="-1">
+Send comments or suggestions to <a href="mailto:interclient@interbase.com">interclient@interbase.com</a>
+</font>
+
+</body>
+</html>

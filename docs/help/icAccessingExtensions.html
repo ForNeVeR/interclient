@@ -1,0 +1,107 @@
+<html>
+
+<head>
+<title>InterClient Help</title>
+</head>
+
+<body bgcolor="#FFFFFF">
+<table BORDER="0" WIDTH="100%">
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td colspan=3><a href="../specifications/overview-summary.html">Reference</a>&nbsp;| <a href="../help/help.html">Help</a>&nbsp;| <a href="../introduction/introduction.html">Introduction</a>&nbsp;| <a href="../slide_show/coverPage.html">Slide Show</a>&nbsp;| <a href="../customHierarchy.html">Class Hierarchy</a></td>
+<td align=right valign=top rowspan=2><em>
+InterClient</em>
+</td>
+</tr>
+<tr>
+<td><font size="-2">
+<a href="icURLSyntax.html">PREV</a>&nbsp;| <a href="icResources.html">NEXT</a></font>
+</td>
+<td><font size="-2">
+<a href="../index.html" target="_top">FRAMES</a>
+&nbsp;| <a href="icAccessingExtensions.html" target="_top">NO FRAMES</a>
+</font>
+</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+<hr>
+
+<h3>Accessing InterClient Extensions to JDBC</h3>
+
+<p>
+To access InterClient method extensions, cast a generically declared java.sql 
+object instance to its corresponding interbase.interclient instance before
+applying the method. 
+
+<p>
+For example, the following code fragment shows how to cast an 
+InterClient driver instance in order to access a 
+hypothetical InterClient Driver extension method <code>isBuzzwordCompliant()</code>.
+
+<pre>
+// Create an InterClient driver as a generic JDBC driver
+java.sql.Driver driver = new interbase.interclient.Driver ();
+
+// Since isBuzzwordCompliant() is NOT a JDBC method,
+// cast the generic driver instance to its actual interclient instance.
+if (((interbase.interclient.Driver) driver).isBuzzwordCompliant ())
+  System.out.println("It's Buzzword compliant too!");
+</pre>
+
+This same approach may be applied to all InterClient method extensions 
+to the standard JDBC interfaces.
+
+<p>
+For example code using the
+<a href="../specifications/interbase/interclient/ServerManager.html">ServerManager</a>
+API for servicing an InterBase server,
+see
+<a href="../examples/ServerManagerExample.txt">ServerManagerExample.java</a>.
+
+<p>
+For a list of other extensions to the JDBC API, see the
+<a href="icExtensions.html">InterClient Extension API</a>.
+
+<p>
+<hr>
+<a name="navbar_bottom"><!-- --></a>
+<table BORDER="0" WIDTH="100%">
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td colspan=3><a href="../specifications/overview-summary.html">Reference</a>&nbsp;| <a href="../help/help.html">Help</a>&nbsp;| <a href="../introduction/introduction.html">Introduction</a>&nbsp;| <a href="../slide_show/coverPage.html">Slide Show</a>&nbsp;| <a href="../customHierarchy.html">Class Hierarchy</a></td>
+<td align=right valign=top rowspan=2><em>
+InterClient</em>
+</td>
+</tr>
+<tr>
+<td><font size="-2">
+<a href="icURLSyntax.html">PREV</a>&nbsp;| <a href="icResources.html">NEXT</a></font>
+</td>
+<td><font size="-2">
+<a href="../index.html" target="_top">FRAMES</a>
+&nbsp;| <a href="icAccessingExtensions.html" target="_top">NO FRAMES</a>
+</font>
+</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+<hr>
+<font size="-1">
+Send comments or suggestions to <a href="mailto:interclient@interbase.com">interclient@interbase.com</a>
+</font>
+
+</body>
+</html>

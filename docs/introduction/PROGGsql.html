@@ -1,0 +1,316 @@
+<HTML>
+<HEAD>
+<TITLE>InterClient Introduction</TITLE>
+</HEAD>
+
+<body bgcolor="#FFFFFF">
+<table BORDER="0" WIDTH="100%">
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td colspan=3><a href="../specifications/overview-summary.html">Reference</a>&nbsp;| <a href="../help/help.html">Help</a>&nbsp;| <a href="../introduction/introduction.html">Introduction</a>&nbsp;| <a href="../slide_show/coverPage.html">Slide Show</a>&nbsp;| <a href="../customHierarchy.html">Class Hierarchy</a></td>
+<td align=right valign=top rowspan=2><em>
+InterClient</em>
+</td>
+</tr>
+<tr>
+<td><font size="-2">
+<a href="PROGGcon.html">PREV</a>&nbsp;| <a href="PROGGsp.html">NEXT</a></font>
+</td>
+<td><font size="-2">
+<a href="../index.html" target="_top">FRAMES</a>
+&nbsp;| <a href="PROGGsql.html" target="_top">NO FRAMES</a>
+</font>
+</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+<hr>
+
+<H2>
+Executing SQL Statements</H2>
+After creating a <B>Connection</B> object, you can use it to obtain a <B>Statement</B>
+object that encapsulates and executes SQL statements and returns a result
+set.
+<H3>
+Classes for Executing SQL Statements</H3>
+There are three <B>java.sql</B> classes for executing SQL statements:
+<UL>
+<LI>
+<B>Statement</B></LI>
+
+<LI>
+<B>PreparedStatement</B></LI>
+
+<LI>
+<B>CallableStatement</B></LI>
+</UL>
+
+<H4>
+The Statement Class</H4>
+The <B>java.sql.Statement</B> interface allows you to execute a static
+SQL statement and to retrieve the results produced by the query. You can't
+change any values with a static statement. For example, the following SQL
+statement displays information once on a specific employee:
+<PRE>SELECT first_name, last_name, dept_name
+&nbsp;&nbsp;&nbsp; FROM emp_table
+&nbsp;&nbsp;&nbsp; WHERE dept_name = 'pubs';</PRE>
+The <B>Statement</B> class has two subtypes: <B>PreparedStatement</B> and
+<B>CallableStatement</B>.
+<H4>
+The PreparedStatement Class</H4>
+The <B>PreparedStatement</B> object allows you to execute a set of SQL
+statements more than once. Instead of creating and parsing a new statement
+each time to do the same function, you can use the <B>PreparedStatement</B>
+class to execute pre-compiled SQL statements multiple times. This class
+has a series of "setXXX" methods that allow your code to pass parameters
+to a predefined SQL statement; it's like a template to which you supply
+the parameters. Once you've defined parameter values for a statement, they
+remain (to be used in subsequent executions) until you clear them with
+a call to the <B>PreparedStatement.clearParameters</B> method.
+
+<P>For example, suppose you want to be able to print a list of all new
+employees hired on any given day. The operator types in the date, which
+is then passed in to the <B>PreparedStatement</B> object. Only those employees/rows
+in "emp_table" where "hire_date" matches the input date are returned in
+the result set.
+<PRE>SELECT first_name, last_name,
+&nbsp;&nbsp;&nbsp; emp_no FROM emp_table WHERE hire_date = '?';</PRE>
+See <A HREF="#PreparedStatement">Selecting Data With PreparedStatement
+</A>for more on how this construct works.
+<H4>
+The CallableStatement Class</H4>
+The <B>CallableStatement</B> class is used for executing stored procedures
+with OUT parameters. Since InterBase does not support the use of OUT parameters,
+there's no need to use <B>CallableStatement</B> with InterClient. (You
+can still use a <B>CallableStatement</B> object if you don't use the OUT
+parameter methods.)
+<H4>
+Creating a Statement Object.</H4>
+Creating a <B>Statement</B> object allows you to execute a SQL query. (Assume
+that you've already created the connection object.) The example below shows
+how to use the <B>createStatement</B> method to create a <B>Statement</B>
+object<I>:</I>
+<PRE>java.sql.Statement statement = connection.createStatement();</PRE>
+
+<H3>
+Querying Data</H3>
+After creating a <B>Connection</B> and a <B>Statement</B> or <B>PreparedStatement</B>
+object, you can use <B>executeQuery</B> method to query the database with
+SQL SELECT statements.
+<H4>
+Selecting Data With the Statement Class</H4>
+The <B>executeQuery</B> method returns a single result set. The argument
+is a string parameter that is typically a static SQL statement. The <B>ResultSet</B>
+object provides a set of "get" methods that let you access the columns
+of the current row. For example, <B>ResultSet.next</B> lets you move to
+the next row of the <B>ResultSet</B>, and the <B>getString</B> method retrieves
+a string.
+
+<P>This example shows the sequence for executing SELECT statements (assuming
+you've defined the <B>getConnection</B> arguments):
+<PRE>//Create a Connection object:
+java.sql.Connection connection =&nbsp;
+java.sql.DriverManager.getConnection(url,properties);
+
+//Create a Statement object
+java.sql.Statement statement = connection.createStatement();
+
+//Execute a SELECT statement and store results in resultSet:
+java.sql.ResultSet resultSet = statement.executeQuery
+("SELECT first_name, last_name, emp_no
+&nbsp;&nbsp;&nbsp; FROM emp_table
+&nbsp;&nbsp;&nbsp; WHERE dept_name = 'pubs'");
+
+//Step through the result rows
+System.out.println("Got results:");
+while (resultSet.next ()){
+&nbsp;&nbsp;&nbsp; //get the values for the current row
+&nbsp;&nbsp;&nbsp; string fname = resultSet.getString(1);
+&nbsp;&nbsp;&nbsp; string lname = resultSet.getString(2);
+&nbsp;&nbsp;&nbsp; string.empno = resultSet.getString(3);
+&nbsp;&nbsp;&nbsp; //print a list of all employees in the pubs dept
+&nbsp;&nbsp;&nbsp; System.out.print(" first name=" + fname);
+&nbsp;&nbsp;&nbsp; System.out.print(" last name=" + lname);
+&nbsp;&nbsp;&nbsp; System.out.print(" employee number=" + empno);
+&nbsp;&nbsp;&nbsp; System.out.print("\n");
+}</PRE>
+
+<H4>
+<A NAME="PreparedStatement"></A>Selecting Data With PreparedStatement</H4>
+This section shows an example of how to use <B>PreparedStatement</B> to
+execute a query:
+<PRE>//Define a PreparedStatement object type
+java.sql.PreparedStatement preparedStatement;
+
+//Create the PreparedStatement object
+preparedStatement = connection.prepareStatement("SELECT first_name, last_name,
+&nbsp;&nbsp;&nbsp; emp_no FROM emp_table WHERE hire_date = ?");
+
+//Input yr, month, day
+java.sql.String yr;
+java.sql.String month;
+java.sql.String day;
+System.in.readln("Enter the year: " + yr);
+System.in.readln("Enter the month: " + month);
+System.in.readln("Enter the day: " + day);
+
+//Create a date object
+java.sql.Date date = new java.sql.Date(yr,month,day);
+
+//Pass in the date to preparedStatement's ? parameter
+preparedStatement.setDate(1,date);
+
+//execute the query. Returns records for all employees hired on date
+resultSet = preparedStatement.executeQuery();</PRE>
+
+<H3>
+Finalizing Objects</H3>
+Applications (and applets) should explicitly close the various JDBC objects
+(<B>Connection</B>, <B>Statement</B>, and <B>ResultSet</B>) when they are
+done with them. The Java "garbage collector" may periodically close connections,
+but there's no guarantee when, where, or even if this will happen.<B><I>
+</I></B>It's better to immediately release a connection's database and
+JDBC resources rather than waiting for the garbage collector to release
+them automatically. The following "close" statements should appear at the
+end of the previous <B>executeQuery()</B> example.
+<PRE>connection.close();
+statement.close();
+resultSet.close();</PRE>
+
+<H3>
+Modifying Data</H3>
+The<B> executeUpdate()</B> method of the <B>Statement</B> or <B>PreparedStatement</B>
+class can be used for any type of database modification. This method takes
+a string parameter (a SQL INSERT, UPDATE, or DELETE statement), and returns
+a count of the number of rows that were updated.
+<H4>
+Inserting Data</H4>
+An <B>executeUpdate</B> statement with an INSERT statement string parameter
+adds one or more rows to a table. It returns either the row count or 0
+for SQL statements that return nothing:
+<PRE>int rowCount= statement.executeUpdate
+&nbsp;&nbsp;&nbsp;&nbsp; ("INSERT INTO table_name VALUES (val1, val2,…)";</PRE>
+If you don't know the default order of the columns the syntax is:
+<PRE>int rowCount= statement.executeUpdate
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ("INSERT INTO table_name (col1, col2,…) VALUES val1, val2,…)";</PRE>
+The following example adds a single employee to "emp_table":
+<PRE>//Create a connection object
+java.sql.Connection connection =&nbsp;
+java.sql.DriverManager.getConnection(url, properties);
+
+//Create a statement object
+java.sql.Statement statement = connection.createStatement();
+
+//input the employee data
+java.sql.String fname;
+java.sql.String lname;
+java.sql.String empno;
+System.in.readln("Enter first name: ", + fname);
+System.in.readln("Enter last name: ", + lname);
+System.in.readln("Enter employee number: ", + empno);
+
+//insert the new employee into the table
+int rowCount = statement.executeUpdate&nbsp;
+&nbsp;&nbsp;&nbsp; ("INSERT INTO emp_table (first_name, last_name, emp_no)
+&nbsp;&nbsp;&nbsp; VALUES (fname, lname, empno)");</PRE>
+
+<H4>
+Updating Data With the Statement Class</H4>
+The <B>executeUpdate</B> statement with a SQL UPDATE string parameter enables
+you to modify existing rows based on a condition using the following syntax:
+<PRE>int rowCount= statement.executeUpdate(
+&nbsp;&nbsp;&nbsp; "UPDATE table_name SET col1 = val1, col2 = val2,
+&nbsp;&nbsp;&nbsp; WHERE condition");</PRE>
+For example, suppose an employee, Sara Jones, gets married and you want
+to change her last name in the "last_name" column of the employee table:
+<PRE>//Create a connection object
+java.sql.Connection connection =&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; java.sql.DriverManager.getConnection(dbURL,properties);
+
+//Create a statement object
+java.sql.Statement statement = connection.createStatement();
+
+//insert the new last name into the table
+&nbsp;&nbsp;&nbsp; int rowCount = statement.executeUpdate&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp; ("UPDATE emp_table SET last_name = 'Zabrinski'&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; WHERE emp_no = 13314");</PRE>
+
+<H4>
+Updating Data With PreparedStatement</H4>
+The following code fragment shows an example of how to use <B>PreparedStatement</B>
+if you wanted to execute this update more than once:
+<PRE>//Define a PreparedStatement object type
+java.sql.PreparedStatement preparedStatement;
+
+//Create the Prepared_Statement object
+preparedStatement = connection.prepareStatement("UPDATE emp_table SET last_name = ?
+&nbsp;&nbsp;&nbsp; WHERE emp_no = ?");
+
+//input the last name and employee number
+string lname;
+string empno;
+System.in.readln("Enter last name: ", + lname);
+System.in.readln("Enter employee number: ", + empno);
+empNumber = Integer.parseInt(empno);
+
+//pass in the last name and employee id to preparedStatement's ? parameters
+//where '1' is the 1st parameter, '2' is the 2nd, etc.
+preparedStatement.setString(1,lname);
+preparedStatement.setInt (2,empNumber);
+
+//now update the table
+int rowCount = preparedStatement.executeUpdate();</PRE>
+
+<H4>
+Deleting Data</H4>
+The <B>executeUpdate()</B> statement with a SQL DELETE string parameter
+deletes an existing row using the following syntax:
+<PRE>DELETE FROM table_name WHERE condition;</PRE>
+The following example deletes the entire "Sara Zabrinski" row from the
+employee table:
+<PRE>int rowCount = statement.executeUpdate&nbsp;
+&nbsp;&nbsp;&nbsp; ("DELETE FROM emp_table WHERE emp_no = 13314");</PRE>
+
+
+<p>
+<hr>
+<a name="navbar_bottom"><!-- --></a>
+<table BORDER="0" WIDTH="100%">
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td colspan=3><a href="../specifications/overview-summary.html">Reference</a>&nbsp;| <a href="../help/help.html">Help</a>&nbsp;| <a href="../introduction/introduction.html">Introduction</a>&nbsp;| <a href="../slide_show/coverPage.html">Slide Show</a>&nbsp;| <a href="../customHierarchy.html">Class Hierarchy</a></td>
+<td align=right valign=top rowspan=2><em>
+InterClient</em>
+</td>
+</tr>
+<tr>
+<td><font size="-2">
+<a href="PROGGcon.html">PREV</a>&nbsp;| <a href="PROGGsp.html">NEXT</a></font>
+</td>
+<td><font size="-2">
+<a href="../index.html" target="_top">FRAMES</a>
+&nbsp;| <a href="PROGGsql.html" target="_top">NO FRAMES</a>
+</font>
+</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+<hr>
+<font size="-1">
+Send comments or suggestions to <a href="mailto:interclient@interbase.com">interclient@interbase.com</a>
+</font>
+
+</BODY>
+</HTML>

@@ -1,0 +1,1458 @@
+// Install script rules for installation 
+// of InterClient on NT and 95
+//
+// !!! Size of components: update for each build
+#define SIZE_REQ_INTERCLIENT   	     300000
+#define SIZE_REQ_INTERSERVER         500000
+#define SIZE_REQ_DOCUMENTATION 	    2000000
+
+#define PROGRAM_GROUP_NAME      "InterBase InterClient"
+#define COMPANY_NAME            "InterBase Corp"
+#define PRODUCT_NAME		"InterClient"
+
+// !!! This must change for each version
+#define PRODUCT_VERSION         "2.00"
+
+// This should never change
+#define REGISTRY_VERSION	"CurrentVersion"
+
+#define INTERCLIENT_KEY		"Software\\InterBase Corp\\InterClient"
+#define PRODUCT_KEY             "interserver.exe"
+
+#define UNINSTALL_KEY           "InterBase InterClient"
+#define SERVICEFILE_ENTRY	"interserver      3060/tcp             # InterBase InterServer"
+#define APPBASE_DIR95           "Program Files\\InterBase Corp\\InterClient"
+#define BASE_REGISTRYNT         "Software\\Microsoft\\Windows NT\\CurrentVersion\\App Paths\\"
+#define BASE_REGISTRY95         "Software\\Microsoft\\Windows\\CurrentVersion\\App Paths\\"
+
+#define MAKE_CHANGE		101
+#define SAVE_CHANGE		102
+#define	NO_MAKE_CHANGE          103
+
+// Define constants for install items
+#define ITEM_INTERCLIENT	"InterClient"
+#define ITEM_INTERSERVER	"InterServer"
+#define ITEM_DOCUMENTATION	"Documentation"
+
+// Define constants for components
+#define COMPONENT_DEVELOPMENT	"Development"
+
+// Constants for Window Messages
+#define WM_WININICHANGE 0x001A
+#define HWND_BROADCAST 0xffff
+
+// Constants for status bar percents
+#define FILE_SET_PERCENT	90
+#define README_PERCENT		93
+#define CLASSPATH_PERCENT	95
+#define INI_FILE_PERCENT        96
+#define ICON_PERCENT		97
+#define DONE_PERCENT		100
+
+#define INTERSERVER_PERCENT	20
+#define DOC_PERCENT		30
+#define INTERCLIENT_PERCENT	50
+#define IC_CLASS_PERCENT	60
+#define IC_DEPLOY_PERCENT	70
+#define EXAMPLE_PERCENT		80
+
+declare
+
+// These variables can be moved to individual modules
+// instead of globals, selectively. For which:
+//   Need to create individul modules 
+//   Avoid goto statements (this is tricky, because of the cancel, back buttons
+
+#include "SDDIALOG.H"
+
+// Fileset and component variables
+STRING  svGrp, szFileSet;
+STRING  szComponentDevelopment;
+STRING  szTemp;
+BOOL    bGoBack, bMakeDeployDirectory, bLocalClient;
+
+// the logfile which Is leaves behind with info for uninstall
+STRING  svUninstLogFile, szRegKey;
+
+// The target dirs
+STRING  szMainDirectory, szDeployMainDirectory;
+BOOL    bSpaceOk, bTmp, bDone;
+STRING  szJDKDirectory;
+STRING  szJBuilderBin;
+
+// handle various return values from IS API
+NUMBER  nResult, nStatusId, nType;
+
+// OS and Shell booleans
+BOOL    bWinNT40;
+BOOL    bWinNT;
+BOOL    bWinExplorer;  // explorer shell
+
+// Variables to hold installation type information
+LIST	lInstallationInfo;
+NUMBER	nInstallMode;
+
+// Function declarations.
+prototype SetupScreen();
+prototype CheckRequirements();
+prototype CheckSpaceRequirements( STRING, STRING );
+prototype VersionCheck();
+prototype DisplayLicense(); 
+prototype ConfigureInterServer( STRING );
+prototype ConfigureServices();
+prototype LookForInterBase( STRING );
+prototype GetDeployDirectory( STRING );
+prototype GetInstallMode();
+
+prototype installClientServer( BOOL );
+
+prototype CreateFileSet( STRING, STRING);
+prototype ListInstallComponents( STRING);
+prototype AppendClassPath();
+prototype UpdateJBuilderINIFile ( );
+prototype SetJDKDirectories ( );
+prototype ShowReadme();
+prototype CreateIcons( STRING, STRING, STRING );
+prototype ShowInstallTxt();
+prototype FinishInstall();
+prototype ResetComponentList();
+prototype AddInterServerRegistryEntry();
+
+program
+
+StartHere:
+  Handler(EXIT, DoExit);
+  DialogSetInfo(DLG_INFO_CHECKSELECTION,"",CHECKBOX95);
+  SetupScreen();
+
+WelcomeDlg:
+  Disable( BACKBUTTON );
+  // Set installation info., which is required for registry entries.
+  Welcome( "InterClient Installation", 0 );
+  Enable( BACKBUTTON );
+
+ShowLicense:
+  nResult = DisplayLicense();
+  if (nResult = BACK) then goto WelcomeDlg; endif;
+
+ShowInstallInfo:
+  // Test target system proper configuration.
+  CheckRequirements();
+  nResult = ShowInstallTxt();
+  if ( nResult = BACK ) then goto ShowLicense; endif;
+
+ChooseInstallationMode:
+  nInstallMode = GetInstallMode(); // always NEXT or BACK or CANCEL
+  bGoBack = FALSE; // we are not going 'BACK' to ShowInstallMode
+
+ShowInstallationMode:
+  ListDestroy(lInstallationInfo); // always start with a clean list
+  lInstallationInfo = ListCreate(STRINGLIST);
+  switch (nInstallMode)
+     case BACK:
+       goto ShowInstallInfo;
+     case NEXT :
+       bMakeDeployDirectory = FALSE;
+       bLocalClient = TRUE;
+       szFileSet = "Development";
+       nResult = installClientServer (bGoBack);
+       if ( nResult = BACK ) then goto ChooseInstallationMode; endif;
+   endswitch;
+   
+  // Check to see if target system meets space requirements.
+  bSpaceOk = CheckSpaceRequirements(szMainDirectory, szComponentDevelopment);
+  if ( bSpaceOk = FALSE ) then 
+    bGoBack = TRUE;
+    goto ShowInstallationMode;
+  endif;
+
+  // Check for the presence of InterBase on the machine if the user
+  // wants to install InterServer
+  nResult = LookForInterBase(szComponentDevelopment);
+  if ( nResult = BACK ) then 
+    bGoBack = TRUE;
+    goto ShowInstallationMode;
+  endif;
+
+  // Check to see if a services entry needs to be made
+  nResult = ConfigureServices();
+  if ( nResult = BACK ) then 
+    bGoBack = TRUE;
+    goto ShowInstallationMode;
+  endif;
+
+FolderSelection:
+  svGrp = PROGRAM_GROUP_NAME;
+  // Allow user to modify folder name.
+
+#ifdef PICKGROUP 
+ if (Is(USER_ADMINISTRATOR,"")) then
+    ProgDefGroupType(COMMON);
+  else
+    ProgDefGroupType(PERSONAL);
+  endif;
+  if ( SdSelectFolder("", "", svGrp ) = BACK ) then
+     bGoBack = TRUE;
+     goto ShowInstallationMode;
+  else
+    ListAddString(lInstallationInfo, "Program Group",AFTER);
+    ListAddString(lInstallationInfo, "     "+svGrp,AFTER);
+  endif;
+#endif
+
+ShowInstallOptions:
+  nResult = SdStartCopy("","",lInstallationInfo);
+  if (nResult = BACK) then goto ShowInstallationMode; endif;
+
+FileTransferSetup:
+  // Create the Deployment and main directories
+  if (ExistsDir(szMainDirectory) = NOTEXISTS) then
+    CreateDir(szMainDirectory);
+  endif;
+
+  if (bMakeDeployDirectory && 
+     (ExistsDir(szDeployMainDirectory) = NOTEXISTS)) then
+    CreateDir(szDeployMainDirectory);
+  endif;
+
+SetupUninstall:
+  if (Is(USER_ADMINISTRATOR,"")) then
+    ProgDefGroupType(COMMON);
+  else
+    ProgDefGroupType(PERSONAL);
+  endif;
+  DeinstallStart(szMainDirectory, svUninstLogFile, UNINSTALL_KEY, 0);
+  RegDBSetItem(REGDB_UNINSTALL_NAME, UNINSTALL_KEY);
+
+CreateFileSetInformation:
+  SetJDKDirectories ();
+  CreateFileSet(szComponentDevelopment, szFileSet);
+
+DoFileTransfer:
+  // Perform the file set copy.
+
+  // Set up progress indicator and information gauge.
+  Enable(STATUS);
+  Enable(INDVFILESTATUS);
+  PlaceWindow(BILLBOARD, CENTERED, CENTERED, CENTERED);
+  PlaceWindow(STATUS, CENTERED, 0, LOWER_LEFT);
+
+  StatusUpdate(ON, FILE_SET_PERCENT);
+  nResult = FileSetPerformEz(szFileSet, 0);
+  switch (nResult)
+    case FS_DONE: // Successful completion.
+      //SetStatusWindow(README_PERCENT, "Copying Readme Files...");
+      VarSave(SRCTARGETDIR);
+      TARGETDIR = szMainDirectory;
+      SRCDIR = SUPPORTDIR;
+      //XCopyFile("Readme.txt","Readme.txt",EXCLUDE_SUBDIR);
+      //XCopyFile("Relnotes.txt","Relnotes.txt",EXCLUDE_SUBDIR);
+      //XCopyFile("JBuilderNotes.txt","BuilderNotes.txt",EXCLUDE_SUBDIR);
+      //XCopyFile("Install.txt","Install.txt",EXCLUDE_SUBDIR);
+      //XCopyFile("License.txt","License.txt",EXCLUDE_SUBDIR);
+      TARGETDIR = WINDIR;
+  
+      // Copy the uninstall program if it doesn't already exist
+      if (FindFile(WINDIR, "UNINST.EXE", szTemp) < 0) then
+        TARGETDIR = WINDIR;
+        SetStatusWindow( README_PERCENT+1, "Copying System Files..." );
+        XCopyFile("UNINST.EXE",szMainDirectory^"UNINST.EXE",EXCLUDE_SUBDIR);   
+      endif;
+      // Copy MSVCRT40.DLL to the Windows system directory on NT 3.51 and Win 95
+      // if it doesn't already exist
+      if (!bWinNT40) then
+        SetStatusWindow( README_PERCENT+2, "Copying System Files..." );
+        TARGETDIR = WINSYSDIR;
+        XCopyFile("MSVCRT40.DLL","MSVCRT40.DLL",SHAREDFILE | COMP_UPDATE_VERSION);
+      endif;
+
+      // Finally Copy CTL3D32.DLL on Windows NT
+      if(bWinNT && !bWinNT40) then
+        SetStatusWindow( README_PERCENT+3, "Copying System Files..." );
+	Disable(LOGGING);
+	TARGETDIR = WINSYSDIR;
+	XCopyFile("CTL3D32.DLL", "CTL3D32.DLL", COMP_UPDATE_VERSION | LOCKEDFILE);
+	Enable(LOGGING);
+      endif;
+      VarRestore(SRCTARGETDIR);
+
+    case FS_CREATEDIR: // Create directory error.
+      MessageBox( "Unable to create a directory under " + TARGETDIR + "."+
+                  "Please check write access to this directory.", SEVERE );
+      abort;
+
+    default: // Group all other errors under default label.
+      NumToStr( szTemp, nResult );
+      MessageBox( "General file transfer error."+
+                  "Please check your target location and try again."+
+                  "\n\n Error Number:"+szTemp, SEVERE );
+      abort;
+  endswitch;
+
+CreateFolderIcons:
+      AppendClassPath();
+      UpdateJBuilderINIFile ();
+      //SetJDKDirectory ();
+      CreateIcons(svGrp, szMainDirectory, szComponentDevelopment);
+      SetStatusWindow(DONE_PERCENT, "Installation Complete!");
+      Disable( STATUS );
+      Disable( BACKBUTTON );
+      ConfigureInterServer(szComponentDevelopment);
+      Enable (BACKBUTTON);
+
+Done:
+  Handler(EXIT, -1);  // reset the exit handler
+  ShowReadme();
+  FinishInstall();
+  //ShowGroup(svGrp, SW_SHOW);
+  MessageBox ("The Explorer Shell Start menu is not always updated immediately" +
+	      " by the operating system, and so sometimes installed program groups" +
+              " do not always appear right away.", INFORMATION);
+  DeleteDir(SUPPORTDIR, ALLCONTENTS);
+  exit;
+
+DoExit:
+  if (AskYesNo("InterClient has not been completely installed.\n"+
+               "Are you sure you want to exit the setup program?", YES) = YES) then
+    RegDBSetDefaultRoot(HKEY_LOCAL_MACHINE);
+    // Attempt to delete the registry key but dont show an error if we can't
+    if (RegDBDeleteKey(INTERCLIENT_KEY) < 0) then
+//      MessageBox("Unable to delete the registry key", INFORMATION);
+    endif;
+    exit;
+  else
+    return; // go back to where we came from
+  endif;
+/*---------------------------------------------------------------------------*\
+ *
+ * Function:  SetupScreen
+ *
+ *  Purpose:  This function will set up the screen look.  This includes
+ *            colors, fonts, text to be displayed, etc.
+\*---------------------------------------------------------------------------*/
+
+function SetupScreen()
+
+begin
+  Disable( BACKGROUND );
+  Enable ( FULLWINDOWMODE );
+  SetTitle ( "InterClient Setup", 0, BACKGROUNDCAPTION );
+  SetTitle ( "Installing InterClient for Windows", 24, WHITE );
+  Enable ( BACKGROUND );       
+  Delay (1);
+  VersionCheck();
+  InstallationInfo( COMPANY_NAME, PRODUCT_NAME, REGISTRY_VERSION, PRODUCT_KEY );
+end;
+
+
+/*---------------------------------------------------------------------------*\
+ *
+ * Function:  CheckRequirements
+ *
+ *  Purpose:  This function will check all minimum requirements for the
+ *            application being installed.  If any fail, then the user
+ *            is informed and the installation is terminated.
+\*---------------------------------------------------------------------------*/
+
+function CheckRequirements()
+  number  nvDx, nvDy;
+  number nvResult;
+  STRING svResult;
+
+begin
+
+  // Determine if target system uses NT or Windows 95.
+  bWinNT40 = FALSE;
+  bWinNT = FALSE;
+  bWinExplorer = FALSE; 
+  GetSystemInfo( OS, nvResult, svResult );
+
+  if (nvResult = IS_WINDOWSNT) then
+    bWinNT = TRUE; 
+  endif;
+   
+  if (nvResult = IS_WINDOWS95) then
+    bWinNT = FALSE;
+    bWinExplorer = TRUE;
+    bWinNT40 = FALSE;
+  endif;
+
+  if (nvResult = IS_WINDOWSNT) then 
+    GetSystemInfo(WINMAJOR, nvResult, svResult);
+    if(nvResult >= 4) then
+      bWinExplorer = TRUE;
+      bWinNT40 = FALSE;
+    else
+      bWinExplorer = FALSE;
+      bWinNT40 = FALSE;
+    endif;
+  endif;
+
+  // Check screen resolution.
+  GetExtents( nvDx, nvDy );
+  if (nvDy < 480) then
+    MessageBox( "This program requires VGA or better resolution.", INFORMATION );
+    exit;
+  endif;
+end;
+
+/*---------------------------------------------------------------------------*\
+ *
+ * Function:  CheckSpaceRequirements
+ *
+ *  Purpose:  This function will check space requirements based on the
+ *            elements being installed.
+ *
+ *    Input:
+ *
+ *  Returns:
+ *
+ * Comments:
+\*---------------------------------------------------------------------------*/
+
+function CheckSpaceRequirements( szDir, szComponentList )
+
+  NUMBER  nSizeRequired, nComp;
+  BOOL bEnoughSpace;
+  LIST listComponents;
+  STRING szItem, szMsg;
+  
+begin
+
+  nSizeRequired = 0;
+
+  // Determine total size.
+  nComp = ListGetFirstString(listComponents, szItem);
+  while (nComp = 0)
+    if (ComponentIsItemSelected(szComponentList, szItem)) then
+
+       // GetInterServer Files
+       if (StrCompare(szItem, ITEM_INTERSERVER) = 0) then
+	 nSizeRequired = nSizeRequired + SIZE_REQ_INTERSERVER;
+       endif;
+
+       // Get Documentation Files
+       if (StrCompare(szItem, ITEM_DOCUMENTATION) = 0) then
+	 nSizeRequired = nSizeRequired + SIZE_REQ_DOCUMENTATION;
+       endif;
+
+       // Get InterClient Files
+       if (StrCompare(szItem, ITEM_INTERCLIENT) = 0) then
+	 nSizeRequired = nSizeRequired + SIZE_REQ_INTERCLIENT;
+         if (bMakeDeployDirectory && bLocalClient) then
+      	   nSizeRequired = nSizeRequired + SIZE_REQ_INTERCLIENT;
+         endif;
+       endif;
+
+    endif;
+    nComp = ListGetNextString(listComponents, szItem);
+  endwhile;
+
+  ListDestroy(listComponents);
+  // Check space on target drive.
+  bEnoughSpace = TRUE;
+  if (GetDiskSpace( szDir ) < nSizeRequired) then
+    szMsg = "There is not enough space available on the disk\n" +
+            "'" + szMainDirectory + "' \n" +
+            "Please free up some space or change the target location\n" +
+            "to a different disk";
+    MessageBeep(0);
+    MessageBox( szMsg, INFORMATION );
+    bEnoughSpace = FALSE;
+  endif;
+  return bEnoughSpace;
+end;
+
+/*---------------------------------------------------------------------------*\
+ *
+ * Function:  DisplayLicense
+ *
+ *  Purpose:  This function will display license file  
+\*---------------------------------------------------------------------------*/
+
+function DisplayLicense()
+
+  STRING szTitle, szQuestion, szLicenseFile, szMsg;
+
+begin
+  szTitle = "Software License Agreement";
+  szMsg   = "Please read the following license agreement. Use" +
+            " the scroll bar to view the rest of the agreement.";
+  szQuestion = "Do you accept all the terms of the preceding license" +
+               " agreement? If so, click on the Yes push button." +
+               " If you select NO, Setup will close.";
+  szLicenseFile = SUPPORTDIR ^ "License.txt";
+  return SdLicense(szTitle, szMsg, szQuestion, szLicenseFile);
+end;
+
+
+////////////////////////////////////////////////////////
+
+/*---------------------------------------------------------------------------*\
+ *
+ * Function:  VersionCheck
+ *
+ *  Purpose:  This function will check and warn if an earlier
+ *            version of InterClient is present
+\*---------------------------------------------------------------------------*/
+
+function VersionCheck()
+
+  STRING szKey[255], szKey2[255];
+  STRING svReturnString, svReturnLine;
+  LIST   szKeyList;
+  NUMBER nReturn;
+  BOOL bOlderVersionFound, bVersionMatches, bVersionFound, bNewerVersionFound;
+
+begin
+  SdShowMsg("Please wait while Setup Initializes....", TRUE);
+  bVersionFound = FALSE;
+  RegDBSetDefaultRoot (HKEY_LOCAL_MACHINE);
+  szKey = "SOFTWARE\\InterBase Corp\\InterClient";
+  szKey2 = "SOFTWARE\\InterBase\\InterClient";
+  szKeyList = ListCreate (STRINGLIST);
+  if ((RegDBQueryKey (szKey, REGDB_KEYS, szKeyList) = 0) ||
+      (RegDBQueryKey (szKey2, REGDB_KEYS, szKeyList) = 0)) then
+    nReturn = ListSetIndex (szKeyList, LISTFIRST);
+    while ( (nReturn != END_OF_LIST) && !bVersionFound )
+      ListCurrentString (szKeyList, svReturnString);
+      SetDialogTitle (DLG_ASK_YESNO, "InterClient Version Configuration");
+      Delay(2);
+      SdShowMsg("Please wait while Setup Initializes....", FALSE);     
+      if (AskYesNo( "A version of InterBase InterClient is already Installed.\n"+
+                    "It's recommended that this be uninstalled before continuing with the Installation.\n"+
+                    "Please stop the interserver service and uninstall.\n"+
+                    "Would you like to exit the Installation now?", YES ) = YES) then
+        ListDestroy (szKeyList);
+        abort;
+      endif;
+      bVersionFound = TRUE;
+      if (svReturnLine = PRODUCT_VERSION) then
+        bVersionMatches = TRUE;
+      elseif (svReturnLine < PRODUCT_VERSION) then
+        bNewerVersionFound = TRUE;
+      else
+        bOlderVersionFound = TRUE;
+      endif;
+    endwhile; 
+  else
+    Delay(2);
+    SdShowMsg("Please wait while Setup Initializes....", FALSE);
+  endif;
+  ListDestroy (szKeyList);
+end;
+
+///////////////////////////////////////////////////////////
+function ConfigureInterServer( szComponentList )
+
+STRING	szMsg, szProgram, szItem, szTitle;
+NUMBER	nExclusiveFlag, nCheck1, nCheck2, nComp;
+LIST listComponents;
+
+begin
+  listComponents = ListCreate( STRINGLIST );
+  ComponentListItems(szComponentList, listComponents);
+
+  nComp = ListGetFirstString(listComponents, szItem);
+  while (nComp = 0)
+   if (ComponentIsItemSelected(szComponentList, szItem)) then
+      if (StrCompare(szItem, ITEM_INTERSERVER) = 0) then
+        // Add the registry entry
+        AddInterServerRegistryEntry();
+
+        // Setup the necessary variables.
+        szTitle = "InterServer Configuration";
+        szMsg = "You will not be able to start InterServer during the initial install.\n"+
+		"After the install is finished, select the Configuration Utility or\n"+
+                "the InterServer icon from the InterClient program group to start.";
+
+        //szMsg = "If you had previously installed a version of InterServer\n"+
+        //        "prior to 0.72, you must manually reconfigure your\n"+
+        //        "TCP/IP service to use port 3060 rather than 3051.";
+        nCheck1=TRUE;
+        nCheck2=FALSE;
+        nExclusiveFlag = EXCLUSIVE;
+        SetDialogTitle(DLG_ASK_OPTIONS, szTitle);
+        AskOptions(nExclusiveFlag, szMsg, "&Configure InterServer",nCheck1,
+                	                  "&Do not configure InterServer",nCheck2);
+        if ( nCheck1 ) then
+          szProgram = TARGETDIR ^ "bin\\ISConfig.exe";
+	  ChangeDirectory(TARGETDIR ^"bin");
+          LaunchAppAndWait(szProgram, "", WAIT);
+        endif;
+      endif;
+    endif;
+    nComp = ListGetNextString(listComponents, szItem);
+  endwhile;
+  ListDestroy(listComponents);
+end;
+
+//////////////////////////////////////////////////////////
+function ConfigureServices()
+
+STRING	szMsg, szTitle, szTargetFile, szAltFile, svReturnLine, szTemp, svCount;
+NUMBER	nResult, nSelection, nvLineNumber, nvTemp1LineNumber, nvTemp2LineNumber, nTemp; 
+NUMBER  nvFileHandle, nCount;
+LIST lChangeInfo;
+
+begin
+  ListAddString(lInstallationInfo, "Network Protocols",AFTER);
+
+  VarSave (SRCTARGETDIR);
+  if (bWinNT) then
+    SRCDIR = WINDIR ^ "\\system32\\drivers\\etc";
+  else
+    SRCDIR = WINDIR;
+  endif;
+
+  nResult = FileGrep ("services", "interserver", svReturnLine, nvLineNumber, RESTART);
+  switch (nResult)
+    case END_OF_FILE :    // the InterServer entry was not found so add it if the user wants to
+
+      // Setup the necessary variables.
+      lChangeInfo = ListCreate( STRINGLIST );
+      ListAddString(lChangeInfo, SERVICEFILE_ENTRY, AFTER); 
+      szTargetFile = "SERVICES";
+      szAltFile = "SERVICES.IC";
+      szTitle = "Modifying TCP/IP Services File";
+      szMsg  = "The following line needs to be added to your services file:\n"+
+       	       "\tinterserver\t3060/tcp\n\n"+
+               "In order for InterServer to function.  This line must be added\n"+
+	       "to the system's SERVICES file.";
+
+      nResult = SdShowFileMods(szTitle, szMsg, szTargetFile, szAltFile, lChangeInfo, nSelection);
+      if (nResult = BACK) then return nResult; endif;
+      switch (nSelection)
+        case MAKE_CHANGE :
+          szMsg = "Please wait while setup configures your services file...";
+          SdShowMsg (szMsg, TRUE);
+	  BatchSetFileName(SRCDIR^szTargetFile);
+          EzBatchAddString(SERVICEFILE_ENTRY, "", NOSET | COMMAND | AFTER);
+          Delay(2); // show the message for atleast 2 seconds
+          ListAddString(lInstallationInfo, "     TCP/IP Services entry has been added.", AFTER);
+          SdShowMsg (szMsg, FALSE);
+        case SAVE_CHANGE :
+          szMsg = "Please wait while setup saves the services information...";
+          SdShowMsg (szMsg, TRUE);
+          nTemp = FindFile(SRCDIR, szAltFile, szTemp);
+	  nCount = 0;
+          // Keep looping until the temp file can not be found.
+          // this will help to ensure that we don't overwrite a user's file.
+          // nTemp will be 0 if the file exists
+          while ( nTemp = 0 )
+            NumToStr(svCount,nCount);
+            nTemp = FindFile(SRCDIR, szAltFile+svCount, szTemp);
+            nCount = nCount+1;
+          endwhile;
+          szAltFile = szAltFile+svCount;
+          OpenFileMode(FILE_MODE_APPEND);
+          CreateFile(nvFileHandle, SRCDIR, szAltFile);
+          WriteLine(nvFileHandle, "#The following line needs to be added to the end of your services file");
+          WriteLine(nvFileHandle, "#before using InterServer.");
+          WriteLine(nvFileHandle, SERVICEFILE_ENTRY); 
+	  CloseFile(nvFileHandle);
+          ListAddString(lInstallationInfo, "     TCP/IP Services entry was saved to "+szAltFile, AFTER);
+          Delay(2); // show the message for atleast 2 seconds
+          SdShowMsg (szMsg, FALSE);
+        case NO_MAKE_CHANGE :
+          ListAddString(lInstallationInfo, "     TCP/IP Services entry will not be added.", AFTER);
+      endswitch;
+    case FILE_NOT_FOUND :
+      ListAddString(lInstallationInfo, "     TCP/IP Services file could not be found.",AFTER);
+    case 0:
+      nResult = FileGrep ("services", "3060", svReturnLine, nvLineNumber, RESTART);
+      if (nResult = END_OF_FILE) 
+      then 
+        ListAddString(lInstallationInfo, "     TCP/IP Services entry port must be manually updated to 3060",AFTER);
+      else
+        ListAddString(lInstallationInfo, "     TCP/IP Services entry already exists.",AFTER);
+      endif;
+  endswitch;
+  VarRestore (SRCTARGETDIR);
+  return nResult;
+end;
+
+//////////////////////////////////////////////////////////
+
+function LookForInterBase( szComponentList )
+
+  STRING szTitle, szItem;
+  NUMBER nComp;
+  LIST listComponents;
+
+begin
+  listComponents = ListCreate( STRINGLIST );
+  ComponentListItems(szComponentList, listComponents);
+  nComp = ListGetFirstString(listComponents, szItem);
+  while (nComp = 0)
+   if (ComponentIsItemSelected(szComponentList, szItem)) then
+      if (StrCompare(szItem, ITEM_INTERSERVER) = 0) then
+        szTitle= "InterClient Installation";
+        return SdShowAnyDialog(szTitle, "", 12027, 0);
+      endif;
+    endif;
+    nComp = ListGetNextString(listComponents, szItem);
+  endwhile;
+  ListDestroy(listComponents);
+end;
+
+////////////////////////////////////////////////////////////
+function GetInstallMode()
+
+STRING szMsg, szTitle;
+LIST listDetails, listTopics;
+
+begin
+
+    // Create list and add strings to it.  
+    listTopics = ListCreate( STRINGLIST );
+
+    ListAddString(listTopics, "Note about the InterServer component:", AFTER ); 
+    ListAddString(listTopics, "Note to InterClient users:", AFTER ); 
+    ListAddString(listTopics, "Note to JBuilder users:", AFTER );
+
+    // Create list and add decription strings to it.  
+    listDetails = ListCreate( STRINGLIST );
+
+    ListAddString( listDetails,
+      "The InterClient Pure Java JDBC driver communicates with" +
+      " InterBase via the InterServer proxy." +
+      "  InterServer is a necessary server component and is installed by default.", AFTER);
+    ListAddString( listDetails,
+      "Please uninstall any previous version of InterClient before continuing with install.", AFTER);
+    ListAddString( listDetails,
+      "Please exit JBuilder before continuing with install." +
+      "  JBuilder must *not* be running in order for the install" +
+      " to properly modify JBuilder INI settings.", AFTER);
+
+    szTitle = "Special Notes";
+    szMsg   = "The following setup screen controls which components to install.";
+    nResult = SdDisplayTopics( szTitle, szMsg, listTopics, listDetails, 0 );
+    ListDestroy(listTopics);
+    ListDestroy(listDetails);
+    return nResult;
+end;
+
+////////////////////////////////////////////////
+function installClientServer ( bGoingBackWards )
+
+  STRING szMsg;
+  NUMBER nResult, nComp;
+  LIST lTemp;
+
+begin
+  szMainDirectory = TARGETDISK ^ APPBASE_DIR95;
+  szMsg = "Select the components that you wish to install.\n"+
+          "If the check box is unchecked, that component will not be "+
+          "installed. Click Next to continue with the installation.";
+
+  if (!bGoingBackWards) then
+    lTemp = ListCreate( STRINGLIST );
+    ComponentListItems(szComponentDevelopment, lTemp);
+    if (ListCount(lTemp) = 0) then
+      szComponentDevelopment = COMPONENT_DEVELOPMENT;
+      ComponentAddItem(szComponentDevelopment, ITEM_INTERCLIENT, SIZE_REQ_INTERCLIENT, TRUE);
+      ComponentAddItem(szComponentDevelopment, ITEM_INTERSERVER, SIZE_REQ_INTERSERVER, TRUE);
+      ComponentAddItem(szComponentDevelopment, ITEM_DOCUMENTATION, SIZE_REQ_DOCUMENTATION, TRUE);
+    else
+      ResetComponentList();
+    endif;
+    nResult = SdComponentDialog("", szMsg, szMainDirectory, szComponentDevelopment);
+    if (nResult = NEXT) then
+      // List the selected items
+      ListAddString(lInstallationInfo, "Installation Directory",AFTER);
+      ListAddString(lInstallationInfo, "     " + szMainDirectory,AFTER);
+      ListAddString(lInstallationInfo, "Setup will install",AFTER);
+      ListInstallComponents(szComponentDevelopment);
+    endif;
+    ListDestroy(lTemp);
+  else  // We are returing from a BACK button
+    nResult = SdComponentDialog("", szMsg, szMainDirectory, szComponentDevelopment);
+    if (nResult = NEXT) then
+      // List the selected items
+      ListAddString(lInstallationInfo, "Installation Directory",AFTER);
+      ListAddString(lInstallationInfo, "     " + szMainDirectory,AFTER);
+      ListAddString(lInstallationInfo, "Setup will install",AFTER);
+      ListInstallComponents(szComponentDevelopment);
+    endif;
+  endif;
+  return nResult;
+end;
+
+////////////////////////////////////////////
+
+function GetDeployDirectory( szDeployDir )
+  STRING szTitle, szMessage;
+begin
+   szTitle = "Choose HTTP Server class directory";
+   szMessage = "Choose the target directory for deploying the class files.\n"+
+	       "The target directory should be your web server's document root.\n";
+   nResult = SdAskDestPath(szTitle, szMessage, szDeployMainDirectory, 0);
+   ListAddString(lInstallationInfo, "Deployment Directory",AFTER);
+   ListAddString(lInstallationInfo, "     " + szDeployMainDirectory,AFTER);
+   bMakeDeployDirectory = TRUE;
+   return nResult;
+end;
+
+
+//////////////////////////////////////////////
+function CreateFileSet( szComponents, szFileSetName)
+
+STRING szItem;
+NUMBER nComp;
+LIST listComponents;
+
+begin
+
+  // Define the "General" file set.
+  TARGETDIR = szMainDirectory;
+  FileSetBeginDefine(szFileSetName);
+
+  // Create the list and associate it with the component
+  listComponents = ListCreate( STRINGLIST );
+  ComponentListItems(szComponents, listComponents);
+
+  // Get the list of objects the user selected
+  nComp = ListGetFirstString(listComponents, szItem);
+  while (nComp = 0)
+    if (ComponentIsItemSelected(szComponents, szItem)) then
+
+       // Get InterServer Files
+       if (StrCompare(szItem, ITEM_INTERSERVER) = 0) then
+         SetStatusWindow(INTERSERVER_PERCENT, "Copying InterServer Files...");
+         TARGETDIR = szMainDirectory ^ "bin";
+         CompressGet("data.z", "bin\\*.*", COMP_NORMAL);
+         // TARGETDIR = szMainDirectory;
+         // CompressGet("data.z", "ic_license.dat", COMP_NORMAL);
+       endif;
+
+       // Get Documentation Files
+       if (StrCompare(szItem, ITEM_DOCUMENTATION) = 0) then
+         SetStatusWindow(DOC_PERCENT, "Copying Documentation Files...");
+         TARGETDIR = szMainDirectory ^ "docs";
+         CompressGet("data.z", "docs\\*.*", INCLUDE_SUBDIR);
+         TARGETDIR = szMainDirectory ^ "examples";
+         CompressGet("data.z", "examples\\*.*", INCLUDE_SUBDIR);
+         TARGETDIR = szMainDirectory ^ "jbuilder_help";
+         CompressGet("data.z", "jbuilder_help\\*.*", INCLUDE_SUBDIR);
+       endif;
+
+       if (szJBuilderBin != "") then
+         TARGETDIR = szJBuilderBin ^ "..\\doc";
+         CompressGet ("data.z", "jbuilder_help\\interclient.zip", COMP_NORMAL);
+         TARGETDIR = szJBuilderBin ^ "..\\doc\\interclient";
+         CompressGet ("data.z", "jbuilder_help\\interclient.dat", COMP_NORMAL);
+       endif;
+
+       // Get InterClient Files
+       if (StrCompare(szItem, ITEM_INTERCLIENT) = 0) then
+         SetStatusWindow(INTERCLIENT_PERCENT, "Copying InterClient Files...");
+    
+         if (bLocalClient) then
+           //TARGETDIR = szMainDirectory ^ "classes";
+           //CompressGet("data.z", "classes\\*.*", INCLUDE_SUBDIR); 
+           TARGETDIR = szMainDirectory;
+           CompressGet("data.z", "interclient.jar", COMP_NORMAL); 
+           CompressGet("data.z", "interclient-core.jar", COMP_NORMAL); 
+           CompressGet("data.z", "interclient-res.jar", COMP_NORMAL); 
+           CompressGet("data.z", "interclient-utils.jar", COMP_NORMAL); 
+           CompressGet("data.z", "CommDiag.html", COMP_NORMAL); 
+           // CompressGet("data.z", "InterBaseSoftwareCorp.x509", COMP_NORMAL); 
+         endif;
+
+         if (bMakeDeployDirectory) then
+           TARGETDIR = szDeployMainDirectory;
+           //CompressGet("data.z", "classes\\*.*", INCLUDE_SUBDIR); 
+           CompressGet("data.z", "interclient.jar", COMP_NORMAL); 
+           CompressGet("data.z", "interclient-core.jar", COMP_NORMAL); 
+           CompressGet("data.z", "interclient-res.jar", COMP_NORMAL); 
+           CompressGet("data.z", "interclient-utils.jar", COMP_NORMAL); 
+           CompressGet("data.z", "CommDiag.html", COMP_NORMAL); 
+           // CompressGet("data.z", "InterBaseSoftwareCorp.x509", COMP_NORMAL); 
+         endif;
+
+       endif;
+
+    endif;
+    nComp = ListGetNextString(listComponents, szItem);
+  endwhile;
+  FileSetEndDefine( szFileSet );
+  ListDestroy(listComponents);
+end;
+
+/////////////////////////////////////////////
+function ListInstallComponents( szComponents)
+
+  NUMBER nComp, nResult;
+  STRING szItem;
+  LIST listComponents;
+
+begin
+  // Create the list and associate it with the component
+  listComponents = ListCreate( STRINGLIST );
+  ComponentListItems(szComponents, listComponents);
+
+  // Get the list of objects the user selected
+  nComp = ListGetFirstString(listComponents, szItem);
+  while (nComp = 0)
+    if (ComponentIsItemSelected(szComponents, szItem)) then
+       if (StrCompare(szItem, ITEM_INTERCLIENT) = 0) then
+         ListAddString(lInstallationInfo, "     InterClient",AFTER);
+       endif;
+       if (StrCompare(szItem, ITEM_INTERSERVER) = 0) then
+	 ListAddString(lInstallationInfo, "     InterServer",AFTER);
+       endif;
+       if (StrCompare(szItem, ITEM_DOCUMENTATION) = 0) then
+         ListAddString(lInstallationInfo, "     Documentation",AFTER);
+       endif;
+    endif;
+    nComp = ListGetNextString(listComponents, szItem);
+  endwhile;
+  ListDestroy(listComponents);
+end;
+
+////////////////////////////////////////////////////
+function AppendClassPath()
+
+STRING	szTemp, szClassPath, svReturnLine;
+NUMBER	nTemp, nvLineNumber;
+NUMBER  nvFileHandle;
+LIST listComponents;
+
+string szKey, szEnv;
+string szCurrValue;
+number nvSize, nvType;
+POINTER pEnv;
+
+begin
+  SetStatusWindow (CLASSPATH_PERCENT, "Updating CLASSPATH Variable...");
+
+  szClassPath = szMainDirectory ^ "\\interclient.jar";
+
+  // if we are not on NT, add the class path information to the AUTOEXEC.BAT file
+  if (!bWinNT) then
+    VarSave(SRCTARGETDIR);
+    SRCDIR = "C:\\";
+    // See if the autoexec.bat file exists.  If it doesn't, then create it.
+    nTemp = FindFile(SRCDIR, "AUTOEXEC.BAT", szTemp);
+    if ( nTemp != 0 ) then
+      OpenFileMode(FILE_MODE_APPEND);
+      CreateFile(nvFileHandle, SRCDIR, "AUTOEXEC.BAT");
+      CloseFile(nvFileHandle);
+    endif;
+
+    BatchSetFileName("C:\\AUTOEXEC.BAT");
+    EzBatchAddPath ("CLASSPATH", szClassPath, "", BEFORE);
+    VarRestore(SRCTARGETDIR);
+  else   // we are on NT so add the information to the registry
+    // Update user classpath if it exists
+    RegDBSetDefaultRoot (HKEY_CURRENT_USER);
+    szKey = "Environment";
+    // check to see if the user classpath exists.  
+    // If it does, then append the classpath, otherwise forget it, append system classpath only
+    if (RegDBGetKeyValueEx(szKey, "CLASSPATH", nvType, szCurrValue, nvSize) = 0) then
+      // only add the class path if it already isn't there
+      if (StrFind(szCurrValue, szClassPath) < 0) then
+        // do not log .. this way uninstall won't kill the variable
+        Disable( LOGGING );
+        szCurrValue = szClassPath + ";" + szCurrValue; // + ";%CLASSPATH%";
+        RegDBSetKeyValueEx(szKey, "CLASSPATH", REGDB_STRING_EXPAND, szCurrValue, -1);
+        Enable( LOGGING );
+      endif;
+    endif; // User CLASSPATH variable not found, don't create one, use system classpath
+    // if the variable is defined be sure to add %CLASSPATH% to the end
+    // if (GetEnvVar("CLASSPATH", szTemp) = 0) then
+    //      szCurrValue = szClassPath+";%CLASSPATH%";
+    //      RegDBSetKeyValueEx(szKey, "CLASSPATH", REGDB_STRING, szCurrValue, -1);
+    //  else
+    szEnv = "Environment";
+    pEnv = AddressString (szEnv);             
+    SendMessage (HWND_BROADCAST, WM_WININICHANGE, 0, pEnv);
+
+    // Now set system CLASSPATH variable only
+    RegDBSetDefaultRoot (HKEY_LOCAL_MACHINE);
+    szKey = "SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment";
+    if (RegDBGetKeyValueEx(szKey, "CLASSPATH", nvType, szCurrValue, nvSize) = 0) then
+      // only add the class path if it already isn't there
+      if (StrFind(szCurrValue, szClassPath) < 0) then
+        // do not log .. this way uninstall won't kill the variable
+        Disable( LOGGING );
+        szCurrValue = szClassPath + ";" + szCurrValue;
+        RegDBSetKeyValueEx(szKey, "CLASSPATH", REGDB_STRING, szCurrValue, -1);
+        Enable( LOGGING );
+      endif;
+    else // User CLASSPATH variable not found, create one.
+      Disable( LOGGING );
+      RegDBSetKeyValueEx(szKey, "CLASSPATH", REGDB_STRING, szClassPath, -1);
+      Enable( LOGGING );
+    endif;
+    szEnv = "Environment";
+    pEnv = AddressString (szEnv);             
+    SendMessage (HWND_BROADCAST, WM_WININICHANGE, 0, pEnv);
+
+    RegDBSetDefaultRoot (HKEY_CURRENT_USER);
+  endif;
+end;
+
+////////////////////////////////////////////////////////
+function ShowReadme()
+  STRING szProgram, szParam;
+begin
+  SetDialogTitle(DLG_ASK_YESNO, "View Readme File?");
+  if (AskYesNo("Installation is complete.\n"+
+               "Would you like to view the readme file?", YES) = YES) then
+    szProgram = "NOTEPAD.EXE";
+    szParam   = TARGETDIR ^ "docs\\readmes\\Readme.txt";
+    LongPathToShortPath( szParam );
+    LaunchAppAndWait( szProgram, szParam, WAIT );
+  endif;
+end;
+
+////////////////////////////////////////////////////////
+function CreateIcons( svGrp, szMainDirectory, szComponentList )
+
+STRING szProgram, szItem, svTemp;
+NUMBER nComp, nvProgramGrpType;
+LIST listComponents, dummyList1, dummyList2;
+
+begin
+  SetStatusWindow(ICON_PERCENT, "Creating Folder and Icons....");
+  if (QueryProgGroup(svGrp, svTemp, nvProgramGrpType) = 0) then
+    // found the group so set the Group Type for WinNT
+    if (bWinNT) then 
+      ProgDefGroupType(HIWORD(nvProgramGrpType));
+    endif;
+  else // no pre-existing program group
+    if (bWinNT) then 
+      ProgDefGroupType(1); // 0=Personal 1=Common
+    endif;
+    //if (!bWinExplorer) then 
+      CreateProgramFolder(svGrp);
+    //endif;
+  endif;
+ 
+  TARGETDIR = szMainDirectory;
+  listComponents = ListCreate(STRINGLIST);
+  ComponentListItems(szComponentList, listComponents);
+
+  // AddFolderIcon creates program group automatically if it doesn't exist
+  nComp = ListGetFirstString(listComponents, szItem);
+  while (nComp = 0)
+   if (ComponentIsItemSelected(szComponentList, szItem)) then
+      // GetInterServer Files
+      if (StrCompare(szItem, ITEM_INTERSERVER) = 0) then
+        szProgram = TARGETDIR ^ "bin\\InterServer.exe";
+        LongPathToQuote(szProgram, TRUE);
+        AddFolderIcon(svGrp, "InterServer", szProgram,
+                      TARGETDIR ^ "bin", "", 0, "", REPLACE);
+
+        szProgram = TARGETDIR ^ "bin\\Isconfig.exe";
+        LongPathToQuote(szProgram, TRUE);
+        AddFolderIcon(svGrp, "InterServer Configuration Utility", szProgram,
+                       TARGETDIR ^ "bin", "", 0, "", REPLACE);
+
+
+        // Set registry App Paths key information for the main application.
+        RegDBSetItem(REGDB_APPPATH, szMainDirectory ^ "bin");
+        RegDBSetItem(REGDB_APPPATH_DEFAULT, szMainDirectory ^ "bin\\interserver.exe");
+      endif;  // InterServer
+
+      if (StrCompare(szItem, ITEM_DOCUMENTATION) = 0) then
+        // Winhelp does not like quotes in path names
+        szProgram = TARGETDIR ^ "docs\\index.html";
+        LongPathToQuote(szProgram, TRUE);
+        AddFolderIcon(svGrp, "Documentation", szProgram,
+                      TARGETDIR, "", 0, "", REPLACE);
+
+        //szProgram = TARGETDIR ^ "docs\\index.html";
+        //LongPathToQuote(szProgram, TRUE);
+        //AddFolderIcon(svGrp, "Programmer's Guide", szProgram,
+        //              TARGETDIR ^ "\\docs",
+        //              "", 0, "", REPLACE);
+        //
+        //szProgram = TARGETDIR ^ "docs\\packages.html";
+        //LongPathToQuote(szProgram, TRUE);
+        //AddFolderIcon(svGrp, "API Reference", szProgram,
+        //              TARGETDIR ^ "docs",
+        //              "", 0, "", REPLACE);
+        //
+        //szProgram = TARGETDIR ^ "\\docs\\customHierarchy.html";
+        //LongPathToQuote(szProgram, TRUE);
+        //AddFolderIcon(svGrp, "Class Hierarchy Diagram", szProgram,
+        //              TARGETDIR ^ "docs",
+        //              "", 0, "", REPLACE);
+      endif;  // Documentation
+
+      if (StrCompare(szItem, ITEM_INTERCLIENT) = 0) then
+        // Add icon for CommDiag
+        //szProgram = "java interbase.interclient.utils.CommDiag";
+        //AddFolderIcon(svGrp, "Communication Diagnostics", szProgram,
+        //               TARGETDIR, "", 0, "", REPLACE);
+
+        // Add icon for CommDiagForNetscape
+        //szProgram = szJDKDirectory ^ "bin\\java.exe -classpath \"" + 
+        //            szMainDirectory ^ "interclient.jar;" + 
+	//	    szJDKDirectory ^ "lib\\classes.zip\"" +
+        //            " interbase.interclient.netscape_utils.CommDiag";
+        szProgram = "javaw interbase.interclient.utils.CommDiag";
+        AddFolderIcon(svGrp, "Communication Diagnostics", szProgram,
+                      TARGETDIR, "", 0, "", REPLACE);
+      endif; // InterClient
+
+    endif;
+    nComp = ListGetNextString(listComponents, szItem);
+  endwhile;
+
+
+  // Readme and release notes icons
+  szProgram = TARGETDIR ^ "docs\\readmes\\Install.txt";
+  LongPathToQuote(szProgram, TRUE);
+  AddFolderIcon(svGrp, "Install Notes",
+                "Notepad.Exe " + szProgram,
+                TARGETDIR,
+                "", 0, "", REPLACE);
+
+  szProgram = TARGETDIR ^ "docs\\readmes\\Readme.txt";
+  LongPathToQuote(szProgram, TRUE);
+  AddFolderIcon(svGrp, "Readme",
+                "Notepad.Exe " + szProgram,
+                TARGETDIR,
+                "", 0, "", REPLACE);
+
+  szProgram = TARGETDIR ^ "docs\\readmes\\Relnotes.txt";
+  LongPathToQuote(szProgram, TRUE);
+  AddFolderIcon(svGrp, "Release Notes",
+                "Notepad.Exe " + szProgram,
+                TARGETDIR,
+                "", 0, "", REPLACE);
+  
+  szProgram = TARGETDIR ^ "docs\\readmes\\JBuilderNotes.txt";
+  LongPathToQuote(szProgram, TRUE);
+  AddFolderIcon(svGrp, "JBuilder Integration Notes",
+                "Notepad.Exe " + szProgram,
+                TARGETDIR,
+                "", 0, "", REPLACE);
+  
+  if (!bWinExplorer) then
+    // on systems using program manager, add an
+    // uninstall icon to the group.
+    LongPathToShortPath(svUninstLogFile);
+    AddFolderIcon(svGrp,
+	  	  "Uninstall InterClient",
+		  UNINST + " -f" + svUninstLogFile,
+		  WINDIR,
+		  "", 0, "", REPLACE);
+  endif;
+
+  // The Explorer Shell Start menu is not always updated immediately by the operating system, 
+  // and so sometimes installed program groups do not always appear right away. 
+  // The operating system may wait to update the Start menu until, for example, 
+  // some disk accessing takes place. 
+  // Workaround - request a list of program items from the new program group
+  //GetFolderNameList ("InterBase InterClient", dummyList1, dummyList2);
+end;
+
+/////////////////////////////////////////////////////
+function ShowInstallTxt()
+  LIST lInstallText;
+  STRING szTitle, szMsg;
+  NUMBER nResult;
+
+begin
+  lInstallText = LIST_NULL;
+  if Is(FILE_EXISTS,SUPPORTDIR ^ "Install.txt") then
+    lInstallText = ListCreate(STRINGLIST);
+    ListReadFromFile(lInstallText,SUPPORTDIR ^ "Install.txt");
+  endif;
+
+  if lInstallText != LIST_NULL then
+    szTitle = "Installation Notes";
+    szMsg = "The Install.txt file contains important last"+
+	    " minute information on installing InterClient."+
+	    " Please take a few moments to read this file"+
+            " before proceeding with the install.";
+    nResult = SdShowInfoList("Installation Notes",szMsg,lInstallText);
+  else
+    nResult = NEXT; // just so I am sure to return something
+  endif;
+  return nResult;
+end;
+
+////////////////////////////////////////////
+function FinishInstall()
+  STRING szMsg;
+
+begin
+  if (BATCH_INSTALL) then
+    CommitSharedFiles(0);
+    szMsg = "Setup was unable to update one or more files" +
+            " because they were in use.\nThese files will" +
+            " be updated the next time you restart your" +
+            " computer.\nClick OK to continue.";
+    MessageBox(szMsg, INFORMATION);
+  endif;
+
+  if ( !bWinNT ) then
+      szMsg = "The CLASSPATH environment variable was modified during this\n" +
+              "installation.  In order for this change to take effect,\n" +
+              "you will need to restart your system.";
+    SdFinishReboot("Setup Complete", szMsg, SYS_BOOTMACHINE, "", 0);
+  else
+    szMsg = "Setup has finished installing InterClient.";
+    SdFinish("",szMsg,"","","",bTmp, bTmp);
+  endif;
+end;
+
+/////////////////////////////////////////////
+function ResetComponentList()
+begin
+      ComponentSelectItem (szComponentDevelopment, ITEM_INTERCLIENT, TRUE);
+      ComponentSelectItem (szComponentDevelopment, ITEM_INTERSERVER, TRUE);
+      ComponentSelectItem (szComponentDevelopment, ITEM_DOCUMENTATION, TRUE);
+end;
+
+////////////////////////////////////////////////
+function AddInterServerRegistryEntry()
+
+  STRING szInterServerDirectory;
+
+begin
+  szInterServerDirectory = szMainDirectory;
+  RegDBSetDefaultRoot(HKEY_LOCAL_MACHINE);
+  RegDBSetAppInfo("RootDirectory", REGDB_STRING, szInterServerDirectory, -1);
+  RegDBSetAppInfo("Version", REGDB_STRING, PRODUCT_VERSION, -1);
+end;
+
+////////////////////////////////////////////////
+function SetJDKDirectories ()
+
+  STRING szKey;
+  NUMBER nvType, nvSize;
+
+begin
+  RegDBSetDefaultRoot (HKEY_LOCAL_MACHINE);
+  // !!! this needs to change to accomodate new JDK versions
+  szKey = "SOFTWARE\\JavaSoft\\Java Development Kit\\1.2";
+  // check if jdk 1.1 exists in registry
+  if (RegDBGetKeyValueEx (szKey, "JavaHome", nvType, szJDKDirectory, nvSize) < 0) then
+    szJDKDirectory = "";
+  endif;
+
+  szKey = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\jbuilder.exe";
+  // check if jbuilder.exe exists in registry
+  if (RegDBGetKeyValueEx (szKey, "PATH", nvType, szJBuilderBin, nvSize) < 0) then
+    szJBuilderBin = "";
+  endif;
+end;
+
+////////////////////////////////////////////////
+function UpdateJBuilderINIFile ()
+
+  STRING szKey;
+  NUMBER nvType, nvSize;
+  STRING szCurrValue, szSectionName, szKeyName, svResult[1024], szClassPath, svClassPathFindDir, szFile;
+  STRING szLibraryName, szDocPath, svDocPathFindDir;
+  BOOL iniWasModified, isJBuilder2;
+
+begin
+  SetStatusWindow (INI_FILE_PERCENT, "Looking for JBuilder INI file...");
+
+  szClassPath = szMainDirectory ^ "interclient.jar";
+  if (GetDir (szClassPath, svClassPathFindDir) < 0) then
+    svClassPathFindDir = szClassPath;
+  endif;
+  szDocPath = szMainDirectory ^ "docs";
+  if (GetDir (szDocPath, svDocPathFindDir) < 0) then
+    svDocPathFindDir = szDocPath;
+  endif;
+  szLibraryName = "InterClient " + PRODUCT_VERSION;
+  iniWasModified = FALSE;
+  isJBuilder2 = FALSE;
+
+  Disable(LOGGING);
+  RegDBSetDefaultRoot (HKEY_LOCAL_MACHINE);
+  szKey = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\jbuilder.exe";
+  // check if jbuilder.exe exists in registry
+  if (RegDBGetKeyValueEx (szKey, "PATH", nvType, szCurrValue, nvSize) = 0) then
+
+    // Find JBuilder.INI or Jayva.tmp file
+    if (FindFile (szCurrValue, "JBuilder.INI", svResult) = 0) then
+      szFile = szCurrValue ^ "JBuilder.INI";
+    else
+      szFile = szCurrValue ^ "Jayva.tmp";
+    endif;
+
+    // MessageBox ("If your JBuilder IDEClassPath is longer than 1024 bytes" +
+    //             " InstallShield may crash;" +
+    //             " See the Troubleshooting section of Help for a workaround.", INFORMATION);
+
+    // look for IDEClassPath setting in JBuilder.INI or jayva.tmp file
+    szSectionName = "Java_Global";
+    szKeyName = "IDEClassPath";
+    if (GetProfString (szFile, szSectionName, szKeyName, svResult) = 0) then
+      if (StrFind (svResult, svClassPathFindDir) < 0) then // interclient is not already there
+	if ((StrLength (svResult) + StrLength (szClassPath)) > 1022) then
+          MessageBox ("Detected a JBuilder IDEClassPath length > 1024;" +
+		      " Bypassing update to IDEClassPath;" +
+	      	      " See the Troubleshooting section of Help for a workaround.", INFORMATION);
+	else 
+	  WriteProfString (szFile, szSectionName, szKeyName, szClassPath + ";" + svResult);
+	  iniWasModified = TRUE;
+	endif;
+      endif;
+    endif;
+
+    szKeyName = "HelpZips";
+    if (GetProfString (szFile, szSectionName, szKeyName, svResult) = 0) then
+      if (StrFind (svResult, "interclient.zip") < 0) then // interclient is not already there
+	if ((StrLength (svResult) + 19) > 1022) then
+          MessageBox ("Detected a JBuilder HelpZips length > 1024;" +
+		      " Bypassing update to HelpZips;" +
+	      	      " See the Troubleshooting section of Help for a workaround.", INFORMATION);
+	else 
+	  WriteProfString (szFile, szSectionName, szKeyName, ".\\interclient.zip;" + svResult);
+	  iniWasModified = TRUE;
+	endif;
+      endif;
+    endif;
+
+    // Does the [Java_Default_Paths] libraries entry exist (iff JBuilder 2.0)
+    // If so, then set the Libraries entry
+    szSectionName = "Java_Default_Paths";
+    szKeyName = "Libraries";
+    if (GetProfString (szFile, szSectionName, szKeyName, svResult) = 0) then
+      isJBuilder2 = TRUE;
+      // ok, this is JBuilder 2.0, modify libraries entry
+      if (StrFind (svResult, szLibraryName) < 0) then // interclient is not already there
+	if ((StrLength (svResult) + StrLength (szLibraryName)) > 1022) then
+          MessageBox ("Detected a JBuilder Libraries length > 1024;" +
+		      " Bypassing update to Libraries;" +
+	      	      " See the Troubleshooting section of Help for a workaround.", INFORMATION);
+        else 
+          WriteProfString (szFile, szSectionName, szKeyName, szLibraryName + ";" + svResult);
+          iniWasModified = TRUE;
+	endif;
+      endif;
+    endif;
+
+    // Make JBuilder 1 INI modifications to ClassPath and DocPath
+    if (isJBuilder2 = FALSE) then 
+      szSectionName = "Java_Global";
+
+      // look for ClassPath setting in INI or jayva.tmp file
+      szKeyName = "ClassPath";
+      if (GetProfString (szFile, szSectionName, szKeyName, svResult) = 0) then
+        if (StrFind (svResult, svClassPathFindDir) < 0) then // interclient is not already there
+	  WriteProfString (szFile, szSectionName, szKeyName, szClassPath + ";" + svResult);
+          iniWasModified = TRUE;
+        endif;
+      endif;
+
+      // look for DocPath setting in INI or jayva.tmp file
+      szKeyName = "DocPath";
+      if (GetProfString (szFile, szSectionName, szKeyName, svResult) = 0) then
+        if (StrFind (svResult, svDocPathFindDir) < 0) then // interclient is not already there
+	  WriteProfString (szFile, szSectionName, szKeyName, szDocPath + ";" + svResult);
+          iniWasModified = TRUE;
+        endif;
+      endif;
+
+    endif;
+
+    if (iniWasModified) then
+      WriteProfString ("", "", "", ""); // this flushes the ini file cache buffer
+    endif;
+
+    // Make JBuilder 2 Library.INI file modifications
+    if (isJBuilder2 = TRUE) then
+
+      // Find Library.INI or _Library.INI file
+      if (FindFile (szCurrValue, "Library.INI", svResult) = 0) then
+        szFile = szCurrValue + "\\Library.INI";
+      else
+        szFile = szCurrValue + "\\_Library.INI";
+      endif;
+
+      szSectionName = "Library_InterClient " + PRODUCT_VERSION;
+      iniWasModified = FALSE;
+
+      szKeyName = "ClassPath";
+      //if (GetProfString (szFile, szSectionName, szKeyName, svResult) = 0) then
+      //  if (StrFind (svResult, szClassPath) < 0) then // interclient is not already there
+      //  WriteProfString (szFile, szSectionName, szKeyName, szClassPath + ";" + svResult);
+      //  iniWasModified = TRUE;
+      //  endif;
+      //else // ClassPath key is not there
+        WriteProfString (szFile, szSectionName, szKeyName, szClassPath);
+	iniWasModified = TRUE;
+      //endif;
+
+      szKeyName = "DocPath";
+      //if (GetProfString (szFile, szSectionName, szKeyName, svResult) = 0) then
+      //  if (StrFind (svResult, szDocPath) < 0) then // interclient is not already there
+      //  WriteProfString (szFile, szSectionName, szKeyName, szDocPath + ";" + svResult);
+      //  iniWasModified = TRUE;
+      //  endif;
+      //else // DocPath key is not there
+        WriteProfString (szFile, szSectionName, szKeyName, szDocPath);
+	iniWasModified = TRUE;
+      //endif;
+
+      szKeyName = "Features";
+      //if (GetProfString (szFile, szSectionName, szKeyName, svResult) = 0) then
+      //  iniWasModified = iniWasModified; // do nothing
+      // else // Features key is not there
+        WriteProfString (szFile, szSectionName, szKeyName, "3");
+	iniWasModified = TRUE;
+      //endif;
+
+      szKeyName = "SourcePath";
+      //if (GetProfString (szFile, szSectionName, szKeyName, svResult) = 0) then
+      //  iniWasModified = iniWasModified; // do nothing
+      //else // SourcePath key is not there
+        WriteProfString (szFile, szSectionName, szKeyName, "");
+	iniWasModified = TRUE;
+      //endif;
+
+      szKeyName = "OldPath";
+      //if (GetProfString (szFile, szSectionName, szKeyName, svResult) = 0) then
+      //  iniWasModified = iniWasModified; // do nothing
+      //else // OldPath key is not there
+        WriteProfString (szFile, szSectionName, szKeyName, "");
+	iniWasModified = TRUE;
+      //endif;
+
+      if (iniWasModified) then
+        WriteProfString ("", "", "", ""); // this flushes the ini file cache buffer
+      endif;
+
+    endif;
+
+  else
+    Delay(2);
+    SdShowMsg("Please wait while Setup Initializes....", FALSE);
+  endif;
+  Enable (LOGGING);
+end;
+
+/////////////////////////////////////////////////////////////////////////
+// Only include source for some SD functions
+#define  SD_SINGLE_DIALOGS 1
+#define  SD_ASKOPTIONS 1
+#define  SD_LICENSE 1
+#define  SD_SHOWMSG 1
+#define  SD_SHOWANYDIALOG 1
+#define  SD_OPTIONSBUTTONS 1
+#define  SD_COMPONENTDIALOG 1
+#define  SD_ASKDESTPATH 1
+#define  SD_SHOWINFOLIST 1
+#define  SD_FINISHREBOOT 1
+#define  SD_STARTCOPY 1
+#define  SD_SHOWFILEMODS 1
+#define  SD_FINISH 1
+#define  SD_SELECTFOLDER 1
+#define  SD_DISPLAYTOPICS 1
+
+#include "sddialog.rul"
+
+   

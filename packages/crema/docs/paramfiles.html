@@ -1,0 +1,58 @@
+<!DOCTYPE HTML PUBLIC "-//W3O/DTD HTML//EN">
+
+<html>
+<head>
+<title>Crema - Parameter Files</title>
+<meta name="GENERATOR" content="Microsoft FrontPage 1.1">
+<meta name="FORMATTER" content="Microsoft FrontPage 1.1">
+</head>
+<body bgcolor="#1B0C02" text="#C28F60" link="#FF8000"
+vlink="#FF8000">
+<p><font face="Comic Sans MS,Arial,Helvetica"><font size="5"><strong>Parameter Files</strong></font></p>
+<hr noshade color="#BE8F60">
+<p>Instead of typing Crema parameters at the command line, you
+can also put them in a parameter file. This is particularly
+useful when you want to specify long lists of files to be
+processed, of classes/members to be excluded (<font size="4"><tt>-xc</tt></font>
+and <font size="4"><tt>-xm</tt></font> parameters) or when you
+want to specify a long message (<font size="4"><tt>-msg</tt></font>
+parameter). Parameters files can also conveniently be used to
+record all the input files and obfuscation parameters for a
+project.</p>
+<p>Use the <font size="4"><tt>-@</tt></font> parameter to specify
+a parameter file. Parameter files can be used in addition to, or
+instead of, other command line parameters.</p>
+<h3>Crema.ini</h3>
+<p>When Crema runs, it automatically processes a file called <font
+size="4"><tt>Crema.ini</tt></font> if one exists in the current
+directory. This parameter file is processed before any command
+line parameters.</p>
+<h3>Syntax</h3>
+<p>The syntax of parameter files is identical to the command line
+parameters. You can put multiple parameters on a single line, or
+each on a separate line. All parameters that are valid on the
+command line can be used in parameter files. In addition, you can
+use // and /* */ to include comments in a parameter file.</p>
+<h3>Example</h3>
+<p>The following is an example parameter file:</p>
+<pre><font color="#FFFFFF"><font size="4">-pub
+
+-msg &quot;WARNING: CoolApp is copyright (c) 1999 FutureWare, Inc.&quot;
+-msg &quot;         Decompilation is a violation of the license agreement.&quot;
+-msg &quot;         You risk criminal prosecution by proceeding.&quot;
+
+-xc CoolApp         // top class
+-xm CoolApp.main    // application entrypoint</font></font></pre>
+<hr noshade color="#BE8F60">
+<table width="100%">
+    <tr>
+        <td valign="top"><a href="obfuscation.html"><font
+        size="5"><strong>&lt;&lt;</strong></font></a></td>
+        <td align="center"><font size="2">Copyright &#169; 1996
+        Hanpeter van Vliet</font></td>
+        <td align="right" valign="top"><a href="examples.html"><font
+        size="5"><strong>&gt;&gt;</strong></font></a></td>
+    </tr>
+</table>
+</body>
+</html>

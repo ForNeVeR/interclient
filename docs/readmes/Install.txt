@@ -1,0 +1,155 @@
+Installation Notes (Install.txt)
+InterClient 1.60 Final Build
+Last modified June 22, 2000
+
+Contents:
+     I.   Important Note for JBuilder Users
+     II.  Installation Note for Windows NT, 95/98 and Windows 2000
+     III. Uninstalling on Windows NT, 95/98 and Windows 2000
+     IV.  Installation Options
+     V.   Distributed Jar Files
+     VI.  Testing your Local Installation
+     VII. Software Expiration
+     VIII.Installation Note for Solaris and HP-UX
+
+__________________________________________________________________
+Important Note for JBuilder Users
+
+   Please exit JBuilder before continuing with the InterClient install.
+   JBuilder must *not* be running in order for the InterClient
+   Install to properly modify JBuilder INI settings.
+   For information on configuring INI settings manually, see the
+   file JBuilderNotes.txt after installation.
+
+__________________________________________________________________
+Installation Note for Windows NT, 95/98, and 2000
+
+   If you have a previous release of InterClient installed on
+   this machine, you MUST uninstall it before continuing.
+
+   If you receive a General File Transfer Error during install,
+   try to obtain more disk space for both your InterClient install
+   location as well as your JBuilder install location to which
+   InterClient documentation files get written.
+
+__________________________________________________________________
+Uninstalling on Windows NT, 95/98, and 2000
+
+   Before uninstalling, you should first stop the InterServer
+   service or application if it is running, and then remove the
+   service using the InterServer Configuration Utility.
+
+   When uninstalling on NT, use the add/remove program icon in
+   the NT control panel.  On Windows 95, there is an uninstall
+   icon in the InterClient program group if InterServer was
+   previously installed.
+
+__________________________________________________________________
+Installation Options
+
+   During installation you will be prompted to choose components
+   to install.  By default all of the following components are
+   installed:
+
+     InterClient
+       The pure Java JDBC client library which communicates with
+       a server-side InterServer.
+     InterServer
+       A remote access server for InterBase.  This is a middleware
+       service which acts as a proxy between InterClient and InterBase.
+       The service is tailored for InterBase remote access via JDBC.
+     Documentation
+       HTML documentation for the all-Java InterClient JDBC driver.
+
+__________________________________________________________________
+Distributed Jar Files
+
+   interclient-core.jar
+      The JDBC driver with only the default English text resources.
+      No utilities included in the core jar.
+   interclient-res.jar
+      Locale-specific resource bundles.
+   interclient-utils.jar
+      Currently consists of the communications diagnostics utility.
+   interclient.jar
+      Everything: JDBC driver, all resources, and utilities.
+
+   The Windows install automatically appends interclient.jar
+   to your user's classpath.  You must modify your classpath
+   manually on Unix.
+
+__________________________________________________________________
+Testing your Local Installation
+
+   See the Troubleshooting section of the InterClient Help html for
+   detailed instructions on testing your machine configuration for
+   running InterClient applications using
+
+     java interbase.interclient.utils.CommDiag
+
+   and for instructions on testing your applet configuration using
+
+     CommDiag.html
+
+__________________________________________________________________
+Software Expiration
+
+   This release of InterClient will expire, but continue to
+   function, on December 30, 2005.
+
+   Expired product releases of InterClient accept connections,
+   but the connection is tagged with an ExpiredDriverWarning.
+   Expired beta releases of InterClient may throw an
+   ExpiredDriverException and refuse connections.
+
+   Upon expiration, it is suggested that you upgrade both InterClient
+   and InterServer driver components by downloading a recent release
+   from http://www.interbase.com.
+
+__________________________________________________________________
+Installation Note for Solaris and HP-UX
+
+   After the download files have been extracted using the tar
+   command (eg. tar -xvf IC20HPJRE11.tar), a directory is created
+   named interclient_install_temp_dir containing the following files:
+
+     install.sh      : the installation program
+     interclient.tar : components to be extracted by install.sh
+
+   The installation process creates a log file of the installation
+   session.  It is important to retain the log file in the
+   installation directory.
+    - It contains the configuration information specific to your
+      site necessary to complete the installation.
+    - It contains a log of your installation choices. It may be
+      helpful should you require technical support.
+
+   The following entry must occur in the /etc/services file or
+   the NIS services map:
+
+     interserver 3060/tcp
+
+   An entry in the /etc/inetd.conf file is also required:
+
+     interserver stream tcp nowait root /usr/interclient/bin/interserver 
+interserver
+
+   After adding these entries, either reboot the system or restart the
+   inet daemon.  To restart the inet daemon, use the ps command to
+   discover the process id of the inetd process:
+
+      ps -e | grep inetd
+   or
+      ps -ax | grep inetd
+
+   The number in the output column 'PID' is the process id of the inet
+   daemon.  Use the process id with the following command to restart the
+   inet daemon:
+
+     kill -HUP <PID>
+
+   After installing, be sure to add /usr/interclient/interclient.jar
+   to your CLASSPATH.
+
+__________________________________________________________________
+

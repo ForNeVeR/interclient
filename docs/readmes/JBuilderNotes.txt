@@ -1,0 +1,155 @@
+JBuilder Integration Notes (JBuilderNotes.txt)
+InterClient 1.60
+Last modified June 22, 2000
+
+__________________________________________________________________
+Contents:
+    I.   JBuilder.INI and Library.INI
+    II.  Using borland.sql.dataset
+
+__________________________________________________________________
+JBuilder.INI and Library.INI
+
+NOTE: JBuilder must *not* be running in order for the InterClient
+Install to properly modify JBuilder INI settings.
+
+The JBuilder 2 configuration files differ from those of JBuilder 1.
+
+For JBuilder 1, the InterClient installation appends interclient.jar 
+to both ClassPath and IDEClassPath in the JBuilder.INI file.  
+JBuilder.INI is located in the JBuilder 1 bin directory.
+
+For JBuilder 2, the InterClient installation appends interclient.jar
+to IDEClassPath as before.  But now InterClient 1.5x is added to the
+[Java_Default_Paths] Libraries setting in the JBuilder.INI file.
+A library entry for InterClient is created in the new JBuilder 2 
+Library.INI file.  Both JBuilder.INI and Library.INI are located in 
+the JBuilder 2 bin directory.
+
+Here are the JBuilder 2 INI file modifications (assuming an install
+directory of C:\InterClient):
+
+JBuilder.INI
+
+    [Java_Global]
+    IDEClassPath=C:\InterClient\interclient.jar;...
+    HelpZips=.\interclient.zip;...
+
+    [Java_Default_Paths]
+    Libraries=InterClient 1.50;...
+
+Library.INI
+
+    [Library_InterClient 1.50]
+    ClassPath=C:\InterClient\interclient.jar
+    DocPath=C:\InterClient\docs
+    Features=3
+
+The JBuilder 2 help system is extended with the addition
+of an interclient.zip in the JBuilder doc directory, and
+an interclient.dat file in the JBuilder doc\interclient
+directory. 
+
+To integrate InterClient documentation with the JBuilder help
+system, perform these steps:
+1) Edit the HelpZips setting in JBuilder.INI to include
+   .\interclient.zip, if it is not already.
+2) Copy interclient.zip from the InterClient jbuilder_help 
+   directory to the JBuilder doc directory.  interclient.zip
+   replaces an older file in the JBuilder distribution.
+3) Copy interclient.dat from the InterClient jbuilder_help
+   directory to the JBuilder doc\interclient directory.
+   Replace the older file if necessary.  interclient.dat 
+   replaces an older file in the JBuilder distribution.
+
+For both JBuilder 1 and 2, these changes can only be made by
+the InterClient install if JBuilder is installed before installing 
+InterClient.  Furthermore, the InterClient 1.50 library may not
+be added to the default paths for pre-existing projects.  Follow
+the steps below for adding the InterClient 1.50 library to your
+project.
+
+If interclient.jar is not in the IDEClassPath for your project
+then the interbase.interclient.Driver will not be loaded.
+
+The InterClient 1.60 library may be added to your project as follows:
+1) Select File | Project Properties from the JBuilder menu.
+2) Click the Add button.
+3) Select InterClient 1.60 and click the Ok button.
+   Note: If InterClient 1.60 is not available
+         then click the New button to create
+         an InterClient 1.60 library and follow
+         the instructions below starting at step 4.
+
+To create an InterClient library (if not already created by the
+InterClient installation) perform these steps:
+1)  Choose File | Project Properties.
+2)  Choose Libraries.
+3)  Choose New.
+4)  In the Name field, type "InterClient". 
+    Press the Edit button next to the Class path field.
+5)  Choose Add Zip/JAR.
+6)  Enter the interclient.jar file from the InterClient directory
+    into the File name field.
+7)  Choose Open.
+8)  Chose OK from the next two dialog boxes.
+9)  From the Properties page, choose Add.
+10) Select InterClient, and choose OK.
+11) From the Properties page, choose OK.
+
+If you want this change to affect all future projects, choose 
+Tools | Default Project Properties and follow the steps above 
+starting with step 2.
+
+Uninstalling InterClient does not remove JBuilder.INI and 
+Library.INI settings for InterClient.  These can be removed 
+manually if desired.
+
+__________________________________________________________________
+Using borland.sql.dataset
+
+JDBC-specific classes in borland.jbcl.dataset have been moved to 
+a new package, borland.sql.dataset.  See JBuilder's README for
+incompatibilities with JBuilder 1.0.
+
+Here is how to establish a database connection with the dataset package
+that comes with JBuilder Professional and JBuilder Client/Server.
+
+  import borland.sql.dataset.*;
+
+  Database database = null;
+  QueryDataSet queryDataSet = null;
+  try {
+    database = new Database ();
+    database.setConnection (
+      new ConnectionDescriptor (
+        "jdbc:interbase://server/c:/databases/employee.gdb",
+        "SYSDBA",
+        "masterkey", 
+        false, 
+        "interbase.interclient.Driver"));
+    queryDataSet = new QueryDataSet ();
+    queryDataSet.setQuery (
+      new QueryDescriptor (
+        database, 
+        "select * from employee", 
+        null, 
+        true, 
+        false));
+  }
+  catch (DataSetException e) {
+    e.printStackTrace ();
+  }
+
+Depending on your version of JBuilder, the Database, QueryDataSet, 
+QueryDescriptor, and ConnectionDescriptor classes may reside in 
+either the borland.sql.dataset package or the borland.jbcl.dataset
+package.  If the code above produces the error 
+
+  "cannot access directory borland/sql" 
+
+with your version of JBuilder Professional, then change all
+borland.sql.dataset references to borland.jbcl.dataset.  
+For more information, see the JBuilder Programmer's Guide, Chapter 5.
+
+__________________________________________________________________

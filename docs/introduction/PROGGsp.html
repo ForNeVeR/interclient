@@ -1,0 +1,149 @@
+<HTML>
+<HEAD>
+<TITLE>InterClient Introduction</TITLE>
+</HEAD>
+
+<body bgcolor="#FFFFFF">
+<table BORDER="0" WIDTH="100%">
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td colspan=3><a href="../specifications/overview-summary.html">Reference</a>&nbsp;| <a href="../help/help.html">Help</a>&nbsp;| <a href="../introduction/introduction.html">Introduction</a>&nbsp;| <a href="../slide_show/coverPage.html">Slide Show</a>&nbsp;| <a href="../customHierarchy.html">Class Hierarchy</a></td>
+<td align=right valign=top rowspan=2><em>
+InterClient</em>
+</td>
+</tr>
+<tr>
+<td><font size="-2">
+<a href="PROGGsql.html">PREV</a>&nbsp;| <a href="PROGGts.html">NEXT</a></font>
+</td>
+<td><font size="-2">
+<a href="../index.html" target="_top">FRAMES</a>
+&nbsp;| <a href="PROGGsp.html" target="_top">NO FRAMES</a>
+</font>
+</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+<hr>
+
+<H2>
+Executing Stored Procedures</H2>
+A <I>stored procedure</I> is a self-contained set of extended SQL statements
+that are stored in a database as part of its metadata. Stored procedures
+can pass parameters to and receive return values from applications. From
+the application, you can invoke a stored procedure directly to perform
+a task, or you can substitute the stored procedure for a table or view
+in a SELECT statement. There are two types of stored procedures:
+<UL>
+<LI>
+<B>Select</B> procedures are used in place of a table or view in a SELECT
+statement.  Selectable stored procedures must be valid
+stored procedures that have SUSPEND commands and at least one return parameter.
+</LI>
+
+<LI>
+<B>Executable</B> procedures can be called directly from an application
+with the EXECUTE PROCEDURE statement; they may or may not return values
+to the calling program.</LI>
+</UL>
+Use the <B>Statement</B> class to call select or executable procedures
+that have no SQL input (IN) parameters. Use the <B>PreparedStatement</B>
+class to call select or executable stored procedures that have IN parameters.
+<H4>
+Statement Example</H4>
+An InterClient application can call a select procedure in place of a table
+or view inside a SELECT statement. A select procedure returns one or more
+values, but has no input arguments. For example, the stored procedure <I>multiplyby10
+</I>multiplies all the rows in the NUMBERS table (visible only to the stored
+procedure) by 10, and returns the values in the result set. The following
+example uses the <B>Statement</B>.<B>executeQuery()</B> method to call
+the <I>multiplyby10</I> stored procedure (assume you've already created
+the <B>Connection</B> and <B>Statement</B> objects):
+<PRE>//multiplyby10 multiplies the values in the resultOne, resultTwo, //resultThree columns of each row of the NUMBERS table by 10
+
+//create a string object
+sql= new String ("SELECT resultone, resulttwo, resultthree FROM multiplyby10");
+
+//Execute a SELECT statement and store results in resSet:
+java.sql.ResultSet resultSet = statement.executeQuery(sql);
+
+//Step through the result rows
+System.out.println("Got results:");
+while (resultSet.next ()){
+&nbsp;&nbsp;&nbsp; //get the values for the current row
+&nbsp;&nbsp;&nbsp; int result1 = resultSet.getInt(1);
+&nbsp;&nbsp;&nbsp; int result2 = resultSet.getInt(2);
+&nbsp;&nbsp;&nbsp; int result3 = resultSet.getInt(3);
+&nbsp;&nbsp;&nbsp; //print the values
+&nbsp;&nbsp;&nbsp; System.out.print(" result one =" + result1);
+&nbsp;&nbsp;&nbsp; System.out.print(" result two =" + result2);
+&nbsp;&nbsp;&nbsp; System.out.print(" result three =" + result3);
+&nbsp;&nbsp;&nbsp; System.out.print("\n");
+}</PRE>
+
+<H4>
+PreparedStatement Example</H4>
+In the example below, the multiply stored procedure is not selectable because
+it has input parameters. Therefore, you have to call the procedure with
+the <B>PreparedStatement</B> class. The procedure arguments are the scale
+factor and the value of KEYCOL that uniquely identifies the row to be multiplied
+in the NUMBERS table.
+<PRE>//Define a PreparedStatement object type
+java.sql.PreparedStatement preparedStatement;
+
+//Create a new string object
+java.sql.String sql = new String ("EXECUTE PROCEDURE multiply(10, 1)");
+
+//Create the PreparedStatement object
+preparedStatement = connection.prepareStatement(sql);
+
+//execute the stored procedure with preparedStatement
+java.sql.ResultSet resultSet = preparedStatement.executeQuery(sql);
+</pre>
+
+<p>
+Also see the InterClient API reference for the 
+<a href="../specifications/interbase/interclient/CallableStatement.html">CallableStatement</a> class.
+
+<p>
+<hr>
+<a name="navbar_bottom"><!-- --></a>
+<table BORDER="0" WIDTH="100%">
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td colspan=3><a href="../specifications/overview-summary.html">Reference</a>&nbsp;| <a href="../help/help.html">Help</a>&nbsp;| <a href="../introduction/introduction.html">Introduction</a>&nbsp;| <a href="../slide_show/coverPage.html">Slide Show</a>&nbsp;| <a href="../customHierarchy.html">Class Hierarchy</a></td>
+<td align=right valign=top rowspan=2><em>
+InterClient</em>
+</td>
+</tr>
+<tr>
+<td><font size="-2">
+<a href="PROGGsql.html">PREV</a>&nbsp;| <a href="PROGGts.html">NEXT</a></font>
+</td>
+<td><font size="-2">
+<a href="../index.html" target="_top">FRAMES</a>
+&nbsp;| <a href="PROGGsp.html" target="_top">NO FRAMES</a>
+</font>
+</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+<hr>
+<font size="-1">
+Send comments or suggestions to <a href="mailto:interclient@interbase.com">interclient@interbase.com</a>
+</font>
+
+</BODY>
+</HTML>

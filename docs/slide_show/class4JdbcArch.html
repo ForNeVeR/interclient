@@ -1,0 +1,141 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>InterClient at BorCon '98</title>
+</head>
+
+<body bgcolor="#FFFFFF" background="../images/background.jpg">
+<table BORDER="0" WIDTH="100%">
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td colspan=3><a href="../specifications/overview-summary.html">Reference</a>&nbsp;| <a href="../help/help.html">Help</a>&nbsp;| <a href="../introduction/introduction.html">Introduction</a>&nbsp;| <a href="../slide_show/coverPage.html">Slide Show</a>&nbsp;| <a href="../customHierarchy.html">Class Hierarchy</a></td>
+<td align=right valign=top rowspan=2><em>
+InterClient</em>
+</td>
+</tr>
+<tr>
+<td><font size="-2">
+<a href="class3JdbcArch.html">PREV</a>&nbsp;| <a href="driversTested.html">NEXT</a></font>
+</td>
+<td><font size="-2">
+<a href="../index.html" target="_top">FRAMES</a>
+&nbsp;| <a href="coverPage.html" target="_top">NO FRAMES</a>
+</font>
+</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+<hr>
+
+<big><big>
+<center>
+<h1>Class 4 JDBC Driver Architecture</h1>
+</center>
+<p>
+<small><small><i>
+The final class of distributed driver is still an all java client,
+but the jdbc client library implements the exact same protocol as
+that used by the C client library.  Now, the interbase server can't tell the
+difference between a java client and a C client.
+So you remove the need for a separate jdbc server.
+</i></small></small>
+<p>
+All client components are pure Java
+<p>
+Driver subsumes DBMS client library and protocol
+<p>
+<img src="images/class4JdbcArch.gif" border="0" align=left>
+Class 4
+<ul>
+<li>Reuse existing remote layer for both C and Java clients<br>
+<small><small><i>
+</i></small></small>
+<li>But pinned to legacy protocol<br>
+<small><small><i>
+which may not be amenable for jdbc access
+</i></small></small>
+</ul>
+<p>Class 3
+<ul>
+<li>More flexible<br>
+<small><small><i>
+More flexible architecture since you have complete control over the server side;
+no legacy protocol issues; streamlined for jdbc.
+</i></small></small>
+<li>But requires a new remote server<br>
+<small><small><i>
+In addition to the interbase server, there is now a jdbc server
+that must be started on the server or middle tier.
+C clients and Java clients use different remote layers.
+</i></small></small>
+</ul>
+<p>
+<small><small><i>
+Another advantage of the class 3 architecture is that it's tiered,
+with the jdbc server in the middle tier.
+This adds flexibility for things like security, compression, and underlying
+data marshalling.
+If you look at sybase which has a class 4 driver,
+no sybase server remote layer currently supports SSL, so if you want
+data security using jConnect, you have to go thru an intermediary HTTPS gateway.
+<p>
+Because interserver is tailored specifically for interbase remote access,
+to say interserver is a driver component, or a dbms component is rather arbitrary.
+But it is clear that interserver and its remote protocol are shrink wrapped tightly
+around the interbase native api and interbase capabilities.
+This flexibility gives rise to the fastest jdbc driver on the market today, interclient.
+<p>
+Ok, I've talked about streamlining a class 3 jdbc protocol for jdbc access.
+Here's an example of how the remote protocol can be tailored for jdbc.
+In jdbc, there is no start transaction method, rather transactions are started
+implicitly on the first SQL statement execution.  So in a well designed jdbc net
+protocol, there is no START_TRANSACTION opcode, rather the server side transaction
+is started when the first SQL statement is executed.  However, most dbms vendor
+protocols have an explicit START_TRANSACTION opcode.  This is one extra message
+that must be sent and acknowledged on the wire that would be unnecessary in a
+class 3 jdbc client library.
+</i></small></small>
+</big></big>
+
+<p>
+<hr>
+<a name="navbar_bottom"><!-- --></a>
+<table BORDER="0" WIDTH="100%">
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td colspan=3><a href="../specifications/overview-summary.html">Reference</a>&nbsp;| <a href="../help/help.html">Help</a>&nbsp;| <a href="../introduction/introduction.html">Introduction</a>&nbsp;| <a href="../slide_show/coverPage.html">Slide Show</a>&nbsp;| <a href="../customHierarchy.html">Class Hierarchy</a></td>
+<td align=right valign=top rowspan=2><em>
+InterClient</em>
+</td>
+</tr>
+<tr>
+<td><font size="-2">
+<a href="class3JdbcArch.html">PREV</a>&nbsp;| <a href="driversTested.html">NEXT</a></font>
+</td>
+<td><font size="-2">
+<a href="../index.html" target="_top">FRAMES</a>
+&nbsp;| <a href="coverPage.html" target="_top">NO FRAMES</a>
+</font>
+</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+<hr>
+<font size="-1">
+Send comments or suggestions to <a href="mailto:interclient@interbase.com">interclient@interbase.com</a>
+</font>
+
+</body>
+</html>

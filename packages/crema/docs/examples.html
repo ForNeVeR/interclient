@@ -1,0 +1,123 @@
+<!DOCTYPE HTML PUBLIC "-//W3O/DTD HTML//EN">
+
+<html>
+<head>
+<title>Crema - Examples</title>
+<meta name="GENERATOR" content="Microsoft FrontPage 1.1">
+<meta name="FORMATTER" content="Microsoft FrontPage 1.1">
+</head>
+<body bgcolor="#1B0C02" text="#C28F60" link="#FF8000"
+vlink="#FF8000">
+<p><font face="Comic Sans MS,Arial,Helvetica"><font size="5"><strong>Examples</strong></font></p>
+<hr noshade color="#BE8F60">
+<p>The examples below show only the command line parameters for
+Crema. These parameters must be inserted in the appropriate
+command to <a href="running.html">run</a> Crema.</p>
+<p>The first few times you may want to use the <font size="4"><tt>-v</tt></font>
+parameter to see what is going on.</p>
+<h3>Applets</h3>
+<p>For most applets (like all of the JDK demos except SortDemo
+and ImageMap) the following parameter suffices:</p>
+<blockquote>
+    <p><font size="4"><tt>*.class</tt></font></p>
+</blockquote>
+<p>If you want a more aggressive obfuscation and do not mind a
+slight increase in the size of your .class files, add the -max
+parameter:</p>
+<blockquote>
+    <p><font size="4"><tt>-max *.class</tt></font></p>
+</blockquote>
+<p>In both cases you will get one or more .crema files that you
+should rename to .class after you move them to your web site. If
+you prefer you can do that with one command:</p>
+<blockquote>
+    <p><font size="4"><tt>-e .class -d /my/web/directory *.class</tt></font></p>
+</blockquote>
+<p>If an applet (such as SortDemo or ImageMap) loads classes by
+name, the names of those classes should not be obfuscated. Crema
+will warn you about this situation, but you have to manually
+indicate which classes are involved. For SortDemo these classes
+are BubbleSortAlgorithm, BidirBubbleSortAlgorithm and
+QSortAlgorithm:</p>
+<blockquote>
+    <p><font size="4"><tt>-xc BubbleSortAlgorithm -xc
+    BidirBubbleSortAlgorithm -xc QSortAlgorithm *.class</tt></font></p>
+</blockquote>
+<p>To avoid exceedingly long command lines and the associated
+typos, the use of a <a href="paramfiles.html">parameter file</a>
+is recommended in these cases.</p>
+<p>Note: If your main applet class (the one derived from
+java.applet.Applet) is renamed by Crema, you have forgotten to
+declare it public. Fix that, then recompile and reobfuscate.</p>
+<h3>Applications</h3>
+<p>Applications are usually loaded from the local file system and
+not verified by default. This enables a more aggressive
+obfuscation strategy which you can request with the following
+parameters:</p>
+<blockquote>
+    <p><font size="4"><tt>-ill -max *.class</tt></font></p>
+</blockquote>
+<h3>Library packages</h3>
+<p>Unless you can be certain that your library package will never
+be used in applets, you should obfuscate it just like an applet.
+In particular, you should <strong>not</strong> use the <font
+size="4"><tt>-ill</tt></font> parameter.</p>
+<p>You can get even better protection by requiring of your
+licensees that they obfuscate their entire project, including
+your package, with the <font size="4"><tt>-pub</tt></font>
+parameter as described below. Such a policy ensures that your
+package can only be used by your licensees (not by their
+customers). If you adopt such a policy you can distribute your
+package either obfuscated or unobfuscated to your licensees.</p>
+<h3>Including packages</h3>
+<p>If your applet, application or library package includes
+(sub)packages you can list the .classes explicitly, or you can
+take advantage of recursive wildcard expansion:</p>
+<blockquote>
+    <p><font size="4"><tt>-r *.class</tt></font></p>
+</blockquote>
+<p>By default, Crema excludes public classes and members. That is
+convenient, as it will automatically prevent obfuscation of the
+main class of applications and applets, the main() method of
+applications, and the API of library classes. But in complex
+projects with subpackages there are often more public items than
+you want to expose. In those cases you can use the -pub parameter
+to tell Crema to obfuscate public items as well. At the same time
+you must manually (with the -xc and -xm parameters) specify which
+classes and members should not be obfuscated:</p>
+<blockquote>
+    <p><font size="4"><tt>-pub -xc MyApp -xm MyApp.main -r
+    *.class</tt></font></p>
+</blockquote>
+<p>In such cases it is best to create a <a href="paramfiles.html">parameter
+file</a>.</p>
+<h3>Minimizing .class size</h3>
+<p>To get the smallest possible .class files, use as many of the
+following parameters as your project allows:</p>
+<blockquote>
+    <p><font size="4"><tt>-nomsg -nobomb -pub -ill</tt></font></p>
+</blockquote>
+<p>Note that <font size="4"><tt>-ill</tt></font> is not suitable
+for applets, and that the use of <font size="4"><tt>-pub</tt></font>
+usually requires that you explicitly exclude classes and members
+using <font size="4"><tt>-xc</tt></font> and <font size="4"><tt>-xm</tt></font>.</p>
+<p>Try to avoid the following parameters:</p>
+<blockquote>
+    <p><font size="4"><tt>-msg -lnt -max</tt></font></p>
+</blockquote>
+<p>Finally, including (sub)packages in the obfuscation process
+(combined with the <font size="4"><tt>-pub</tt></font> parameter,
+as explained in the previous section) helps reduce .class file
+size.</p>
+<hr noshade color="#BE8F60">
+<table width="100%">
+    <tr>
+        <td valign="top"><a href="paramfiles.html"><font size="5"><strong>&lt;&lt;</strong></font></a></td>
+        <td align="center"><font size="2">Copyright &#169; 1996
+        Hanpeter van Vliet</font></td>
+        <td align="right" valign="top"><a href="message.html"><font
+        size="5"><strong>&gt;&gt;</strong></font></a></td>
+    </tr>
+</table>
+</body>
+</html>

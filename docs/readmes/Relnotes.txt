@@ -1,0 +1,145 @@
+InterClient 1.60 Final Build
+Last modified June 22, 2000
+
+Contents:
+     I.    Differences with the 1.51 release
+     II.   Differences with the 1.50 release
+     III.  Differences with the 1.12 release
+     IV. Issues
+
+Differences with the 1.51 release
+__________________________________________________________________
+
+*The driver is now does not need a license file.
+
+__________________________________________________________________
+Differences with the 1.50 release
+
+* Java 2 compatibility and bug fixes.
+
+__________________________________________________________________
+Differences with the 1.12 release
+
+* This release communicates with InterBase 5.x under the JRE 1.1
+* Big performance improvements.  We may now be the fastest driver
+   on the market.
+* Interclient is now completely localized, with easily translatable
+   resource bundles for all error messages and hard-wired text
+   used by the driver. Customizable public resource bundles for
+   both InterClient and CommDiag are provided to accomodate
+   international applications.
+   See API reference for interbase.interclient.Resources and
+   interbase.interclient.utils.Resources.
+* Direct international support for user-specified character sets.
+   InterClient supports 20 of the 22 InterBase character set
+   encodings, including Unicode FSS.  Data is transliterated
+   directly using native encodings, this provides much better
+   performance than drivers that use only a single universal
+   encoding on the wire.
+   See the API reference for interbase.interclient.CharacterEncodings
+   for a list of supported encodings.  All SQL, CHAR, VARCHAR,
+   and blob character result/parameter data are encoded and decoded
+   using the encoding specified with the charSet connection property.
+* Improved documentation accessible through the JBuilder help viewer.
+   The InterClient Programmer's Guide has been renamed InterClient
+   Introduction, and the Reference and Help documentation has been extended.
+   The API Reference now has links to JavaSoft's core API documentation.
+   See docs/index.html in the InterClient distribution.
+* Various capability and robustness enhancements to the API in general,
+   especially in the area of input parameter and result column type
+   conversions.  For example, prepared statement parameter conversions
+   now distinguish between character blobs and binary blobs, disallowing
+   certain operations such as setString() on a binary blob and allowing
+   operations such as setBytes() on a character field according to the
+   JDBC conversion tables.
+* Full support for SQL DESCRIBE and SQL DESCRIBE INPUT functionality.
+   PreparedStatement.getMetaData() provides a way to access
+   result set meta data before a prepared statement is executed.
+   ParameterMetaData off a PreparedStatement provides a way to get
+   metadata describing the input parameters to a prepared statement.
+   This functionality is an extension to the base JDBC API.
+* Configurable local row cache size.  See API reference for
+   interbase.interclient.Statement.setFetchSize().
+* SQL State codes associated with driver generated exceptions
+   are now published.  See the Help documentation.
+* Improved error messages.
+* New public classes, methods and fields:
+     interbase.interclient.BlobIOException
+     interbase.interclient.CharacterEncodings
+     interbase.interclient.CharacterEncodingException
+     interbase.interclient.ErrorCodes
+     interbase.interclient.Resources
+     interbase.interclient.UnsupportedCharacterSetException
+     interbase.interclient.ConnectionProperties.setCharacterEncoding()
+     interbase.interclient.PreparedStatement.getMetaData()
+     interbase.interclient.Statement.setFetchSize()
+     interbase.interclient.Driver.getCompatibleJREVersions()
+     interbase.interclient.Driver.getCompatibleIBVersions()
+     interbase.interclient.Driver.getBuildCertificationLevel()
+     interbase.interclient.Driver.testBuild
+     interbase.interclient.Driver.betaBuild
+     interbase.interclient.Driver.finalBuild
+* Discarded packages, interfaces, classes and methods:
+     interbase.interclient.netscape_utils
+     Driver.asString()
+     BadInstallation() constructor
+     ComponentException
+     Monitor and monitoring facility
+     DatabaseNotCapableException is now subsumed by DriverNotCapableException
+     All exception class member methods
+* All driver methods are tagged in the API Reference
+   according to origination: JDBC 1, JDBC 2, or Extensions.
+   Method deprecations are also noted in Reference.
+* Class inheritance changes to exception classes.
+* Renamed classes and methods:
+     LoginTimeoutException is now SocketTimeoutException
+* VARCHAR fields are no longer right trimmed by the result set
+   Adaptor.RIGHT_TRIM_STRINGS directive.
+* Non-zero error codes are now generated for driver generated exceptions.
+* More fully qualified version strings for InterClient and InterServer,
+   including build numbers and certfication levels.
+* Classes are no longer distributed in a single interclient.jar file,
+   rather the following Java archives are distributed:
+     interclient-core.jar
+        The JDBC driver with only the default American English text
+        resources.  No utilities are included in the core jar file.
+     interclient-res.jar
+        Locale specific resource bundles.
+     interclient-utils.jar
+        Utilities, this jar file consists of the communications diagnostics
+        utility.
+     interclient.jar
+        JDBC driver, all resources, and utilities.
+* DatabaseMetaData system table queries now return VARCHAR (vs. CHAR) data
+   for InterBase metadata such as table, column and procedure names.
+   So metadata is no longer right padded with blanks as CHAR data is.
+* CommDiag improvements.
+* Examples directory added to distribution with sample Java programs
+   which use InterClient.
+* Configurable TCP/IP port numbers for InterServer.
+   By default, InterServer listens on port 3060, but this port
+   may be modified manually if necessary.
+   If a port other than 3060 is used, it must be specified in the
+   database or server URL syntax.  See Help documentation.
+* Open Source.
+   The source for InterClient/InterServer is available at www.interbase.com.
+   The terms of the license are in the files InterBase_Public_license.*
+__________________________________________________________________
+Issues
+
+   Please be aware of the following issues affecting this release of
+   InterClient:
+
+   * The operation Statement.setMaxRows(int numRows) is currently
+     ignored by InterClient.  A result set will contain all rows.
+
+   * InterBase table names and other metadata must have an ASCII
+     representation.
+
+   * DatabaseMetadata.getProcedureColumns returns 0 for precision values
+     for NUMERIC and DECIMAL columns rather than the correct precision.
+
+   * DatabaseMetadata.getColumns does not return the proper default value
+     of a column in an InterBase table.
+__________________________________________________________________
+

@@ -1,0 +1,172 @@
+<html>
+
+<head>
+<title>InterClient Help</title>
+</head>
+
+<body bgcolor="#FFFFFF">
+<table BORDER="0" WIDTH="100%">
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td colspan=3><a href="../specifications/overview-summary.html">Reference</a>&nbsp;| <a href="../help/help.html">Help</a>&nbsp;| <a href="../introduction/introduction.html">Introduction</a>&nbsp;| <a href="../slide_show/coverPage.html">Slide Show</a>&nbsp;| <a href="../customHierarchy.html">Class Hierarchy</a></td>
+<td align=right valign=top rowspan=2><em>
+InterClient</em>
+</td>
+</tr>
+<tr>
+<td><font size="-2">
+<a href="icJarFiles.html">PREV</a>&nbsp;| <a href="icUninstallingInterClient.html">NEXT</a></font>
+</td>
+<td><font size="-2">
+<a href="../index.html" target="_top">FRAMES</a>
+&nbsp;| <a href="icUsingTheInterServerConfigurationUtility.html" target="_top">NO FRAMES</a>
+</font>
+</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+<hr>
+
+<h3>
+Using the InterServer Configuration Utility on Windows NT and 95</h3>
+
+<ol>
+<li><a href="#a">Starting InterServer on Windows NT and 95</a>
+<li><a href="#b">InterServer Service Options</a>
+<li><a href="#c">Shutting Down InterServer</a>
+<li><a href="#d">Viewing InterServer Information and Properties</a>
+</ol>
+
+<hr>
+
+<h4><a name="a">
+Starting InterServer on Windows NT and 95
+</a></h4>
+
+<p>
+InterServer must be started to enable InterClient connections to a database.
+If InterServer is started as an application, an icon is displayed in the task tray,
+located on the right side of your task bar 
+(or bottom, if your task bar is positioned vertically).
+The server can be configured to automatically start up at system boot.
+  
+<p>
+To configure InterServer as an application, choose your startup mode:
+
+<ul>
+<li>Select the InterServer Configuration Utility icon from the
+    InterBase InterClient program group.
+<li>Select the Startup Mode you desire:
+    <dl>
+	<dt>Manual Startup: 
+	    <dd>
+        You must select the InterServer icon from the InterBase InterClient program group
+		to start InterServer.
+     <dt>Windows Startup:
+	     <dd>
+		 Configures the server to automatically start up at system boot. 
+	</dl>
+</ul>
+
+<p>
+The Advanced section of the Configuration Utility is disabled
+if InterServer is configured to run as an application.
+
+<p>
+You may configure InterServer to run as a service which
+can be started, stopped, or paused using the Advanced section 
+of the InterServer Configuration Utility, or alternatively may be controlled
+using the Windows NT control panel services utility.
+
+<h4><a name="b">
+InterServer Service Options
+</a></h4>
+
+<table>
+<tr>
+<td><i>Running</i>
+<td>Connections between InterClient applications and the InterBase server are serviced.
+<tr>
+<td><i>Paused</i>
+<td>Connections between InterClient applications and the InterBase server are held open but all requests for service is halted.
+<tr>
+<td><i>Stopped</i>
+<td>InterServer is shutdown.  Connections are closed.
+</table>
+
+<h4><a name="c">
+Shutting Down InterServer
+</a></h4>
+
+<p>
+To shut down the InterServer application, 
+right click the InterServer icon in the task tray and choose Shutdown. 
+If any connections are open, a warning message appears.
+If you have open connections, it is recommended that you close 
+them before shutting down the server. 
+You also must close all client applications you are running.
+
+<p>
+To shut down the InterServer service, 
+press the stop light in the Advanced section of the Configuration Utility.
+
+<h4><a name="d">
+Viewing InterServer Information and Properties
+</a></h4>
+
+<p>
+To view current server information and properties, 
+right click the InterServer application icon and 
+choose Properties from the popup menu. 
+
+<p>
+The property sheet provides:
+
+<ul>
+<li>Location of the InterClient installation directory.
+<li>Version of the InterClient package.
+<li>InterServer capabilities.
+</ul>
+
+<p>
+<hr>
+<a name="navbar_bottom"><!-- --></a>
+<table BORDER="0" WIDTH="100%">
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td colspan=3><a href="../specifications/overview-summary.html">Reference</a>&nbsp;| <a href="../help/help.html">Help</a>&nbsp;| <a href="../introduction/introduction.html">Introduction</a>&nbsp;| <a href="../slide_show/coverPage.html">Slide Show</a>&nbsp;| <a href="../customHierarchy.html">Class Hierarchy</a></td>
+<td align=right valign=top rowspan=2><em>
+InterClient</em>
+</td>
+</tr>
+<tr>
+<td><font size="-2">
+<a href="icJarFiles.html">PREV</a>&nbsp;| <a href="icUninstallingInterClient.html">NEXT</a></font>
+</td>
+<td><font size="-2">
+<a href="../index.html" target="_top">FRAMES</a>
+&nbsp;| <a href="icUsingTheInterServerConfigurationUtility.html" target="_top">NO FRAMES</a>
+</font>
+</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+<hr>
+<font size="-1">
+Send comments or suggestions to <a href="mailto:interclient@interbase.com">interclient@interbase.com</a>
+</font>
+
+</body>
+</html>

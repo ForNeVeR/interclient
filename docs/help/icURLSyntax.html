@@ -1,0 +1,142 @@
+<html>
+
+<head>
+<title>InterClient Help</title>
+</head>
+
+<body bgcolor="#FFFFFF">
+<table BORDER="0" WIDTH="100%">
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td colspan=3><a href="../specifications/overview-summary.html">Reference</a>&nbsp;| <a href="../help/help.html">Help</a>&nbsp;| <a href="../introduction/introduction.html">Introduction</a>&nbsp;| <a href="../slide_show/coverPage.html">Slide Show</a>&nbsp;| <a href="../customHierarchy.html">Class Hierarchy</a></td>
+<td align=right valign=top rowspan=2><em>
+InterClient</em>
+</td>
+</tr>
+<tr>
+<td><font size="-2">
+<a href="icGettingAConnection.html">PREV</a>&nbsp;| <a href="icAccessingExtensions.html">NEXT</a></font>
+</td>
+<td><font size="-2">
+<a href="../index.html" target="_top">FRAMES</a>
+&nbsp;| <a href="icURLSyntax.html" target="_top">NO FRAMES</a>
+</font>
+</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+<hr>
+
+<h3>Gateways and Database URL Syntax</h3>
+
+<p><strong>InterServer as a Gateway</strong>
+<p>
+You may setup a single InterServer to act as a gateway to
+any number of remote InterBase servers
+across heterogenous architectures.
+The database URL to pass through an InterServer
+gateway named <code>pongo</code> would be:
+<pre>
+jdbc:interbase://pongo/<i>interbase-remote-database-file-specification</i>
+</pre>
+Where <code><i>interbase-remote-database-file-specification</i></code> follows
+the syntax dictated by InterBase for remote database access.
+For example, for InterBase server <code>perdy</code>, a database URL
+to the example employee database on <code>perdy</code> might be:
+<pre>
+jdbc:interbase://pongo/perdy:/InterBase/examples/employee.gdb
+</pre>
+Here, an InterServer gateway is installed on <code>pongo</code>,
+and an InterBase server is installed on <code>perdy</code>.
+<p>
+The InterServer host must have the InterBase client software installed.
+This includes <code>gds32.dll</code> for Windows, <code>libgds.so</code> for Solaris, etc....
+TCP/IP services will be configured automatically on port 3050 for an InterBase install,
+and port 3060 for an InterServer install.
+
+<p><strong>URL Syntax</strong>
+<p>
+A database URL is used by a JDBC driver to establish a connection to a database.
+The general form of an InterBase database URL is
+<pre>
+jdbc:interbase://<i>interserverHostName</i>:<i>interserverPort</i>/<i>databaseFileSpecification</i>
+</pre>
+By default, the InterServer service listens on port 3060.
+So normally, the :<i>interserverPort</i> is not given and the form of the database URL is
+<pre>
+jdbc:interbase://<i>interserverHostName</i>/<i>databaseFileSpecification</i>
+</pre>
+On Unix file systems, the <i>databaseFileSpecification</i> starts from a root "/",
+so a typical database URL on a Unix host may be 
+<pre>
+jdbc:interbase://pongo//databases/employee.gdb
+</pre>
+On Windows file systems, the <i>databaseFileSpecification</i>
+may start with a driver letter, such as "d:", or it may
+start from a root "/" using the default drive.
+So a typical database URL on a Windows host may be
+<pre>
+jdbc:interbase://pongo/c:/databases/employee.gdb
+</pre>
+
+<p>
+InterServer has the ability to reside on a middle tier and
+proxy service to a remote InterBase server.
+In this case, the <i>databaseFileSpecification</i> must
+be recognizable as a remote database by the InterBase client library.
+So, if InterServer resides on host "pongo", and the InterBase
+server resides on host "perdy", then a typical database URL
+may be
+<pre>
+jdbc:interbase://pongo/perdy:/databases/employee.gdb
+</pre>
+Or more generally
+<pre>
+jdbc:interbase://<i>interserverHostName</i>/<i>interbaseHostName</i>:<i>databaseFile</i>
+</pre>
+for a TCP/IP connection from InterServer to InterBase.
+Refer to the InterBase documentation for more information about valid <i>databaseFileSpecification</i>s
+for remote servers.
+
+<p>
+<hr>
+<a name="navbar_bottom"><!-- --></a>
+<table BORDER="0" WIDTH="100%">
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td colspan=3><a href="../specifications/overview-summary.html">Reference</a>&nbsp;| <a href="../help/help.html">Help</a>&nbsp;| <a href="../introduction/introduction.html">Introduction</a>&nbsp;| <a href="../slide_show/coverPage.html">Slide Show</a>&nbsp;| <a href="../customHierarchy.html">Class Hierarchy</a></td>
+<td align=right valign=top rowspan=2><em>
+InterClient</em>
+</td>
+</tr>
+<tr>
+<td><font size="-2">
+<a href="icGettingAConnection.html">PREV</a>&nbsp;| <a href="icAccessingExtensions.html">NEXT</a></font>
+</td>
+<td><font size="-2">
+<a href="../index.html" target="_top">FRAMES</a>
+&nbsp;| <a href="icURLSyntax.html" target="_top">NO FRAMES</a>
+</font>
+</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+<hr>
+<font size="-1">
+Send comments or suggestions to <a href="mailto:interclient@interbase.com">interclient@interbase.com</a>
+</font>
+
+</body>
+</html>

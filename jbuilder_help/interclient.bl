@@ -1,0 +1,8 @@
+// List of JBuilder .bfl files to parse.
+//
+// Format: Title that appears in ToC pane|relative dir|bfl filename
+//
+// In this file, "*" means "Leave this book's entries out of the Master Index".
+//
+// InterClient documentation:
+InterClient Programmer's Reference|interclient|interclient.bfl|*|t|t|t

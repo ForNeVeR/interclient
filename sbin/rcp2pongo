@@ -1,0 +1,13 @@
+set -x
+
+if [ ! "$1" ]
+then
+  echo "You must supply a file name."
+  exit 1
+fi
+
+rcp $* pongo:/postler`expr $PWD : 'D\:\(.*\)'`
+
+exit 0
+
+  

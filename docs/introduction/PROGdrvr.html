@@ -1,0 +1,96 @@
+<HTML>
+<HEAD>
+<TITLE>InterClient Introduction</TITLE>
+</HEAD>
+
+<body bgcolor="#FFFFFF">
+<table BORDER="0" WIDTH="100%">
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td colspan=3><a href="../specifications/overview-summary.html">Reference</a>&nbsp;| <a href="../help/help.html">Help</a>&nbsp;| <a href="../introduction/introduction.html">Introduction</a>&nbsp;| <a href="../slide_show/coverPage.html">Slide Show</a>&nbsp;| <a href="../customHierarchy.html">Class Hierarchy</a></td>
+<td align=right valign=top rowspan=2><em>
+InterClient</em>
+</td>
+</tr>
+<tr>
+<td><font size="-2">
+<a href="PROGjdbc.html">PREV</a>&nbsp;| <a href="PROGGcon.html">NEXT</a></font>
+</td>
+<td><font size="-2">
+<a href="../index.html" target="_top">FRAMES</a>
+&nbsp;| <a href="PROGdrvr.html" target="_top">NO FRAMES</a>
+</font>
+</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+<hr>
+
+<H2>
+About InterClient Drivers</H2>
+
+<H3>
+Loading the InterClient Driver</H3>
+The InterClient driver must be loaded before your application can attempt
+to connect to an InterBase database. To explicitly load the InterClient
+driver with the DriverManager, include the following line in your program
+before using the driver to establish a database connection:
+<PRE>
+Class.forName("interbase.interclient.Driver");</PRE>
+<FONT SIZE=-1></FONT>
+
+<P>The first time the Java interpreter sees a reference to <B>interbase.interclient.Driver</B>,
+it loads the InterClient driver. When the driver is loaded it automatically
+creates an instance of itself, but there is no handle for it that lets
+you access that driver directly by name. This driver is "anonymous"; you
+don't need to reference it explicitly to make a database connection. You
+can make a database connection simply by invoking the 
+<b>java.sql.DriverManager.getConnection</b> method.
+
+<P>It's the responsibility of each newly loaded driver to <I>register</I>
+<I>itself</I> with the DriverManager; the programmer is not required to
+register the driver explicitly. After the driver is registered, the DriverManager
+can use it to make database connections.
+
+<p>
+<hr>
+<a name="navbar_bottom"><!-- --></a>
+<table BORDER="0" WIDTH="100%">
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td colspan=3><a href="../specifications/overview-summary.html">Reference</a>&nbsp;| <a href="../help/help.html">Help</a>&nbsp;| <a href="../introduction/introduction.html">Introduction</a>&nbsp;| <a href="../slide_show/coverPage.html">Slide Show</a>&nbsp;| <a href="../customHierarchy.html">Class Hierarchy</a></td>
+<td align=right valign=top rowspan=2><em>
+InterClient</em>
+</td>
+</tr>
+<tr>
+<td><font size="-2">
+<a href="PROGjdbc.html">PREV</a>&nbsp;| <a href="PROGGcon.html">NEXT</a></font>
+</td>
+<td><font size="-2">
+<a href="../index.html" target="_top">FRAMES</a>
+&nbsp;| <a href="PROGdrvr.html" target="_top">NO FRAMES</a>
+</font>
+</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+<hr>
+<font size="-1">
+Send comments or suggestions to <a href="mailto:interclient@interbase.com">interclient@interbase.com</a>
+</font>
+
+</BODY>
+</HTML>

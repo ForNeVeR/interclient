@@ -1,0 +1,717 @@
+<html>
+
+<head>
+<title>InterClient Help</title>
+</head>
+
+<body bgcolor="#FFFFFF">
+<table BORDER="0" WIDTH="100%">
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td colspan=3><a href="../specifications/overview-summary.html">Reference</a>&nbsp;| <a href="../help/help.html">Help</a>&nbsp;| <a href="../introduction/introduction.html">Introduction</a>&nbsp;| <a href="../slide_show/coverPage.html">Slide Show</a>&nbsp;| <a href="../customHierarchy.html">Class Hierarchy</a></td>
+<td align=right valign=top rowspan=2><em>
+InterClient</em>
+</td>
+</tr>
+<tr>
+<td><font size="-2">
+<a href="icCharacters.html">PREV</a>&nbsp;| <a href="icConnectionProperties.html">NEXT</a></font>
+</td>
+<td><font size="-2">
+<a href="../index.html" target="_top">FRAMES</a>
+&nbsp;| <a href="icSQLStates.html" target="_top">NO FRAMES</a>
+</font>
+</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+<hr>
+
+<h3>SQL States for SQLExceptions</h3>
+
+<p>
+<table border=1>
+<tr>
+<th>SQL State
+<th>SQLException Subclass
+<th>Error Code
+<th>Description
+</tr>
+
+<tr>
+<td>ICI00
+<td>SQLException
+<td><i>ISC error code</i>
+<td>Any error issued by the InterBase engine.
+</tr>
+
+<tr>
+<td>01JA0
+<td>ExpiredDriverWarning
+<td>unlicensedComponent
+<td>A driver component has expired.  Connection permitted.
+</tr>
+
+<tr>
+<td>0A000
+<td>DriverNotCapableException
+<td>driverNotCapable
+<td>Feature not supported
+</tr>
+
+<tr>
+<td>ICJ01
+<td>InvalidOperationException
+<td>invalidOperation
+<td>Invalid operation on a closed connection.
+</tr>
+
+<tr>
+<td>ICJ02
+<td>InvalidOperationException
+<td>invalidOperation
+<td>Invalid operation on a closed server attachment.
+</tr>
+
+<tr>
+<td>ICJ03
+<td>InvalidOperationException
+<td>invalidOperation
+<td>Invalid operation on a closed result set.
+</tr>
+
+<tr>
+<td>ICJ04
+<td>InvalidOperationException
+<td>invalidOperation
+<td>Invalid operation on a closed statement.
+</tr>
+
+<tr>
+<td>ICJ05
+<td>InvalidOperationException
+<td>invalidOperation
+<td>Invalid operation when transaction is in progress.
+</tr>
+
+<tr>
+<td>ICJ06
+<td>InvalidOperationException
+<td>invalidOperation
+<td>Invalid operation to commit or rollback a transaction while in auto-commit mode.
+</tr>
+
+<tr>
+<td>ICJ07
+<td>InvalidOperationException
+<td>invalidOperation
+<td>Invalid operation to <code>executeQuery</code> on an update statement.
+</tr>
+
+<tr>
+<td>ICJ08
+<td>InvalidOperationException
+<td>invalidOperation
+<td>Invalid operation to set a non-nullable input parameter to null.
+</tr>
+
+<tr>
+<td>ICJ09
+<td>InvalidOperationException
+<td>invalidOperation
+<td>Invalid operation to read past end of cursor.
+</tr>
+
+<tr>
+<td>ICJ0A
+<td>InvalidOperationException
+<td>invalidOperation
+<td>Invalid operation to read at current cursor position.
+</tr>
+
+<tr>
+<td>ICJ0B
+<td>InvalidOperationException
+<td>invalidOperation
+<td>Invalid operation to check <code>wasNull()</code> when no column data has been retrieved for the current row.
+</tr>
+
+<tr>
+<td>ICJ0C
+<td>InvalidOperationException
+<td>invalidOperation
+<td>Invalid operation to execute a prepared statement with an unset non-nullable input parameter.
+All input parameters for non-nullable columns must be set, unset nullable columns are assumed null.
+</tr>
+
+<tr>
+<td>ICJ10
+<td>ParameterConversionException
+<td>invalidOperation
+<td>Wrong parameter type for requested conversion.
+</tr>
+
+<tr>
+<td>ICJ11
+<td>ParameterConversionException
+<td>invalidOperation
+<td>Attempt to set a number to a non-character binary blob field.
+</tr>
+
+<tr>
+<td>ICJ12
+<td>ParameterConversionException
+<td>invalidOperation
+<td>Attempt to set a date, time, or timestamp to a non-character binary blob field.
+</tr>
+
+<tr>
+<td>ICJ13
+<td>ParameterConversionException
+<td>invalidOperation
+<td>It is an invalid operation to send a Java input stream using the setObject method.
+You must explicitly use <code>PreparedStatement.setXXXStream</code>
+to transfer a value as a stream per the JDBC specification.
+Refer to the JDBC 1.20 specification pg. 43 for details.
+</tr>
+
+<tr>
+<td>ICJ14
+<td>ParameterConversionException
+<td>invalidOperation
+<td>Parameter instance is out of range for requested conversion.
+</tr>
+
+<tr>
+<td>ICJ15
+<td>ParameterConversionException
+<td>invalidOperation
+<td>An Array element has an invalid type for requested conversion.
+</tr>
+
+<tr>
+<td>ICJ16
+<td>ParameterConversionException
+<td>invalidOperation
+<td>An Array element value is out of range for requested conversion.
+</tr>
+
+<tr>
+<td>ICJ17
+<td>ParameterConversionException
+<td>invalidOperation
+<td>An array element value cannot be stored without truncation.
+</tr>
+
+<tr>
+<td>ICJ20
+<td>ColumnConversionException
+<td>invalidOperation
+<td>Wrong result column type for requested conversion.
+</tr>
+
+<tr>
+<td>ICJ21
+<td>ColumnConversionException
+<td>invalidOperation
+<td>Attempt to get a number from a non-character binary blob field.
+</tr>
+
+<tr>
+<td>ICJ22
+<td>ColumnConversionException
+<td>invalidOperation
+<td>Attempt to get a date, time, or timestamp from a non-character binary blob field.
+</tr>
+
+<tr>
+<td>ICJ23
+<td>ColumnConversionException
+<td>invalidOperation
+<td>Result column instance is out of range for requested conversion.
+</tr>
+
+<tr>
+<td>ICJ30
+<td>InvalidArgumentException
+<td>invalidOperation
+<td>Transaction isolation level is invalid.
+</tr>
+
+<tr>
+<td>ICJ31
+<td>InvalidArgumentException
+<td>invalidOperation
+<td>Transaction isolation specified in connection properties is not known.
+</tr>
+
+<tr>
+<td>ICJ32
+<td>InvalidArgumentException
+<td>invalidOperation
+<td>Lock resolution specified in connection properties is not valid.
+</tr>
+
+<tr>
+<td>ICJ33
+<td>InvalidArgumentException
+<td>invalidOperation
+<td>Unrecognized connection property specified.
+</tr>
+
+<tr>
+<td>ICJ34
+<td>InvalidArgumentException
+<td>invalidOperation
+<td>User and password connection properties are not set.
+</tr>
+
+<tr>
+<td>ICJ35
+<td>InvalidArgumentException
+<td>invalidOperation
+<td>Connection properties is null.
+</tr>
+
+<tr>
+<td>ICJ37
+<td>InvalidArgumentException
+<td>invalidOperation
+<td>SQL string is null or empty.
+</tr>
+
+<tr>
+<td>ICJ38
+<td>InvalidArgumentException
+<td>invalidOperation
+<td>Result column name is not known.
+</tr>
+
+<tr>
+<td>ICJ39
+<td>InvalidArgumentException
+<td>invalidOperation
+<td>Negative row fetch size specified.
+</tr>
+
+<tr>
+<td>ICJ3A
+<td>InvalidArgumentException
+<td>invalidOperation
+<td>Negative number specified for maximum rows for result set.
+</tr>
+
+<tr>
+<td>ICJ3B
+<td>InvalidArgumentException
+<td>invalidOperation
+<td>Row fetch size may not exceed maximum rows for result set.
+</tr>
+
+<tr>
+<td>ICJ3C
+<td>InvalidArgumentException
+<td>invalidOperation
+<td>Attempt to set a unicode input stream with an odd number of bytes.
+</tr>
+
+<tr>
+<td>ICJ3D
+<td>InvalidArgumentException
+<td>invalidOperation
+<td>Result column specified is not of Array data type.
+</tr>
+
+<tr>
+<td>ICJ3E
+<td>InvalidArgumentException
+<td>invalidOperation
+<td>Input column specified is not of Array data type.
+</tr>
+
+<tr>
+<td>ICJ3F
+<td>InvalidArgumentException
+<td>invalidOperation
+<td>Specified Array slice is out of bounds.
+</tr>
+
+<tr>
+<td>ICJ3G
+<td>InvalidArgumentException
+<td>invalidOperation
+<td>Array dimensions do not match array metadata.
+</tr>
+
+<tr>
+<td>ICJ3H
+<td>InvalidArgumentException
+<td>invalidOperation
+<td>Attempt to set an invalid lock resolution mode for the transaction.
+</tr>
+
+<tr>
+<td>ICJ3I
+<td>InvalidArgumentException
+<td>invalidOperation
+<td>Attempt to set an invalid version acknowledgement mode for the transaction.
+</tr>
+
+<tr>
+<td>ICJ3J
+<td>InvalidArgumentException
+<td>invalidOperation
+<td>Attempt to set an invalid table lock for the transaction.
+</tr>
+
+<tr>
+<td>ICJ40
+<td>ColumnIndexOutOfBoundsException
+<td>invalidOperation
+<td>Result column index is out of range.
+</tr>
+
+<tr>
+<td>ICJ50
+<td>ParameterIndexOutOfBoundsException
+<td>invalidOperation
+<td>Input parameter index is out of range.
+</tr>
+
+<tr>
+<td>ICJ60
+<td>URLSyntaxException
+<td>invalidOperation
+<td>Malformed InterBase database JDBC URL.
+Server specification must begin with //<i>hostName</i>.
+See <a href="icURLSyntax.html">Database URL Syntax</a>.
+</tr>
+
+<tr>
+<td>ICJ61
+<td>URLSyntaxException
+<td>invalidOperation
+<td>Malformed InterBase database JDBC URL.
+Server name must be followed by /<i>absolute-path-to-file</i>
+See <a href="icURLSyntax.html">Database URL Syntax</a>.
+</tr>
+
+<tr>
+<td>ICJ70
+<td>EscapeSyntaxException
+<td>invalidOperation
+<td>Missing closing escape delimeter "}".
+</tr>
+
+<tr>
+<td>ICJ71
+<td>EscapeSyntaxException
+<td>invalidOperation
+<td>Unrecognized escape keyword.
+</tr>
+
+<tr>
+<td>ICJ72
+<td>EscapeSyntaxException
+<td>invalidOperation
+<td>Malformed SQL escape syntax for date "{d 'yyyy-mm-dd'}" clause.
+</tr>
+
+<tr>
+<td>ICJ73
+<td>EscapeSyntaxException
+<td>invalidOperation
+<td>Malformed SQL escape syntax for timestamp "{ts 'yyyy-mm-dd hh:mm:ss.f...'}" clause.
+</tr>
+
+<tr>
+<td>ICJ74
+<td>EscapeSyntaxException
+<td>invalidOperation
+<td>Malformed SQL escape syntax for LIKE "{escape 'escape-character'}" clause.
+</tr>
+
+<tr>
+<td>ICJ75
+<td>EscapeSyntaxException
+<td>invalidOperation
+<td>Malformed SQL escape syntax for LIKE "{escape 'escape-character'}" clause.
+Missing "'" in escape syntax.
+</tr>
+
+<tr>
+<td>ICJ76
+<td>EscapeSyntaxException
+<td>invalidOperation
+<td>Malformed SQL escape syntax for scalar function "{fn ...}" clause.
+</tr>
+
+<tr>
+<td>ICJ77
+<td>EscapeSyntaxException
+<td>invalidOperation
+<td>Malformed SQL escape syntax for stored procedure "{call ...}" clause.
+</tr>
+
+<tr>
+<td>ICJ80
+<td>UnlicensedComponentException
+<td>unlicensedComponent
+<td>This version of InterClient is not licensed for remote connections.
+Use <i>localhost</i> only for server name.
+</tr>
+
+<tr>
+<td>ICJ81
+<td>UnlicensedComponentException
+<td>unlicensedComponent
+<td>This version of InterClient is incompatible with the version of InterBase being used.
+</tr>
+
+<tr>
+<td>ICJ82
+<td>UnlicensedComponentException
+<td>unlicensedComponent
+<td>InterServer is not licensed or the license file has expired.
+</tr>
+
+<tr>
+<td>ICJ90
+<td>ExpiredDriverException
+<td>unlicensedComponent
+<td>A driver component has expired.  Connection refused.
+</tr>
+
+<tr>
+<td>ICJB0
+<td>BugCheckException
+<td>bugCheck
+<td>Bug detected. Please send mail to 
+<a href="mailto:interclient@interbase.com">interclient@interbase.com</a> and 
+refer to given bug code.
+</tr>
+
+<tr>
+<td>ICJC0
+<td>CharacterEncodingException
+<td>characterEncoding
+<td>A character conversion exception occurred while trying to decode a String encoding from server.
+</tr>
+
+<tr>
+<td>ICJC1
+<td>CharacterEncodingException
+<td>characterEncoding
+<td>A character conversion exception occurred while trying to encode a String to send to server.
+</tr>
+
+<tr>
+<td>ICJD0
+<td>RemoteProtocolException
+<td>remoteProtocol
+<td>Unexpected token in network message received from InterServer.
+</tr>
+
+<tr>
+<td>ICJD1
+<td>RemoteProtocolException
+<td>remoteProtocol
+<td>InterServer received an unexpected token in network message from InterClient.
+</tr>
+
+<tr>
+<td>ICJD2
+<td>RemoteProtocolException
+<td>remoteProtocol
+<td>Unable to establish a protocol with server for remote messaging.
+</tr>
+
+<tr>
+<td>ICJD3
+<td>RemoteProtocolException
+<td>remoteProtocol
+<td>Unrecognized network message received from InterServer.
+</tr>
+
+<tr>
+<td>ICJE0
+<td>CommunicationException
+<td>communication
+<td>An IO exception occurred while reading from a user supplied input stream.
+</tr>
+
+<tr>
+<td>ICJE1
+<td>CommunicationException
+<td>communication
+<td>Unexpected end of stream while reading from a user supplied input stream.
+</tr>
+
+<tr>
+<td>ICJE2
+<td>CommunicationException
+<td>communication
+<td>A socket exception occurred while trying to establish a socket connection to server.
+</tr>
+
+<tr>
+<td>ICJE3
+<td>CommunicationException
+<td>communication
+<td>An IO exception occurred while trying to establish a socket connection to server.
+This is probably due to an interserver misconfiguration. Is interserver running?
+</tr>
+
+<tr>
+<td>ICJE4
+<td>CommunicationException
+<td>communication
+<td>An IO exception occurred while trying to close a socket connection to server.
+</tr>
+
+<tr>
+<td>ICJE5
+<td>CommunicationException
+<td>communication
+<td>An IO exception occurred while trying to establish a connection protocol to server.
+</tr>
+
+<tr>
+<td>ICJE6
+<td>CommunicationException
+<td>communication
+<td>An IO exception occurred while trying to receive data from server.
+</tr>
+
+<tr>
+<td>ICJE7
+<td>CommunicationException
+<td>communication
+<td>An IO exception occurred while trying to send data to server.
+</tr>
+
+<tr>
+<td>ICJE8
+<td>CommunicationException
+<td>communication
+<td>An IO exception occurred while trying to read data from server.
+</tr>
+
+<tr>
+<td>ICJE9
+<td>CommunicationException
+<td>communication
+<td>An IO exception occurred while trying to read a blob stream from server.
+</tr>
+
+<tr>
+<td>ICJEA
+<td>CommunicationException
+<td>communication
+<td>An IO exception occurred while trying to close a blob stream from server.
+</tr>
+
+<tr>
+<td>ICJEB
+<td>CommunicationException
+<td>communication
+<td>InterServer was unable to complete an IO request.
+</tr>
+
+<tr>
+<td>ICJF0
+<td>SocketTimeoutException
+<td>socketTimeout
+<td>IO was interrupted while waiting to read data from server.
+This is probably due to a timeout on the socket.
+</tr>
+
+<tr>
+<td>ICJG0
+<td>UnknownHostException
+<td>unknownHost
+<td>An unknown host exception occurred while trying to open a socket connection to server.
+</tr>
+
+<tr>
+<td>ICJH0
+<td>BadInstallationException
+<td>badInstallation
+<td>Client or browser is using an unsupported jdk version.
+</tr>
+
+<tr>
+<td>ICJH1
+<td>BadInstallationException
+<td>badInstallation
+<td>Your security manager does not allow socket connections to server on interserver port.
+</tr>
+
+<tr>
+<td>ICJH2
+<td>BadInstallationException
+<td>badInstallation
+<td>Installed versions of InterClient and InterServer use incompatible client/server protocol versions.
+</tr>
+
+<tr>
+<td>ICJI0
+<td>OutOfMemoryException
+<td>outOfMemory
+<td>InterServer exhausted server memory.
+</tr>
+
+<tr>
+<td>ICJJ0
+<td>SQLException
+<td>missingResourceBundle
+<td>An InterClient resource bundle could not be found in either the interbase.interclient or
+interbase.interclient.utils packages.  Both CommDiag and the driver itself could throw
+this exception.
+</tr>
+
+</table>
+
+
+<p>
+<hr>
+<a name="navbar_bottom"><!-- --></a>
+<table BORDER="0" WIDTH="100%">
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td colspan=3><a href="../specifications/overview-summary.html">Reference</a>&nbsp;| <a href="../help/help.html">Help</a>&nbsp;| <a href="../introduction/introduction.html">Introduction</a>&nbsp;| <a href="../slide_show/coverPage.html">Slide Show</a>&nbsp;| <a href="../customHierarchy.html">Class Hierarchy</a></td>
+<td align=right valign=top rowspan=2><em>
+InterClient</em>
+</td>
+</tr>
+<tr>
+<td><font size="-2">
+<a href="icCharacters.html">PREV</a>&nbsp;| <a href="icConnectionProperties.html">NEXT</a></font>
+</td>
+<td><font size="-2">
+<a href="../index.html" target="_top">FRAMES</a>
+&nbsp;| <a href="icSQLStates.html" target="_top">NO FRAMES</a>
+</font>
+</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+<hr>
+<font size="-1">
+Send comments or suggestions to <a href="mailto:interclient@interbase.com">interclient@interbase.com</a>
+</font>
+
+</BODY>
+</HTML>

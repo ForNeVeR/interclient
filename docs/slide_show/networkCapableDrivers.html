@@ -1,0 +1,121 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>InterClient at BorCon '98</title>
+</head>
+
+<body bgcolor="#FFFFFF" background="../images/background.jpg">
+<table BORDER="0" WIDTH="100%">
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td colspan=3><a href="../specifications/overview-summary.html">Reference</a>&nbsp;| <a href="../help/help.html">Help</a>&nbsp;| <a href="../introduction/introduction.html">Introduction</a>&nbsp;| <a href="../slide_show/coverPage.html">Slide Show</a>&nbsp;| <a href="../customHierarchy.html">Class Hierarchy</a></td>
+<td align=right valign=top rowspan=2><em>
+InterClient</em>
+</td>
+</tr>
+<tr>
+<td><font size="-2">
+<a href="class2JdbcArch.html">PREV</a>&nbsp;| <a href="class3JdbcArch.html">NEXT</a></font>
+</td>
+<td><font size="-2">
+<a href="../index.html" target="_top">FRAMES</a>
+&nbsp;| <a href="coverPage.html" target="_top">NO FRAMES</a>
+</font>
+</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+<hr>
+
+<big><big>
+<center>
+<h1>Distributed Drivers</h1>
+</center>
+<p>
+<small><small><i>
+Just to review, bridges provide a mapping to an underlying database API, and
+don't have client/server functionality directly, rather bridges rely on the
+underlying client libraries for client/server functionality.
+</i></small></small>
+<p>
+<ul>
+<li>So what's the problem with bridges in the Java platform?<br>
+<small><small><i>
+It basically boils down to java's interpreted byte-code capabilities,
+security sandbox, and zero-install clients.
+</i></small></small>
+<ul>
+<li>Applet security<br>
+<small><small><i>
+One of the biggest strengths of java is its portable byte code without recompilation.
+Java was designed for the network.
+Java byte code can float the network, be downloaded dynamically, and execute within
+the context of a security sandbox.
+But if the java code makes C calls, the underlying C routine runs outside the security sandbox,
+so the java verifier has no choice but to assume the code is insecure.
+</i></small></small><br>
+<li>Preinstalled client libraries<br>
+<small><small><i>
+This entails your traditional client maintenance, configuration and installation of C libraries.
+And a pre-installed client library defeats the purpose of network capable applets.
+</i></small></small>
+<li>Portability<br>
+<small><small><i>
+Java is cross platform without recompilation.
+C is not interpreted so requires recompilation across platforms,
+and ANSI C is a language, not a platform, and does not attempt to standardize
+system libraries as java does.
+</i></small></small>
+</ul>
+<li>So what's the solution?
+<ul>
+<li>No more C on the client!<br>
+<small><small><i>
+This means, put the entire database client functionality into an embeddable all java driver!<br>
+</i></small></small>
+</ul>
+</ul>
+</big></big>
+
+<p>
+<hr>
+<a name="navbar_bottom"><!-- --></a>
+<table BORDER="0" WIDTH="100%">
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td colspan=3><a href="../specifications/overview-summary.html">Reference</a>&nbsp;| <a href="../help/help.html">Help</a>&nbsp;| <a href="../introduction/introduction.html">Introduction</a>&nbsp;| <a href="../slide_show/coverPage.html">Slide Show</a>&nbsp;| <a href="../customHierarchy.html">Class Hierarchy</a></td>
+<td align=right valign=top rowspan=2><em>
+InterClient</em>
+</td>
+</tr>
+<tr>
+<td><font size="-2">
+<a href="class2JdbcArch.html">PREV</a>&nbsp;| <a href="class3JdbcArch.html">NEXT</a></font>
+</td>
+<td><font size="-2">
+<a href="../index.html" target="_top">FRAMES</a>
+&nbsp;| <a href="coverPage.html" target="_top">NO FRAMES</a>
+</font>
+</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+<hr>
+<font size="-1">
+Send comments or suggestions to <a href="mailto:interclient@interbase.com">interclient@interbase.com</a>
+</font>
+
+</body>
+</html>

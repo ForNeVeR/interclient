@@ -1,0 +1,193 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>InterClient at BorCon '98</title>
+</head>
+
+<body bgcolor="#FFFFFF" background="../images/background.jpg">
+<table BORDER="0" WIDTH="100%">
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td colspan=3><a href="../specifications/overview-summary.html">Reference</a>&nbsp;| <a href="../help/help.html">Help</a>&nbsp;| <a href="../introduction/introduction.html">Introduction</a>&nbsp;| <a href="../slide_show/coverPage.html">Slide Show</a>&nbsp;| <a href="../customHierarchy.html">Class Hierarchy</a></td>
+<td align=right valign=top rowspan=2><em>
+InterClient</em>
+</td>
+</tr>
+<tr>
+<td><font size="-2">
+<a href="whatsComing.html">PREV</a>&nbsp;| <a href="jdbc2extensions.html">NEXT</a></font>
+</td>
+<td><font size="-2">
+<a href="../index.html" target="_top">FRAMES</a>
+&nbsp;| <a href="coverPage.html" target="_top">NO FRAMES</a>
+</font>
+</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+<hr>
+
+<big><big>
+<center>
+<h1>JDBC 2 Core</h1>
+</center>
+<p>
+Specification released for public review June, 1998.
+<p>
+Download from 
+<a href="http://java.sun.com/jdbc">http://java.sun.com/jdbc</a>
+<p>
+<small><small><i>
+The jdbc 2 core api was released for public review on june 1, 1998.
+As well as providing new database functionality,
+one of the goals of jdbc 2 is to leverage the new java technology
+which was released subsequently to jdbc 1.  jdbc 1 was released
+with the jdk 1.0, and did not integrate with the new technology
+released in jdk 1.1 and 1.2.
+When jdbc 1 was released, there was no java beans component model.
+Under the java beans component model, a jdbc 2 rowset (part of jdbc 2 extension api)
+will be a serializable java bean.
+Jdbc 2 core will also make use of the new internationalization features of the jdk 1.1.
+<p>
+Think of the new jdbc 2 java.sql package as a superset of the old
+jdbc 1 java.sql package.  So jdbc 1 applications will continue to
+work under jdk 1.2, but they'll require new jdbc 2 drivers which
+support the new java.sql interfaces in jdk 1.2.  InterClient will provide
+a driver for jdk 1.2, jdbc 2 methods which are not yet implemented
+will throw a SQLException.
+<p>
+Because of widely disparate capabilities of various dbms, almost
+everything new in jdbc 2 is optional.
+<p>
+Due to public review and beta use of the jdbc 2 core api as part of the jdk 1.2 beta,
+some new interface methods will be added in the final release which do not currently appear
+in the downloadable jdbc 2 specification as of today, August 30, 1998.
+</i></small></small>
+<p>
+<ul>
+<li>Advanced datatypes<br>
+<small><small><i>
+Required for compliance.<br>
+Blob and Clobs and Array support from SQL3.
+We're currently working on the Array support.
+</i></small></small>
+<li>User defined types<br>
+<small><small><i>
+This is optional for compliance as it relies on object engine capabilities.<br>
+The jdbc 2 designers invision 3 kinds of jdbc drivers/databases in the future.
+Those that support SQL 3 user defined structured types and refs,
+or those that support persistent storage of Java objects (aka extended relational system),
+or those that support the traditional SQL 2 relational model.
+I won't venture into this political arena, but it may be that if you
+want to store objects, you should either use an object relational mapping,
+or you should use a pure java object oriented database.
+</i></small></small>
+<li>Performance hints<br>
+<small><small><i>
+User directed performance hints to the driver.<br>
+setFetchSize(int numRows) tells the driver how many
+rows to prefetch and cache on the client.<br>
+When a result set is created, a suggestion can be made
+to the driver as to the intended direction of traversal,
+eg. forward only.   Drivers are allowed to ignore
+these suggestions, but interclient won't.   We've
+already implemented the setFetchSize() method.
+</i></small></small>
+<li>Batched updates<br>
+<small><small><i>
+This will yield huge performance improvements, especially when working
+over the network.  This is a way to roll up, or batch up, a set
+of pending update statements into a single server request to be sent
+over the network.  So a batched update may consist of several
+update, delete or insert statements heterogeneously which can all be sent as a single
+request to the server.  Batched updates also allows for multiple
+inputs to a single prepared statement to be sent all at once to the server.
+In jdbc 1, each new set of inputs results in a separate request for a
+prepared statement execution which would have to be relayed over the network
+to the server. This is purely driver functionality requiring no
+new support from the engine.  InterClient will incorporate
+this in a future release.
+</i></small></small>
+<li>Result set enhancements<br>
+<small><small><i>
+This includes scrollable cursors and updatable result sets.
+Scrollable cursors is optional for compliance but according
+to the jdbc designers at javasoft, this is the most requested feature.
+Scrollable cursors support relative and absolute positioning, forwards and
+backwards movement thru a result set.
+Scrollable cursors will require significant driver and engine support.
+Much work has already been done in InterBase towards engine-capable
+scrollable cursors, as well as work in the remote interface and the InterBase
+C client library.  Once supported, InterClient will plug into InterBase's
+engine-capable scrollable cursors, and provide its own remote interface in the pure java
+client library.
+<p>
+There are two basic kinds of results sets - scrollable or forward only.<br>
+And there are two basic kinds of scrollable result sets - sensitive and insensitive [cursors].<br>
+Sensitive result sets are sensitive to changes made by other transactions,
+insensitive result sets are not
+even sensitive to changes made within their own transaction.<br>
+Sensitive result sets may not sense all changes if setFetchSize() is greater than 1
+because of client-side row caching by the driver.
+refreshRows() has been added recently to jdbc 2 to allow for sensitivity to row
+changes that might not otherwise be seen in a client cached row.<br>
+Updatable result sets will be supported using either database write locks or
+an optimistic concurrency scheme in which, when rows are updated, the old row values
+are compared to current values in the database to determine if an
+update conflict has occurred.  The optimistic concurrency algorithm is provided
+within the driver, not requiring database locks, and can in fact allow
+for disconnected rowset capability for mobile computing.<br>
+Read only result sets will also be supported<br>
+New ways of doing positioned updates and deletes, which was not well supported
+in jdbc 1 and not universally supported by drivers.
+</i></small></small>
+<li>Character streaming<br>
+<small><small><i>
+The facilities for streaming characters didn't exist in the jdk 1.0 when
+jdbc 1 was released.
+</i></small></small>
+</ul>
+</big></big>
+
+<p>
+<hr>
+<a name="navbar_bottom"><!-- --></a>
+<table BORDER="0" WIDTH="100%">
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td colspan=3><a href="../specifications/overview-summary.html">Reference</a>&nbsp;| <a href="../help/help.html">Help</a>&nbsp;| <a href="../introduction/introduction.html">Introduction</a>&nbsp;| <a href="../slide_show/coverPage.html">Slide Show</a>&nbsp;| <a href="../customHierarchy.html">Class Hierarchy</a></td>
+<td align=right valign=top rowspan=2><em>
+InterClient</em>
+</td>
+</tr>
+<tr>
+<td><font size="-2">
+<a href="whatsComing.html">PREV</a>&nbsp;| <a href="jdbc2extensions.html">NEXT</a></font>
+</td>
+<td><font size="-2">
+<a href="../index.html" target="_top">FRAMES</a>
+&nbsp;| <a href="coverPage.html" target="_top">NO FRAMES</a>
+</font>
+</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+<hr>
+<font size="-1">
+Send comments or suggestions to <a href="mailto:interclient@interbase.com">interclient@interbase.com</a>
+</font>
+
+</body>
+</html>

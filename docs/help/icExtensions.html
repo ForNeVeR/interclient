@@ -1,0 +1,1429 @@
+<html>
+
+<head>
+<title>InterClient Help</title>
+</head>
+
+<body bgcolor="#FFFFFF">
+<table BORDER="0" WIDTH="100%">
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td colspan=3><a href="../specifications/overview-summary.html">Reference</a>&nbsp;| <a href="../help/help.html">Help</a>&nbsp;| <a href="../introduction/introduction.html">Introduction</a>&nbsp;| <a href="../slide_show/coverPage.html">Slide Show</a>&nbsp;| <a href="../customHierarchy.html">Class Hierarchy</a></td>
+<td align=right valign=top rowspan=2><em>
+InterClient</em>
+</td>
+</tr>
+<tr>
+<td><font size="-2">
+<a href="icConnectionProperties.html">PREV</a>&nbsp;| <a href="icExternalResources.html">NEXT</a></font>
+</td>
+<td><font size="-2">
+<a href="../index.html" target="_top">FRAMES</a>
+&nbsp;| <a href="icExtensions.html" target="_top">NO FRAMES</a>
+</font>
+</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+<hr>
+
+<h3>InterClient Extension API</h3>
+
+<p>
+This is a list of InterClient extensions to the JDBC API.
+These extensions either surface unique features of the InterBase engine
+not surfaced by the standard JDBC API, or they extend JDBC functionality
+in some way.  These extensions are <i>not</i> related to the JDBC Standard Extension API.
+There are four APIs implemented by the InterClient driver:
+<p>
+<ul>
+<li>JDBC 1 API
+<li>InterClient Extension API
+<li>JDBC 2 Core API
+<li>JDBC 2 Standard Extension API
+</ul>
+<p>
+Each API represents a set of interfaces which are implemented
+by a JDBC vendor.  All four APIs are known collectively as the
+InterClient API for the InterClient driver implementation.
+All classes and class members in the InterClient API
+are tagged as an implementation from one of these four APIs
+in the Method Details sections throughout
+the InterClient API Reference.
+<p>
+<strong>Core InterClient Extension API</strong>
+<ul>
+<li><a href="#a">New Interfaces</a>
+<li><a href="#b">New Classes</a>
+<li><a href="#c">Extensions to the Standard Classes</a>
+<li><a href="#d">New Exceptions</a>
+</ul>
+
+<p>
+<strong>JDBC 2 APIs</strong>
+<ul>
+<li><a href="#f">JDBC 2 Standard Extension API and Related InterClient Extensions</a>
+<li><a href="#g">JDBC 2 Core API and Related InterClient Extensions</a>
+</ul>
+
+<p>
+<strong>Appendix</strong>
+<ul>
+<li><a href="#e">Common Administrative Tasks Without Direct Method Invocations</a>
+<li><a href="#h">Open Issues</a>
+</ul>
+
+<p>
+Links marked in <font color=green>green</font> represent extension functionality
+that has existed since InterClient 1.50.<br>
+Links marked in <font color=orange>orange</font> represent functionality
+proposed for InterClient 2.0.<br>
+Links marked in <font color=red>red</font> represent functionality
+proposed for InterClient 2.1, or a later future release.
+Some of this functionality may rely on underlying engine support which
+is not yet released or is currently being developed.
+
+<p>
+<hr>
+
+<p><strong><i><a name="a">New Interfaces</a></i></strong>
+<ul>
+<li>
+<a href="../specifications/interbase/interclient/Adaptor.html"
+   style="color:green">
+Adaptor</a>
+<i>- provides a means to modify the standard behavior of an InterClient JDBC object</i>
+<ul>
+<li>
+<a href="../specifications/interbase/interclient/Adaptor.html#adapt(int, java.lang.Object)"
+   style="color:green">
+adapt</a>,
+<a href="../specifications/interbase/interclient/Adaptor.html#revert(int)"
+   style="color:green">
+revert</a>
+<i>- enable or disable an adaptation</i>
+<li>
+<a href="../specifications/interbase/interclient/Adaptor.html#RIGHT_TRIM_STRINGS"
+   style="color:green">
+RIGHT_TRIM_STRINGS</a>,
+<a href="../specifications/interbase/interclient/Adaptor.html#SINGLE_INSTANCE_TIME"
+   style="color:green">
+SINGLE_INSTANCE_TIME</a>
+<i>- modifiers for result set adaptations</i>
+</ul>
+</ul>
+
+<p><strong><i><a name="b">New Classes</a></i></strong>
+<ul>
+<li>
+<a href="../specifications/interbase/interclient/CharacterEncodings.html"
+   style="color:green">
+CharacterEncodings</a>
+<i>- an enumeration of character encodings supported by the driver</i>
+<ul>
+<li>
+<a href="../specifications/interbase/interclient/CharacterEncodings.html#NONE"
+   style="color:green">
+NONE</a>,
+<a href="../specifications/interbase/interclient/CharacterEncodings.html#_8859_1"
+   style="color:green">
+_8859_1</a>,
+<a href="../specifications/interbase/interclient/CharacterEncodings.html#Big5"
+   style="color:green">
+Big5</a>,
+<a href="../specifications/interbase/interclient/CharacterEncodings.html#Cp1250"
+   style="color:green">
+Cp1250</a>,
+<a href="../specifications/interbase/interclient/CharacterEncodings.html#Cp1251"
+   style="color:green">
+Cp1251</a>,
+<a href="../specifications/interbase/interclient/CharacterEncodings.html#Cp1252"
+   style="color:green">
+Cp1252</a>,
+<a href="../specifications/interbase/interclient/CharacterEncodings.html#Cp1253"
+   style="color:green">
+Cp1253</a>,
+<a href="../specifications/interbase/interclient/CharacterEncodings.html#Cp1254"
+   style="color:green">
+Cp1254</a>,
+<a href="../specifications/interbase/interclient/CharacterEncodings.html#Cp437"
+   style="color:green">
+Cp437</a>,
+<a href="../specifications/interbase/interclient/CharacterEncodings.html#Cp850"
+   style="color:green">
+Cp850</a>,
+<a href="../specifications/interbase/interclient/CharacterEncodings.html#Cp852"
+   style="color:green">
+Cp852</a>,
+<a href="../specifications/interbase/interclient/CharacterEncodings.html#Cp857"
+   style="color:green">
+Cp857</a>,
+<a href="../specifications/interbase/interclient/CharacterEncodings.html#Cp860"
+   style="color:green">
+Cp860</a>,
+<a href="../specifications/interbase/interclient/CharacterEncodings.html#Cp861"
+   style="color:green">
+Cp861</a>,
+<a href="../specifications/interbase/interclient/CharacterEncodings.html#Cp863"
+   style="color:green">
+Cp863</a>,
+<a href="../specifications/interbase/interclient/CharacterEncodings.html#Cp865"
+   style="color:green">
+Cp865</a>,
+<a href="../specifications/interbase/interclient/CharacterEncodings.html#EUCJIS"
+   style="color:green">
+EUCJIS</a>,
+<a href="../specifications/interbase/interclient/CharacterEncodings.html#GB2312"
+   style="color:green">
+GB2312</a>,
+<a href="../specifications/interbase/interclient/CharacterEncodings.html#KSC5601"
+   style="color:green">
+KSC5601</a>,
+<a href="../specifications/interbase/interclient/CharacterEncodings.html#SJIS"
+   style="color:green">
+SJIS</a>,
+<a href="../specifications/interbase/interclient/CharacterEncodings.html#UTF8"
+   style="color:green">
+UTF8</a>
+<li>
+<a href="../specifications/interbase/interclient/CharacterEncodings.html#getInterBaseCharacterSetName(java.lang.String)"
+   style="color:green">
+getInterBaseCharacterSetName</a>,
+<a href="../specifications/interbase/interclient/CharacterEncodings.html#getSupportedEncodings()"
+   style="color:green">
+getSupportedEncodings</a>
+</ul>
+</ul>
+
+<p>
+<ul>
+<li>
+<a href="../specifications/interbase/interclient/ConnectionProperties.html"
+   style="color:green">
+ConnectionProperties</a>
+<i>- deprecated, see
+     <a href="icConnectionProperties.html" style="color:orange">DataSource and Connection Properties</a>
+     for a specification of transient connection properties and pre-connect action requests</i>
+</ul>
+
+<p>
+<ul>
+<li>
+<a href="../specifications/interbase/interclient/DatabaseStatistics.html"
+   style="color:orange">
+DatabaseStatistics</a>
+<i>- database-wide read/write statistics and table operation counts</i>
+<ul>
+<li>
+<a href="../specifications/interbase/interclient/DatabaseStatistics.html#getDiskReads()"
+   style="color:orange">
+getDiskReads</a>,
+<a href="../specifications/interbase/interclient/DatabaseStatistics.html#getDiskWrites()"
+   style="color:orange">
+getDiskWrites</a>,
+<a href="../specifications/interbase/interclient/DatabaseStatistics.html#getMemoryReads()"
+   style="color:orange">
+getMemoryReads</a>,
+<a href="../specifications/interbase/interclient/DatabaseStatistics.html#getMemoryWrites()"
+   style="color:orange">
+getMemoryWrites</a>
+<i>- page reads/writes to disk or cache</i>
+<li>
+<a href="../specifications/interbase/interclient/DatabaseStatistics.html#getBackoutCount(java.lang.String)"
+   style="color:orange">
+getBackoutCount</a>,
+<a href="../specifications/interbase/interclient/DatabaseStatistics.html#getDeleteCount(java.lang.String)"
+   style="color:orange">
+getDeleteCount</a>,
+<a href="../specifications/interbase/interclient/DatabaseStatistics.html#getExpungeCount(java.lang.String)"
+   style="color:orange">
+getExpungeCount</a>,
+<a href="../specifications/interbase/interclient/DatabaseStatistics.html#getIndexedReadCount(java.lang.String)"
+   style="color:orange">
+getIndexedReadCount</a>,
+<a href="../specifications/interbase/interclient/DatabaseStatistics.html#getInsertCount(java.lang.String)"
+   style="color:orange">
+getInsertCount</a>,
+<a href="../specifications/interbase/interclient/DatabaseStatistics.html#getPurgeCount(java.lang.String)"
+   style="color:orange">
+getPurgeCount</a>,
+<a href="../specifications/interbase/interclient/DatabaseStatistics.html#getSequentialReadCount(java.lang.String)"
+   style="color:orange">
+getSequentialReadCount</a>,
+<a href="../specifications/interbase/interclient/DatabaseStatistics.html#getUpdateCount(java.lang.String)"
+   style="color:orange">
+getUpdateCount</a>
+<i>- table operation counts, see comment in Open Issues section below</i>
+</ul>
+</ul>
+
+<p>
+<ul>
+<li>
+<a href="../specifications/interbase/interclient/ErrorCodes.html"
+   style="color:green">
+ErrorCodes</a>
+<i>- an enumeration of InterClient error codes; also see
+<a href="icSQLStates.html" style="color:green">
+SQL State codes</a>
+</i>
+<ul>
+<li>
+<a href="../specifications/interbase/interclient/ErrorCodes.html#badInstallation"
+   style="color:green">
+badInstallation</a>,
+<a href="../specifications/interbase/interclient/ErrorCodes.html#bugCheck"
+   style="color:green">
+bugCheck</a>,
+<a href="../specifications/interbase/interclient/ErrorCodes.html#characterEncoding"
+   style="color:green">
+characterEncoding</a>,
+<a href="../specifications/interbase/interclient/ErrorCodes.html#communication"
+   style="color:green">
+communication</a>,
+<a href="../specifications/interbase/interclient/ErrorCodes.html#driverNotCapable"
+   style="color:green">
+driverNotCapable</a>,
+<a href="../specifications/interbase/interclient/ErrorCodes.html#invalidOperation"
+   style="color:green">
+invalidOperation</a>,
+<a href="../specifications/interbase/interclient/ErrorCodes.html#missingResourceBundle"
+   style="color:green">
+missingResourceBundle</a>,
+<a href="../specifications/interbase/interclient/ErrorCodes.html#outOfMemory"
+   style="color:green">
+outOfMemory</a>,
+<a href="../specifications/interbase/interclient/ErrorCodes.html#remoteProtocol"
+   style="color:green">
+remoteProtocol</a>,
+<a href="../specifications/interbase/interclient/ErrorCodes.html#socketTimeout"
+   style="color:green">
+socketTimeout</a>,
+<a href="../specifications/interbase/interclient/ErrorCodes.html#unknownHost"
+   style="color:green">
+unknownHost</a>,
+<a href="../specifications/interbase/interclient/ErrorCodes.html#unlicensedComponent"
+   style="color:green">
+unlicensedComponent</a>
+</ul>
+</ul>
+
+<p>
+<ul>
+<li>
+<a href="../specifications/interbase/interclient/ParameterMetaData.html"
+   style="color:green">
+ParameterMetaData</a>
+<i>- extensions for describing the input columns of a parameterized prepared statement</i>
+<ul>
+<li>
+<a href="../specifications/interbase/interclient/ParameterMetaData.html#getParameterCount()"
+   style="color:green">
+getParameterCount</a>,
+<a href="../specifications/interbase/interclient/ParameterMetaData.html#getParameterType(int)"
+   style="color:green">
+getParameterType</a>,
+<a href="../specifications/interbase/interclient/ParameterMetaData.html#getParameterTypeName(int)"
+   style="color:green">
+getParameterTypeName</a>,
+<a href="../specifications/interbase/interclient/ParameterMetaData.html#getPrecision(int)"
+   style="color:green">
+getPrecision</a>,
+<a href="../specifications/interbase/interclient/ParameterMetaData.html#getScale(int)"
+   style="color:green">
+getScale</a>,
+<a href="../specifications/interbase/interclient/ParameterMetaData.html#isNullable(int)"
+   style="color:green">
+isNullable</a>
+</ul>
+</ul>
+
+<p>
+<ul>
+<li>
+<a href="../specifications/interbase/interclient/Resources.html"
+   style="color:green">
+Resources</a>
+<i>- localized error messages and other hard-wired text within the driver</i>
+<ul>
+<li>
+<a href="../specifications/interbase/interclient/Resources.html#getContents()"
+   style="color:green">
+getContents</a>
+</ul>
+</ul>
+
+<p>
+<ul>
+<li>
+<a href="../specifications/interbase/interclient/ServerManager.html"
+   style="color:orange">
+ServerManager</a>
+<i>- extensions for administering an InterBase server</i>
+<ul>
+<li>
+<a href="../specifications/interbase/interclient/ServerManager.html#getInterServerMajorVersion()"
+   style="color:orange">
+getInterServerMajorVersion</a>,
+<a href="../specifications/interbase/interclient/ServerManager.html#getInterServerMinorVersion()"
+   style="color:orange">
+getInterServerMinorVersion</a>,
+<a href="../specifications/interbase/interclient/ServerManager.html#getInterServerBuildNumber()"
+   style="color:orange">
+getInterServerBuildNumber</a>,
+<a href="../specifications/interbase/interclient/ServerManager.html#getInterServerBuildCertificationLevel()"
+   style="color:orange">
+getInterServerBuildCertificationLevel</a>,
+<a href="../specifications/interbase/interclient/ServerManager.html#getInterServerJDBCNetProtocolVersion()"
+   style="color:orange">
+getInterServerJDBCNetProtocolVersion</a>,
+<a href="../specifications/interbase/interclient/ServerManager.html#getInterServerExpirationDate()"
+   style="color:orange">
+getInterServerExpirationDate</a>,
+<a href="../specifications/interbase/interclient/ServerManager.html#getInterServerPort()"
+   style="color:orange">
+getInterServerPort</a>
+<i>- getting interserver version information</i>
+<li>
+<a href="../specifications/interbase/interclient/ServerManager.html#getInterBaseVersion()"
+   style="color:orange">
+getInterBaseVersion</a>,
+<a href="../specifications/interbase/interclient/ServerManager.html#getDatabasesInUse()"
+   style="color:orange">
+getDatabasesInUse</a>,
+<a href="../specifications/interbase/interclient/ServerManager.html#getNumberOfInterBaseConnectionsInUse()"
+   style="color:orange">
+getNumberOfInterBaseConnectionsInUse</a>,
+<a href="../specifications/interbase/interclient/ServerManager.html#getLockActivityStream(java.util.Map)"
+   style="color:red">
+getLockActivityStream</a>
+<i>- getting server-wide information</i>
+<li>
+<a href="../specifications/interbase/interclient/ServerManager.html#startInterBase(int, int)"
+   style="color:red">
+startInterBase</a>,
+<a href="../specifications/interbase/interclient/ServerManager.html#stopInterBase()"
+   style="color:red">
+stopInterBase</a>
+<i>- starting and stopping the server</i>
+<li>
+<a href="../specifications/interbase/interclient/ServerManager.html#reserveSpaceForVersioning(java.lang.String, boolean)"
+   style="color:orange">
+reserveSpaceForVersioning</a>,
+<a href="../specifications/interbase/interclient/ServerManager.html#setDatabaseCachePages(java.lang.String, int)"
+   style="color:orange">
+setDatabaseCachePages</a>,
+<a href="../specifications/interbase/interclient/ServerManager.html#setDatabaseReadWrite(java.lang.String, boolean)"
+   style="color:orange">
+setDatabaseReadWrite</a>,
+<a href="../specifications/interbase/interclient/ServerManager.html#setSweepInterval(java.lang.String, int)"
+   style="color:orange">
+setSweepInterval</a>,
+<a href="../specifications/interbase/interclient/ServerManager.html#useSynchronousWrites(java.lang.String, boolean)"
+   style="color:orange">
+useSynchronousWrites</a>
+<i>- setting persistent database properties</i>
+<li>
+<a href="../specifications/interbase/interclient/ServerManager.html#takeOffline(java.lang.String, boolean, boolean, boolean, int)"
+   style="color:orange">
+takeOffline</a>,
+<a href="../specifications/interbase/interclient/ServerManager.html#bringOnline(java.lang.String)"
+   style="color:orange">
+bringOnline</a>,
+<a href="../specifications/interbase/interclient/ServerManager.html#backup(java.lang.String, java.lang.String[], int[], java.util.Map)"
+   style="color:orange">
+backup</a>,
+<a href="../specifications/interbase/interclient/ServerManager.html#backup(java.lang.String, java.lang.String, java.util.Map)"
+   style="color:orange">
+backup</a>,
+<a href="../specifications/interbase/interclient/ServerManager.html#restore(java.lang.String, java.lang.String[], int[], java.util.Map)"
+   style="color:orange">
+restore</a>,
+<a href="../specifications/interbase/interclient/ServerManager.html#restore(java.lang.String, java.lang.String, java.util.Map)"
+   style="color:orange">
+restore</a>,
+<a href="../specifications/interbase/interclient/ServerManager.html#sweep(java.lang.String)"
+   style="color:orange">
+sweep</a>,
+<a href="../specifications/interbase/interclient/ServerManager.html#verify(java.lang.String, java.util.Map)"
+   style="color:orange">
+verify</a>,
+<a href="../specifications/interbase/interclient/ServerManager.html#repair(java.lang.String, java.util.Map)"
+   style="color:orange">
+repair</a>,
+<a href="../specifications/interbase/interclient/ServerManager.html#createShadow(java.lang.String, java.lang.String[], int[], java.util.Map)"
+   style="color:red">
+createShadow</a>,
+<a href="../specifications/interbase/interclient/ServerManager.html#createShadow(java.lang.String, java.lang.String, java.util.Map)"
+   style="color:red">
+createShadow</a>,
+<a href="../specifications/interbase/interclient/ServerManager.html#activateShadow(java.lang.String)"
+   style="color:orange">
+activateShadow</a>,
+<a href="../specifications/interbase/interclient/ServerManager.html#deleteShadow(java.lang.String)"
+   style="color:orange">
+deleteShadow</a>,
+<a href="../specifications/interbase/interclient/ServerManager.html#createDatabase(java.lang.String, java.util.Map)"
+   style="color:orange">
+createDatabase</a>,
+<a href="../specifications/interbase/interclient/ServerManager.html#deleteDatabase(java.lang.String)"
+   style="color:orange">
+deleteDatabase</a>,
+<a href="../specifications/interbase/interclient/ServerManager.html#getLimboTransactions(java.lang.String)"
+   style="color:red">
+getLimboTransactions</a>,
+<a href="../specifications/interbase/interclient/ServerManager.html#rollbackTransactions(java.lang.String, int[])"
+   style="color:red">
+rollbackTransactions</a>,
+<a href="../specifications/interbase/interclient/ServerManager.html#commitTransactions(java.lang.String, int[])"
+   style="color:red">
+commitTransactions</a>,
+<a href="../specifications/interbase/interclient/ServerManager.html#twoPhaseCommitTransactions(java.lang.String, int[])"
+   style="color:red">
+twoPhaseCommitTransactions</a>
+<i>- service requests on a database</i>
+<li>
+<a href="../specifications/interbase/interclient/ServerManager.html#getStatisticsText(java.lang.String, java.util.Map)"
+   style="color:red">
+getStatisticsText</a>
+<i>- getting database-wide information; also see DatabaseMetaData extensions
+</i>
+<li>
+<a href="../specifications/interbase/interclient/ServerManager.html#addInterBaseLicense(java.lang.String, java.lang.String)"
+   style="color:orange">
+addInterBaseLicense</a>,
+<a href="../specifications/interbase/interclient/ServerManager.html#deleteInterBaseLicense(java.lang.String)"
+   style="color:orange">
+deleteInterBaseLicense</a>,
+<a href="../specifications/interbase/interclient/ServerManager.html#getInterBaseLicenses()"
+   style="color:orange">
+getInterBaseLicenses</a>
+<i>- administering licenses</i>
+<li>
+<a href="../specifications/interbase/interclient/ServerManager.html#getRegisteredUsers()"
+   style="color:orange">
+getRegisteredUsers</a>,
+<a href="../specifications/interbase/interclient/ServerManager.html#addUser(java.lang.String, java.lang.String, java.util.Map)"
+   style="color:orange">
+addUser</a>,
+<a href="../specifications/interbase/interclient/ServerManager.html#deleteUser(java.lang.String)"
+   style="color:orange">
+deleteUser</a>,
+<a href="../specifications/interbase/interclient/ServerManager.html#modifyUser(java.lang.String, java.util.Map)"
+   style="color:orange">
+modifyUser</a>,
+<a href="../specifications/interbase/interclient/ServerManager.html#modifyUser(java.lang.String, java.lang.String)"
+   style="color:orange">
+modifyUser</a>
+<i>- administering users</i>
+<li>
+<a href="../specifications/interbase/interclient/ServerManager.html#getWarnings()"
+   style="color:orange">
+getWarnings</a>,
+<a href="../specifications/interbase/interclient/ServerManager.html#clearWarnings()"
+   style="color:orange">
+clearWarnings</a>,
+<a href="../specifications/interbase/interclient/ServerManager.html#finalize()"
+   style="color:orange">
+finalize</a>,
+<a href="../specifications/interbase/interclient/ServerManager.html#close()"
+   style="color:orange">
+close</a>
+<i>- miscellaneous methods</i>
+</ul>
+</ul>
+
+<p><strong><i><a name="c">Extensions to the Standard Classes</a></i></strong>
+<ul>
+<li>
+Connection
+<i>- extensions for InterBase transactions</i>
+
+<ul>
+<li>
+<a href="../specifications/interbase/interclient/Connection.html#TRANSACTION_SNAPSHOT"
+   style="color:orange">
+TRANSACTION_SNAPSHOT</a>,
+<a href="../specifications/interbase/interclient/Connection.html#TRANSACTION_SNAPSHOT_TABLE_STABILITY"
+   style="color:orange">
+TRANSACTION_SNAPSHOT_TABLE_STABILITY</a>
+<i>- additional isolation levels</i>
+
+<li>
+<a href="../specifications/interbase/interclient/Connection.html#setLockResolution(int)"
+   style="color:orange">
+setLockResolution</a>,
+<a href="../specifications/interbase/interclient/Connection.html#getLockResolution()"
+   style="color:orange">
+getLockResolution</a>,
+<a href="../specifications/interbase/interclient/Connection.html#LOCK_RESOLUTION_WAIT"
+   style="color:orange">
+LOCK_RESOLUTION_WAIT</a>,
+<a href="../specifications/interbase/interclient/Connection.html#LOCK_RESOLUTION_NO_WAIT"
+   style="color:orange">
+LOCK_RESOLUTION_NO_WAIT</a>
+
+<li>
+<a href="../specifications/interbase/interclient/Connection.html#setVersionAcknowledgement(int)"
+   style="color:orange">
+setVersionAcknowledgement</a>,
+<a href="../specifications/interbase/interclient/Connection.html#getVersionAcknowledgement()"
+   style="color:orange">
+getVersionAcknowledgement</a>,
+<a href="../specifications/interbase/interclient/Connection.html#IGNORE_UNCOMMITTED_RECORD_VERSIONS_ON_READ"
+   style="color:orange">
+IGNORE_UNCOMMITTED_RECORD_VERSIONS_ON_READ</a>,
+<a href="../specifications/interbase/interclient/Connection.html#RECOGNIZE_UNCOMMITTED_RECORD_VERSIONS_ON_READ"
+   style="color:orange">
+RECOGNIZE_UNCOMMITTED_RECORD_VERSIONS_ON_READ</a>
+<i>- read-committed versioning modes</i>
+
+<li>
+<a href="../specifications/interbase/interclient/Connection.html#setTableLock(java.lang.String, int)"
+   style="color:orange">
+setTableLock</a>,
+<a href="../specifications/interbase/interclient/Connection.html#getTableLock(java.lang.String)"
+   style="color:orange">
+getTableLock</a>,
+<a href="../specifications/interbase/interclient/Connection.html#TABLELOCK_SHARED_WRITE"
+   style="color:orange">
+TABLELOCK_SHARED_WRITE</a>,
+<a href="../specifications/interbase/interclient/Connection.html#TABLELOCK_SHARED_READ"
+   style="color:orange">
+TABLELOCK_SHARED_READ</a>,
+<a href="../specifications/interbase/interclient/Connection.html#TABLELOCK_PROTECTED_WRITE"
+   style="color:orange">
+TABLELOCK_PROTECTED_WRITE</a>,
+<a href="../specifications/interbase/interclient/Connection.html#TABLELOCK_PROTECTED_READ"
+   style="color:orange">
+TABLELOCK_PROTECTED_READ</a>
+
+<li>
+<a href="../specifications/interbase/interclient/Connection.html#commitRetain()"
+   style="color:orange">
+commitRetain</a>,
+<a href="../specifications/interbase/interclient/Connection.html#getTransactionId()"
+   style="color:red">
+getTransactionId</a>,
+<a href="../specifications/interbase/interclient/Connection.html#inTransaction()"
+   style="color:red">
+inTransaction</a>
+<i>- miscellaneous transaction methods</i>
+</ul>
+</ul>
+
+<p>
+<ul>
+<li>
+DatabaseMetaData
+<i>- extensions for additional driver and database information</i>
+<ul>
+<li>
+<a href="../specifications/interbase/interclient/DatabaseMetaData.html#getInterServerVersion()"
+   style="color:orange">
+getInterServerVersion</a>,
+<a href="../specifications/interbase/interclient/DatabaseMetaData.html#getInterServerMajorVersion()"
+   style="color:orange">
+getInterServerMajorVersion</a>,
+<a href="../specifications/interbase/interclient/DatabaseMetaData.html#getInterServerMinorVersion()"
+   style="color:orange">
+getInterServerMinorVersion</a>,
+<a href="../specifications/interbase/interclient/DatabaseMetaData.html#getInterServerJDBCNetProtocolVersion()"
+   style="color:orange">
+getInterServerJDBCNetProtocolVersion</a>,
+<a href="../specifications/interbase/interclient/DatabaseMetaData.html#getInterServerExpirationDate()"
+   style="color:orange">
+getInterServerExpirationDate</a>,
+<a href="../specifications/interbase/interclient/DatabaseMetaData.html#getInterServerPort()"
+   style="color:orange">
+getInterServerPort</a>
+<i>- interserver information</i>
+<li>
+<a href="../specifications/interbase/interclient/DatabaseMetaData.html#getDriverJDBCNetProtocolVersion()"
+   style="color:orange">
+getDriverJDBCNetProtocolVersion</a>,
+<a href="../specifications/interbase/interclient/DatabaseMetaData.html#getDriverExpirationDate()"
+   style="color:orange">
+getDriverExpirationDate</a>
+<i>- additional interclient driver information</i>
+<li>
+<a href="../specifications/interbase/interclient/DatabaseMetaData.html#getDatabaseMajorVersion()"
+   style="color:orange">
+getDatabaseMajorVersion</a>,
+<a href="../specifications/interbase/interclient/DatabaseMetaData.html#getODSMajorVersion()"
+   style="color:orange">
+getODSMajorVersion</a>,
+<a href="../specifications/interbase/interclient/DatabaseMetaData.html#getODSMinorVersion()"
+   style="color:orange">
+getODSMinorVersion</a>
+<i>- additional database version information</i>
+<li>
+<a href="../specifications/interbase/interclient/DatabaseMetaData.html#getActualCachePagesInUse()"
+   style="color:orange">
+getActualCachePagesInUse</a>,
+<a href="../specifications/interbase/interclient/DatabaseMetaData.html#getPersistentDatabaseCachePages()"
+   style="color:orange">
+getPersistentDatabaseCachePages</a>,
+<a href="../specifications/interbase/interclient/DatabaseMetaData.html#getPageAllocation()"
+   style="color:orange">
+getPageAllocation</a>,
+<a href="../specifications/interbase/interclient/DatabaseMetaData.html#getPageSize()"
+   style="color:orange">
+getPageSize</a>,
+<a href="../specifications/interbase/interclient/DatabaseMetaData.html#getSweepInterval()"
+   style="color:orange">
+getSweepInterval</a>,
+<a href="../specifications/interbase/interclient/DatabaseMetaData.html#isDatabaseReadWrite()"
+   style="color:orange">
+isDatabaseReadWrite</a>,
+<a href="../specifications/interbase/interclient/DatabaseMetaData.html#reservingSpaceForVersioning()"
+   style="color:orange">
+reservingSpaceForVersioning</a>,
+<a href="../specifications/interbase/interclient/DatabaseMetaData.html#usingSynchronousWrites()"
+   style="color:orange">
+usingSynchronousWrites</a>,
+<a href="../specifications/interbase/interclient/DatabaseMetaData.html#getStatistics()"
+   style="color:red">
+getStatistics</a>,
+<a href="../specifications/interbase/interclient/DatabaseMetaData.html#getUsersConnected()"
+   style="color:red">
+getUsersConnected</a>,
+<a href="../specifications/interbase/interclient/DatabaseMetaData.html#getUDFs()"
+   style="color:red">
+getUDFs</a>
+<i>- additional database information</i>
+</ul>
+</ul>
+
+<p>
+<ul>
+<li>
+Driver
+<i>- extensions for additional driver information</i>
+<ul>
+<li>
+<a href="../specifications/interbase/interclient/Driver.html#getBuildNumber()"
+   style="color:green">
+getBuildNumber</a>,
+<a href="../specifications/interbase/interclient/Driver.html#getBuildCertificationLevel()"
+   style="color:green">
+getBuildCertificationLevel</a>,
+<a href="../specifications/interbase/interclient/Driver.html#testBuild"
+   style="color:green">
+testBuild</a>,
+<a href="../specifications/interbase/interclient/Driver.html#betaBuild"
+   style="color:green">
+betaBuild</a>,
+<a href="../specifications/interbase/interclient/Driver.html#finalBuild"
+   style="color:green">
+finalBuild</a>
+<i>- build information</i>
+<li>
+<a href="../specifications/interbase/interclient/Driver.html#clientServerEdition()"
+   style="color:green">
+clientServerEdition</a>,
+<a href="../specifications/interbase/interclient/Driver.html#expiredDriver()"
+   style="color:green">
+expiredDriver</a>,
+<a href="../specifications/interbase/interclient/Driver.html#getCompanyName()"
+   style="color:green">
+getCompanyName</a>,
+<a href="../specifications/interbase/interclient/Driver.html#getCompatibleJREVersions()"
+   style="color:green">
+getCompatibleJREVersions</a>,
+<a href="../specifications/interbase/interclient/Driver.html#getCompatibleIBVersions()"
+   style="color:green">
+getCompatibleIBVersions</a>,
+<a href="../specifications/interbase/interclient/Driver.html#getExpirationDate()"
+   style="color:green">
+getExpirationDate</a>,
+<a href="../specifications/interbase/interclient/Driver.html#getJDBCNetProtocol()"
+   style="color:green">
+getJDBCNetProtocol</a>,
+<a href="../specifications/interbase/interclient/Driver.html#getJDBCNetProtocolVersion()"
+   style="color:green">
+getJDBCNetProtocolVersion</a>
+<i>- additional version information</i>
+</ul>
+</ul>
+
+<p>
+<ul>
+<li>
+PreparedStatement
+<i>- extensions for getting metadata dynamically</i>
+<ul>
+<li>
+<a href="../specifications/interbase/interclient/PreparedStatement.html#getParameterMetaData()"
+   style="color:green">
+getParameterMetaData</a>,
+<a href="../specifications/interbase/interclient/PreparedStatement.html#getResultSetMetaData()"
+   style="color:green">
+getResultSetMetaData</a>
+</ul>
+</ul>
+
+<p>
+<ul>
+<li>
+ResultSet
+<i>- adds a single convenience method and implements the Adaptor interface</i>
+<ul>
+<li>
+<a href="../specifications/interbase/interclient/ResultSet.html#isNull(int)"
+   style="color:green">
+isNull</a>
+<i>- less portable but more convenient than
+<a href="../specifications/interbase/interclient/ResultSet.html#wasNull()" style="color:green">
+wasNull</a>
+</i>
+<li>
+<a href="../specifications/interbase/interclient/ResultSet.html#adapt(int, java.lang.Object)"
+   style="color:green">
+adapt</a>,
+<a href="../specifications/interbase/interclient/ResultSet.html#revert(int)"
+   style="color:green">
+revert</a>
+<i>- Adaptor implementation</i>
+</ul>
+</ul>
+
+<p><strong><i><a name="d">New Exceptions</a></i></strong>
+<ul>
+<li>
+<a href="../specifications/interbase/interclient/BlobIOException.html"
+   style="color:green">
+BlobIOException</a>
+<i>- a java.io.IOException subclass</i>
+<li>
+<a href="../specifications/interbase/interclient/BadInstallationException.html"
+   style="color:green">
+BadInstallationException</a>,
+<a href="../specifications/interbase/interclient/BugCheckException.html"
+   style="color:green">
+BugCheckException</a>,
+<a href="../specifications/interbase/interclient/CharacterEncodingException.html"
+   style="color:green">
+CharacterEncodingException</a>,
+<a href="../specifications/interbase/interclient/ColumnConversionException.html"
+   style="color:green">
+ColumnConversionException</a>,
+<a href="../specifications/interbase/interclient/ColumnIndexOutOfBoundsException.html"
+   style="color:green">
+ColumnIndexOutOfBoundsException</a>,
+<a href="../specifications/interbase/interclient/CommunicationException.html"
+   style="color:green">
+CommunicationException</a>,
+<a href="../specifications/interbase/interclient/CorruptDatabaseException.html"
+   style="color:green">
+CorruptDatabaseException</a>,
+<a href="../specifications/interbase/interclient/DataConversionException.html"
+   style="color:green">
+DataConversionException</a>,
+<a href="../specifications/interbase/interclient/DeadlockException.html"
+   style="color:green">
+DeadlockException</a>,
+<a href="../specifications/interbase/interclient/DriverNotCapableException.html"
+   style="color:green">
+DriverNotCapableException</a>,
+<a href="../specifications/interbase/interclient/EscapeSyntaxException.html"
+   style="color:green">
+EscapeSyntaxException</a>,
+<a href="../specifications/interbase/interclient/ExpiredDriverException.html"
+   style="color:green">
+ExpiredDriverException</a>,
+<a href="../specifications/interbase/interclient/ExpiredDriverWarning.html"
+   style="color:green">
+ExpiredDriverWarning</a>,
+<a href="../specifications/interbase/interclient/InvalidArgumentException.html"
+   style="color:green">
+InvalidArgumentException</a>,
+<a href="../specifications/interbase/interclient/InvalidOperationException.html"
+   style="color:green">
+InvalidOperationException</a>,
+<a href="../specifications/interbase/interclient/LockConflictException.html"
+   style="color:green">
+LockConflictException</a>,
+<a href="../specifications/interbase/interclient/OutOfMemoryException.html"
+   style="color:green">
+OutOfMemoryException</a>,
+<a href="../specifications/interbase/interclient/ParameterConversionException.html"
+   style="color:green">
+ParameterConversionException</a>,
+<a href="../specifications/interbase/interclient/ParameterIndexOutOfBoundsException.html"
+   style="color:green">
+ParameterIndexOutOfBoundsException</a>,
+<a href="../specifications/interbase/interclient/RemoteProtocolException.html"
+   style="color:green">
+RemoteProtocolException</a>,
+<a href="../specifications/interbase/interclient/SocketTimeoutException.html"
+   style="color:green">
+SocketTimeoutException</a>,
+<a href="../specifications/interbase/interclient/UnauthorizedUserException.html"
+   style="color:green">
+UnauthorizedUserException</a>,
+<a href="../specifications/interbase/interclient/UnavailableDatabaseFileException.html"
+   style="color:green">
+UnavailableDatabaseFileException</a>,
+<a href="../specifications/interbase/interclient/UnavailableInterBaseServerException.html"
+   style="color:green">
+UnavailableInterBaseServerException</a>,
+<a href="../specifications/interbase/interclient/UnknownHostException.html"
+   style="color:green">
+UnknownHostException</a>,
+<a href="../specifications/interbase/interclient/UnlicensedComponentException.html"
+   style="color:green">
+UnlicensedComponentException</a>,
+<a href="../specifications/interbase/interclient/UnsupportedCharacterSetException.html"
+   style="color:green">
+UnsupportedCharacterSetException</a>,
+<a href="../specifications/interbase/interclient/UpdateConflictException.html"
+   style="color:green">
+UpdateConflictException</a>,
+<a href="../specifications/interbase/interclient/URLSyntaxException.html"
+   style="color:green">
+URLSyntaxException</a>
+<i>- java.sql.SQLException subclasses</i>
+</ul>
+
+<p><strong><i><a name="f">JDBC 2 Standard Extension API and Related InterClient Extensions</a></i></strong>
+
+<ul>
+<li>
+<a href="../specifications/interbase/interclient/DataSource.html"
+   style="color:orange">
+DataSource</a>
+<i>- a factory for Connections and ServerManagers</i>
+<ul>
+<li>
+<a href="../specifications/interbase/interclient/DataSource.html#getDatabaseName()"
+   style="color:orange">
+getDatabaseName</a>,
+<a href="../specifications/interbase/interclient/DataSource.html#getDataSourceName()"
+   style="color:orange">
+getDataSourceName</a>,
+<a href="../specifications/interbase/interclient/DataSource.html#getDescription()"
+   style="color:orange">
+getDescription</a>,
+<a href="../specifications/interbase/interclient/DataSource.html#getNetworkProtocol()"
+   style="color:orange">
+getNetworkProtocol</a>,
+<a href="../specifications/interbase/interclient/DataSource.html#getPassword()"
+   style="color:orange">
+getPassword</a>,
+<a href="../specifications/interbase/interclient/DataSource.html#getPortNumber()"
+   style="color:orange">
+getPortNumber</a>,
+<a href="../specifications/interbase/interclient/DataSource.html#getRoleName()"
+   style="color:orange">
+getRoleName</a>,
+<a href="../specifications/interbase/interclient/DataSource.html#getServerName()"
+   style="color:orange">
+getServerName</a>,
+<a href="../specifications/interbase/interclient/DataSource.html#getUser()"
+   style="color:orange">
+getUser</a>
+<i>- standard property getter methods</i>
+<li>
+<a href="../specifications/interbase/interclient/DataSource.html#getCharSet()"
+   style="color:orange">
+getCharSet</a>,
+<a href="../specifications/interbase/interclient/DataSource.html#getInterBaseLicense()"
+   style="color:orange">
+getInterBaseLicense</a>,
+<a href="../specifications/interbase/interclient/DataSource.html#getServerManagerHost()"
+   style="color:orange">
+getServerManagerHost</a>,
+<a href="../specifications/interbase/interclient/DataSource.html#getSuggestedCachePages()"
+   style="color:orange">
+getSuggestedCachePages</a>,
+<a href="../specifications/interbase/interclient/DataSource.html#getSweepOnConnect()"
+   style="color:orange">
+getSweepOnConnect</a>
+<i>- non-standard property getter methods</i>
+<li>
+<a href="../specifications/interbase/interclient/DataSource.html#setDatabaseName(java.lang.String)"
+   style="color:orange">
+setDatabaseName</a>,
+<a href="../specifications/interbase/interclient/DataSource.html#setDataSourceName(java.lang.String)"
+   style="color:orange">
+setDataSourceName</a>,
+<a href="../specifications/interbase/interclient/DataSource.html#setDescription(java.lang.String)"
+   style="color:orange">
+setDescription</a>,
+<a href="../specifications/interbase/interclient/DataSource.html#setNetworkProtocol(java.lang.String)"
+   style="color:orange">
+setNetworkProtocol</a>,
+<a href="../specifications/interbase/interclient/DataSource.html#setPassword(java.lang.String)"
+   style="color:orange">
+setPassword</a>,
+<a href="../specifications/interbase/interclient/DataSource.html#setPortNumber(int)"
+   style="color:orange">
+setPortNumber</a>,
+<a href="../specifications/interbase/interclient/DataSource.html#setRoleName(java.lang.String)"
+   style="color:orange">
+setRoleName</a>,
+<a href="../specifications/interbase/interclient/DataSource.html#setServerName(java.lang.String)"
+   style="color:orange">
+setServerName</a>,
+<a href="../specifications/interbase/interclient/DataSource.html#setUser(java.lang.String)"
+   style="color:orange">
+setUser</a>
+<i>- standard property setter methods</i>
+<li>
+<a href="../specifications/interbase/interclient/DataSource.html#setCharSet(java.lang.String)"
+   style="color:orange">
+setCharSet</a>,
+<a href="../specifications/interbase/interclient/DataSource.html#setInterBaseLicense(java.lang.String)"
+   style="color:orange">
+setInterBaseLicense</a>,
+<a href="../specifications/interbase/interclient/DataSource.html#setServerManagerHost(java.lang.String)"
+   style="color:orange">
+setServerManagerHost</a>,
+<a href="../specifications/interbase/interclient/DataSource.html#setSuggestedCachePages(int)"
+   style="color:orange">
+setSuggestedCachePages</a>,
+<a href="../specifications/interbase/interclient/DataSource.html#setSweepOnConnect(boolean)"
+   style="color:orange">
+setSweepOnConnect</a>
+<i>- non-standard property setter methods</i>
+<li>
+<a href="../specifications/interbase/interclient/DataSource.html#getServerManager()"
+   style="color:orange">
+getServerManager</a>,
+<a href="../specifications/interbase/interclient/DataSource.html#getServerManager(java.lang.String, java.lang.String)"
+   style="color:orange">
+getServerManager</a>
+<i>- extension as a factory for ServerManagers</i>
+<li>
+<a href="../specifications/interbase/interclient/DataSource.html#getConnection()"
+   style="color:orange">
+getConnection</a>,
+<a href="../specifications/interbase/interclient/DataSource.html#getConnection(java.lang.String, java.lang.String)"
+   style="color:orange">
+getConnection</a>,
+<a href="../specifications/interbase/interclient/DataSource.html#setLogWriter(java.io.PrintWriter)"
+   style="color:red">
+setLogWriter</a>,
+<a href="../specifications/interbase/interclient/DataSource.html#getLogWriter()"
+   style="color:red">
+getLogWriter</a>,
+<a href="../specifications/interbase/interclient/DataSource.html#setLoginTimeout(int)"
+   style="color:orange">
+setLoginTimeout</a>,
+<a href="../specifications/interbase/interclient/DataSource.html#getLoginTimeout()"
+   style="color:orange">
+getLoginTimeout</a>
+<i>- javax.sql.DataSource implementation</i>
+<li>
+<a href="../specifications/interbase/interclient/DataSource.html#getReference()"
+   style="color:orange">
+getReference</a>
+<i>- javax.naming.Referenceable implementation</i>
+</ul>
+</ul>
+
+<p>
+<ul>
+<li>
+<a href="../specifications/interbase/interclient/ObjectFactory.html"
+   style="color:orange">
+ObjectFactory</a>
+<i>- generates InterClient data source objects from JNDI references</i>
+<ul>
+<li>
+<a href="../specifications/interbase/interclient/ObjectFactory.html#getObjectInstance(java.lang.Object, javax.naming.Name, javax.naming.Context, java.util.Hashtable)"
+   style="color:orange">
+getObjectInstance</a>
+<i>- reconstitutes a data source object from a JNDI reference</i>
+</ul>
+</ul>
+
+<p>
+<ul>
+<li>
+<a href="../specifications/interbase/interclient/PooledConnection.html"
+   style="color:red">
+PooledConnection</a>
+<ul>
+<li>
+<a href="../specifications/interbase/interclient/PooledConnection.html#addConnectionEventListener(javax.sql.ConnectionEventListener)"
+   style="color:red">
+addConnectionEventListener</a>,
+<a href="../specifications/interbase/interclient/PooledConnection.html#removeConnectionEventListener(javax.sql.ConnectionEventListener)"
+   style="color:red">
+removeConnectionEventListener</a>,
+<a href="../specifications/interbase/interclient/PooledConnection.html#getConnection()"
+   style="color:red">
+getConnection</a>,
+<a href="../specifications/interbase/interclient/PooledConnection.html#close()"
+   style="color:red">
+close</a>
+</ul>
+</ul>
+
+<p>
+<ul>
+<li>
+<a href="../specifications/interbase/interclient/ConnectionPoolDataSource.html"
+   style="color:red">
+ConnectionPoolDataSource</a>
+<ul>
+<li>
+<a href="../specifications/interbase/interclient/ConnectionPoolDataSource.html#getPooledConnection()"
+   style="color:red">
+getPooledConnection</a>,
+<a href="../specifications/interbase/interclient/ConnectionPoolDataSource.html#getPooledConnection(java.lang.String, java.lang.String)"
+   style="color:red">
+getPooledConnection</a>,
+<a href="../specifications/interbase/interclient/ConnectionPoolDataSource.html#getLoginTimeout()"
+   style="color:red">
+getLoginTimeout</a>,
+<a href="../specifications/interbase/interclient/ConnectionPoolDataSource.html#setLoginTimeout(int)"
+   style="color:red">
+setLoginTimeout</a>,
+<a href="../specifications/interbase/interclient/ConnectionPoolDataSource.html#getLogWriter()"
+   style="color:red">
+getLogWriter</a>,
+<a href="../specifications/interbase/interclient/ConnectionPoolDataSource.html#setLogWriter(java.io.PrintWriter)"
+   style="color:red">
+setLogWriter</a>
+</ul>
+</ul>
+
+<p>
+<ul>
+<li>
+<a href="../specifications/interbase/interclient/ConnectionPoolModule.html"
+   style="color:red">
+ConnectionPoolModule</a>
+<ul>
+<li>
+<a href="../specifications/interbase/interclient/ConnectionPoolModule.html#getConnection()"
+   style="color:red">
+getConnection</a>,
+<a href="../specifications/interbase/interclient/ConnectionPoolModule.html#getConnection(java.lang.String, java.lang.String)"
+   style="color:red">
+getConnection</a>,
+<a href="../specifications/interbase/interclient/ConnectionPoolModule.html#getDataSourceName()"
+   style="color:red">
+getDataSourceName</a>,
+<a href="../specifications/interbase/interclient/ConnectionPoolModule.html#getLoginTimeout()"
+   style="color:red">
+getLoginTimeout</a>,
+<a href="../specifications/interbase/interclient/ConnectionPoolModule.html#setLoginTimeout(int)"
+   style="color:red">
+setLoginTimeout</a>,
+<a href="../specifications/interbase/interclient/ConnectionPoolModule.html#getLogWriter()"
+   style="color:red">
+getLogWriter</a>,
+<a href="../specifications/interbase/interclient/ConnectionPoolModule.html#setLogWriter(java.io.PrintWriter)"
+   style="color:red">
+setLogWriter</a>,
+<a href="../specifications/interbase/interclient/ConnectionPoolModule.html#getReference()"
+   style="color:red">
+getReference</a>,
+<a href="../specifications/interbase/interclient/ConnectionPoolModule.html#setDataSourceName(java.lang.String)"
+   style="color:red">
+setDataSourceName</a>
+</ul>
+</ul>
+
+<p>
+<ul>
+<li>
+<a href="../specifications/interbase/interclient/ConnectionCache.html"
+   style="color:red">
+ConnectionCache</a>
+<ul>
+<li>
+<a href="../specifications/interbase/interclient/ConnectionCache.html#connectionClosed(javax.sql.ConnectionEvent)"
+   style="color:red">
+connectionClosed</a>,
+<a href="../specifications/interbase/interclient/ConnectionCache.html#connectionErrorOccurred(javax.sql.ConnectionEvent)"
+   style="color:red">
+connectionErrorOccurred</a>,
+<a href="../specifications/interbase/interclient/ConnectionCache.html#lookup()"
+   style="color:red">
+lookup</a>
+</ul>
+</ul>
+
+<p>
+<ul>
+<li>
+<a href="../specifications/interbase/interclient/XAConnection.html"
+   style="color:red">
+XAConnection</a>
+<ul>
+<li>
+<a href="../specifications/interbase/interclient/XAConnection.html#getXAResource()"
+   style="color:red">
+getXAResource</a>
+</ul>
+</ul>
+
+<p>
+<ul>
+<li>
+<a href="../specifications/interbase/interclient/XADataSource.html"
+   style="color:red">
+XADataSource</a>
+<ul>
+<li>
+<a href="../specifications/interbase/interclient/XADataSource.html#getXAConnection()"
+   style="color:red">
+getXAConnection</a>,
+<a href="../specifications/interbase/interclient/XADataSource.html#getXAConnection(java.lang.String, java.lang.String)"
+   style="color:red">
+getXAConnection</a>,
+<a href="../specifications/interbase/interclient/XADataSource.html#getLogWriter()"
+   style="color:red">
+getLogWriter</a>,
+<a href="../specifications/interbase/interclient/XADataSource.html#setLogWriter(java.io.PrintWriter)"
+   style="color:red">
+setLogWriter</a>,
+<a href="../specifications/interbase/interclient/XADataSource.html#setLoginTimeout(int)"
+   style="color:red">
+setLoginTimeout</a>,
+<a href="../specifications/interbase/interclient/XADataSource.html#getLoginTimeout()"
+   style="color:red">
+getLoginTimeout</a>
+</ul>
+</ul>
+
+<p>
+<ul>
+<li>
+<a href="../specifications/interbase/interclient/XAResource.html"
+   style="color:red">
+XAResource</a>
+<ul>
+<li>
+<a href="../specifications/interbase/interclient/XAResource.html#commit(javax.transaction.xa.Xid, boolean)"
+   style="color:red">
+commit</a>,
+<a href="../specifications/interbase/interclient/XAResource.html#end(javax.transaction.xa.Xid, int)"
+   style="color:red">
+end</a>,
+<a href="../specifications/interbase/interclient/XAResource.html#forget(javax.transaction.xa.Xid)"
+   style="color:red">
+forget</a>,
+<a href="../specifications/interbase/interclient/XAResource.html#getTransactionTimeout()"
+   style="color:red">
+getTransactionTimeout</a>,
+<a href="../specifications/interbase/interclient/XAResource.html#prepare(javax.transaction.xa.Xid)"
+   style="color:red">
+prepare</a>,
+<a href="../specifications/interbase/interclient/XAResource.html#recover(int)"
+   style="color:red">
+recover</a>,
+<a href="../specifications/interbase/interclient/XAResource.html#rollback(javax.transaction.xa.Xid)"
+   style="color:red">
+rollback</a>,
+<a href="../specifications/interbase/interclient/XAResource.html#setTransactionTimeout(int)"
+   style="color:red">
+setTransactionTimeout</a>,
+<a href="../specifications/interbase/interclient/XAResource.html#start(javax.transaction.xa.Xid, int)"
+   style="color:red">
+start</a>
+</ul>
+</ul>
+
+<p><strong><i><a name="g">JDBC 2 Core API and Related InterClient Extensions</a></i></strong>
+
+<ul>
+<li>
+<a href="../specifications/interbase/interclient/Array.html"
+   style="color:orange">
+Array</a>
+<ul>
+<li>
+<a href="../specifications/interbase/interclient/Array.html#getBaseTypeName()"
+   style="color:orange">
+getBaseTypeName</a>,
+<a href="../specifications/interbase/interclient/Array.html#getBaseType()"
+   style="color:orange">
+getBaseType</a>
+<li>
+<a href="../specifications/interbase/interclient/Array.html#getArray()"
+   style="color:orange">
+getArray</a>,
+<a href="../specifications/interbase/interclient/Array.html#getArray(java.util.Map)"
+   style="color:red">
+getArray</a>,
+<a href="../specifications/interbase/interclient/Array.html#getArray(long, int)"
+   style="color:orange">
+getArray</a>,
+<a href="../specifications/interbase/interclient/Array.html#getArray(long, int, java.util.Map)"
+   style="color:red">
+getArray</a>,
+<a href="../specifications/interbase/interclient/Array.html#getArray(int[][])"
+   style="color:orange">
+getArray</a>
+<li>
+<a href="../specifications/interbase/interclient/Array.html#getResultSet()"
+   style="color:red">
+getResultSet</a>,
+<a href="../specifications/interbase/interclient/Array.html#getResultSet(java.util.Map)"
+   style="color:red">
+getResultSet</a>,
+<a href="../specifications/interbase/interclient/Array.html#getResultSet(long, int)"
+   style="color:red">
+getResultSet</a>,
+<a href="../specifications/interbase/interclient/Array.html#getResultSet(long, int, java.util.Map)"
+   style="color:red">
+getResultSet</a>,
+<a href="../specifications/interbase/interclient/Array.html#getResultSet(int[][])"
+   style="color:red">
+getResultSet</a>
+</ul>
+</ul>
+
+<p>
+<ul>
+<li>
+ParameterMetaData
+<ul>
+<li>
+<a href="../specifications/interbase/interclient/ParameterMetaData.html#getArrayBaseType(int)"
+   style="color:orange">
+getArrayBaseType</a>,
+<a href="../specifications/interbase/interclient/ParameterMetaData.html#getArrayDimensions(int)"
+   style="color:orange">
+getArrayDimensions</a>
+<i></i>
+</ul>
+</ul>
+
+<p>
+<ul>
+<li>
+PreparedStatement
+<ul>
+<li>
+<a href="../specifications/interbase/interclient/PreparedStatement.html#getMetaData()"
+   style="color:orange">
+getMetaData</a>,
+<a href="../specifications/interbase/interclient/PreparedStatement.html#setArray(int, java.sql.Array)"
+   style="color:orange">
+setArray</a>,
+<a href="../specifications/interbase/interclient/PreparedStatement.html#prepareArray(int, java.lang.String, java.lang.String)"
+   style="color:orange">
+prepareArray</a>
+</ul>
+</ul>
+
+<p>
+<ul>
+<li>
+ResultSet
+<ul>
+<li>
+<a href="../specifications/interbase/interclient/ResultSet.html#getStatement()"
+   style="color:green">
+getStatement</a>,
+<a href="../specifications/interbase/interclient/ResultSet.html#getArray(int)"
+   style="color:orange">
+getArray</a>,
+<a href="../specifications/interbase/interclient/ResultSet.html#getArray(java.lang.String)"
+   style="color:orange">
+getArray</a>
+</ul>
+</ul>
+
+<p>
+<ul>
+<li>
+ResultSetMetaData
+<ul>
+<li>
+<a href="../specifications/interbase/interclient/ResultSetMetaData.html#getArrayBaseType(int)"
+   style="color:orange">
+getArrayBaseType</a>,
+<a href="../specifications/interbase/interclient/ResultSetMetaData.html#getArrayDimensions(int)"
+   style="color:orange">
+getArrayDimensions</a>
+</ul>
+</ul>
+
+<p>
+<ul>
+<li>
+Statement
+<ul>
+<li>
+<a href="../specifications/interbase/interclient/Statement.html#setFetchSize(int)"
+   style="color:green">
+setFetchSize</a>,
+<a href="../specifications/interbase/interclient/Statement.html#getConnection()"
+   style="color:green">
+getConnection</a>
+</ul>
+</ul>
+
+<p><strong><i><a name="e">Common Administrative Tasks Without Direct Method Invocations</a></i></strong>
+<ul>
+<li>To change database page size, use backup and restore.
+    See the <i>InterBase Operations Guide</i> for details.
+<li>To activate or deactivate database indices, use backup and restore.
+    See the <i>InterBase Operations Guide</i> for details.
+<li>To create a multi-file database, use backup and restore.
+    The only way to change the number of database files after creation is to
+    backup and then restore the database specifying the secondary database files.
+    See the <i>InterBase Operations Guide</i> for details.
+<li>To create a shadow file execute the SQL command
+    <code>CREATE SHADOW</code> on a connection to the database.
+</ul>
+
+<p><strong><i><a name="h">Open Issues</a></i></strong>
+<ul>
+<li>Should createDatabase() take the sqlDialect in the property map?
+<li>Should a timeout be specified for service queries?
+    May want to introduce a setServiceTimeout(int) method to ServerManager?
+<li>Limbo transaction stuff is complicated, this will need to be ironed out.
+    Method signatures wrt limbo transactions may change.
+</ul>
+
+<p>
+<hr>
+<a name="navbar_bottom"><!-- --></a>
+<table BORDER="0" WIDTH="100%">
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td colspan=3><a href="../specifications/overview-summary.html">Reference</a>&nbsp;| <a href="../help/help.html">Help</a>&nbsp;| <a href="../introduction/introduction.html">Introduction</a>&nbsp;| <a href="../slide_show/coverPage.html">Slide Show</a>&nbsp;| <a href="../customHierarchy.html">Class Hierarchy</a></td>
+<td align=right valign=top rowspan=2><em>
+InterClient</em>
+</td>
+</tr>
+<tr>
+<td><font size="-2">
+<a href="icConnectionProperties.html">PREV</a>&nbsp;| <a href="icExternalResources.html">NEXT</a></font>
+</td>
+<td><font size="-2">
+<a href="../index.html" target="_top">FRAMES</a>
+&nbsp;| <a href="icExtensions.html" target="_top">NO FRAMES</a>
+</font>
+</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+<hr>
+<font size="-1">
+Send comments or suggestions to <a href="mailto:interclient@interbase.com">interclient@interbase.com</a>
+</font>
+
+</BODY>
+</HTML>

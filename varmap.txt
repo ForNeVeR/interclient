@@ -1,0 +1,269 @@
+BlobInput
+  a1=blobRef_
+  a2=unicode__
+  a3=binary__
+
+  p1=jdbcNet
+  p2=statement
+  p3=streamType
+  p4=in
+  p5=blobSize
+
+  l1=recvMsg
+  l2=sendMsg
+
+BlobInputStream
+   a1=blob_
+   a2=streamClosed_
+   a3=segmentBytesRead_
+   a4=in_
+   
+   p1=blob
+   p2=inputStream
+
+   m1=flushSegment
+
+BufferCache
+   a1=maxMemoryCachedPerConnection__
+   a2=maxMemoryCached__
+   a3=memoryCached_
+   a4=minBufferLength__
+   a5=minCharBufferLength__
+   a6=numConnections_
+   a7=cachedBuffers_
+   a8=cachedOutputBuffers_
+   a9=cachedCharBuffers_
+
+   m1=takeOutputBuffer
+   m2=returnOutputBuffer
+   m3=takeBuffer
+   m4=returnBuffer
+   m5=takeCharBuffer
+   m6=returnCharBuffer
+
+   l1=inserted
+
+   p1=buffer
+
+Connection
+  _$a1=sessionRef_
+  _$a2=isolation_
+  _$a3=enableRecVersion_
+  _$a4=lockResolution_
+  _$a5=properties_
+  _$a6=enableAutoCommit_
+  _$a7=tableLocks_
+  _$a8=sqlWarnings_
+  _$a9=defaultEncoding__
+  _$a10=ianaCharacterEncoding_
+  _$a11=transactionStartedOnClient_
+  _$a12=open_
+  _$a13=database_
+  _$a14=serverName_
+  _$a15=readOnly_
+  _$a16=transactionStartedOnServer_
+  _$a17=openStatements_
+  _$a18=openPreparedStatements_
+
+  _$m1=local_CloseResultSets
+  _$m2=remote_ATTACH_DATABASE
+  _$m3=remote_COMMIT
+  _$m4=remote_DETACH_DATABASE
+  _$m5=remote_ROLLBACK
+  _$m6=send_properties
+  _$m7=send_TransactionConfigData
+  _$m8=checkForClosedConnection
+  _$m9=connect
+  _$m10=local_CloseStatements
+  _$m11=local_Close
+  _$m12=addRequiredPropertiesAndSetConverters
+
+  _$p1=socketTimeoutMilliseconds
+  _$p2=sendMsg
+  _$p3=properties
+  _$p4=propertyNames
+  
+ConnectionProperties
+  _$a1=defaultCharSet__
+
+MessageBufferOutputStream
+  _$m1=writeByte
+
+MessageCodes
+  _$a1=ATTACH_SERVER_MANAGER__
+  _$a2=DETACH_SERVER_MANAGER__
+  _$a3=ATTACH_DATABASE__
+  _$a4=DETACH_DATABASE__
+  _$a5=SUSPEND_CONNECTION__
+  _$a6=COMMIT__
+  _$a7=ROLLBACK__
+  _$a8=PREPARE_STATEMENT__
+  _$a9=PREPARE_CALL__
+  _$a10=EXECUTE_STATEMENT__
+  _$a11=EXECUTE_QUERY_STATEMENT__
+  _$a12=EXECUTE_UPDATE_STATEMENT__
+  _$a13=EXECUTE_PREPARED_STATEMENT__
+  _$a14=EXECUTE_PREPARED_QUERY_STATEMENT__
+  _$a15=EXECUTE_PREPARED_UPDATE_STATEMENT__
+  _$a16=FETCH_ROWS__
+  _$a17=CLOSE_CURSOR__
+  _$a18=CLOSE_STATEMENT__
+  _$a19=GET_RESULT_COLUMN_META_DATA__
+  _$a20=OPEN_BLOB__
+  _$a21=CREATE_BLOB__
+  _$a22=GET_BLOB_SEGMENT__
+  _$a23=CLOSE_BLOB__
+  _$a24=EXECUTE_CATALOG_QUERY__
+  _$a25=SUCCESS__
+  _$a26=FAILURE__
+  _$a27=WARNING__
+  _$a28=END_WARNINGS__
+  _$a29=EXCEPTION__
+  _$a30=END_EXCEPTIONS__
+  _$a31=ROW_DATUM__
+  _$a32=END_ROW_DATA__
+
+RecvMessage
+  _$a33=buffered_
+  _$a34=buf_
+  _$a35=pos_
+  _$a36=oldPos_
+  _$a37=messageLength_
+  _$a38=encoding_
+
+  _$m13=getPosition
+  _$m14=setPosition
+  _$m15=bufferOut
+  _$m16=align
+  _$m17=readLDBytes
+  _$m18=readLDString
+  _$m19=readLDSQLText
+  _$m20=get_SUCCESS
+  _$m21=get_EXCEPTIONS
+  _$m22=get_ROW_DATUM
+  
+  _$p10=messageLength
+  
+Globals
+  _$a39=jdbcNetProtocol__
+  _$a40=jdbcNetProtocolVersion__
+  _$a41=cache__
+  
+JDBCNet
+  _$a42=activeRecvMsgOnWire_
+  _$a43=prefetchRequestors_
+  
+  _$m23=receivePrefetchMessage
+  _$m24=receiveMessage
+  _$m25=sendAndReceiveMessage
+  _$m26=sendAndReceiveBlobMessage
+
+Statement
+  _$a44=prefetchedRecvMsg_
+  _$a45=statementRef_
+  _$a46=openOnClient_
+  _$a47=openOnServer_
+
+  _$m27=remote_CLOSE_STATEMENT
+  _$m28=remote_EXECUTE_QUERY_STATEMENT
+  _$m29=remote_EXECUTE_STATEMENT
+  _$m30=remote_EXECUTE_UPDATE_STATEMENT
+  _$m31=remote_recvPrefetch
+  _$m32=remote_sendPrefetch
+  _$m33=send_StatementExecuteData
+
+ResultSet
+  _$m34=remote_CLOSE_CURSOR
+  _$m35=remote_FETCH_ROWS
+  _$m36=saveBufferedDataPositions
+  _$m37=recv_ResultMetaData
+  _$m38=saveColumnDataPosition
+  _$m39=restoreColumnDataPosition
+  _$m40=restoreRowPosition
+  _$m41=setRecvBuffer
+
+  _$a48=recvMsg_
+  _$a49=columnDataPositions_
+  _$a50=openOnClient_
+  _$a51=openOnServer_
+  _$a55=resultCols_
+  
+PreparedStatement
+  _$m42=remote_EXECUTE_PREPARED_QUERY_STATEMENT
+  _$m43=remote_EXECUTE_PREPARED_STATEMENT
+  _$m44=remote_EXECUTE_PREPARED_UPDATE_STATEMENT
+  _$m45=remote_PREPARE_STATEMENT
+  _$m46=send_PreparedStatementExecuteData
+  _$m47=send_Data
+  _$m48=allocateEncodingBufs
+  
+  _$a52=encodingBuf_
+  _$a53=cbuf_
+  _$a54=inputCols_
+  _$a56=sendInputs_
+  
+ResultSetMetaData
+  _$m49=remote_GET_RESULT_COLUMN_META_DATA
+  _$a57=metaDataRetrieved_
+
+MessageBufferOutputStream
+  _$m50=writeLDSQLText
+  
+JDBCNet
+  _$m51=establishProtocol
+  _$m52=establishSocketStreams
+  _$m53=createMessage
+  _$m54=disconnectSocket
+  _$m55=destroyRecvMessage
+  _$m56=sendPrefetchMessage
+  _$m57=sendMessage
+  _$m58=clearAllPendingMessages
+
+  _$a58=activeBlobOutputOnWire_
+  _$a59=server_
+  
+ResultSet
+  _$m59=getNextCursorPosition
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  

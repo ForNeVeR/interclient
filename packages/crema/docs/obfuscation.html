@@ -1,0 +1,114 @@
+<!DOCTYPE HTML PUBLIC "-//W3O/DTD HTML//EN">
+
+<html>
+<head>
+<title>Crema - Obfuscation Parameters</title>
+<meta name="GENERATOR" content="Microsoft FrontPage 1.1">
+<meta name="FORMATTER" content="Microsoft FrontPage 1.1">
+</head>
+<body bgcolor="#1B0C02" text="#C28F60" link="#FF8000"
+vlink="#FF8000">
+<p><font face="Comic Sans MS,Arial,Helvetica"><font size="5"><strong>Obfuscation Parameters</strong></font></p>
+<hr noshade color="#BE8F60">
+<table border="1" cellpadding="7" cellspacing="0">
+    <tr>
+        <td valign="top"><strong>Parameter</strong></td>
+        <td valign="top"><strong>Effect</strong></td>
+        <td valign="top"><strong>Notes</strong></td>
+    </tr>
+    <tr>
+        <td valign="top"><font size="4"><tt>-max</tt></font></td>
+        <td valign="top">Turns on maximum obfuscation. Crema will
+        replace meaningful symbols with extra confusing symbols,
+        such as keywords and operators. Crema will also add bogus
+        debugging information to your class files.</td>
+        <td valign="top">This option will, on average, slightly
+        increase the size of your class files.</td>
+    </tr>
+    <tr>
+        <td valign="top"><font size="4"><tt>-ill</tt></font></td>
+        <td valign="top">Makes Crema produce illegal identifiers,
+        such as class names consisting entirely of digits and
+        member names containing spaces.<br>
+        <strong>Do not use this option for applets!</strong></td>
+        <td valign="top">This option can only be used for
+        applications as some browsers will reject applets with
+        illegal identifiers.<br>
+        <strong>This option is always turned on in the evaluation
+        version.</strong></td>
+    </tr>
+    <tr>
+        <td valign="top"><font size="4"><tt>-pub</tt></font></td>
+        <td valign="top">Obfuscates public classes and members.
+        Normally Crema leaves public classes and members alone,
+        so that they can still be referenced.</td>
+        <td valign="top">Use this option in combination with the <tt>-xc</tt>
+        and <tt>-xm</tt> options.</td>
+    </tr>
+    <tr>
+        <td valign="top"><font size="4"><tt>-xc&nbsp;className</tt></font></td>
+        <td valign="top">Excludes the specified class from
+        obfuscation. The class name should be fully qualified
+        with the package name (if any).</td>
+        <td valign="top">&nbsp;</td>
+    </tr>
+    <tr>
+        <td valign="top"><font size="4"><tt>-xm&nbsp;memberName</tt></font></td>
+        <td valign="top">Excludes the specified member from
+        obfuscation. The member name should be fully qualified
+        with the class name and the package name (if any).</td>
+        <td valign="top">You can exclude both fields and methods
+        with this parameter. If more than one member exists with
+        the given name, all will be excluded.</td>
+    </tr>
+    <tr>
+        <td valign="top"><font size="4"><tt>-msg&nbsp;&quot;text&quot;</tt></font></td>
+        <td valign="top">Specifies a (copyright or other) message
+        to be inserted in the obfuscated classes. This message
+        will be printed by Mocha when it decompiles the class.
+        Multiple lines can be inserted by using multiple <tt>-msg</tt>
+        switches.</td>
+        <td valign="top">If you do not specify a message, Crema
+        inserts the standard message:<br>
+        <strong>WARNING: Decompilation of this software is a
+        violation of the license agreement</strong></td>
+    </tr>
+    <tr>
+        <td valign="top"><font size="4"><tt>-nomsg</tt></font></td>
+        <td valign="top">Suppresses the inclusion of a (standard
+        or custom) message in obfuscated classes.</td>
+        <td valign="top">&nbsp;</td>
+    </tr>
+    <tr>
+        <td valign="top"><font size="4"><tt>-nobomb</tt></font></td>
+        <td valign="top">Suppresses the inclusion of a
+        &quot;bomb&quot; in the obfuscated classes. The
+        &quot;bomb&quot; causes Mocha to crash when it attempts
+        to decompile the class.</td>
+        <td valign="top">If you do not suppress the bomb, Mocha
+        will crash before it can print the message.</td>
+    </tr>
+    <tr>
+        <td valign="top"><font size="4"><tt>-lnt</tt></font></td>
+        <td valign="top">Tells Crema to preserve (i.e. not
+        remove) the LineNumberTable attributes. Use this
+        parameter if you want exception stack trace-backs to
+        include linenumbers.</td>
+        <td valign="top">This parameter has no effect if no
+        LineNumberTable attributes were produced by the compiler,
+        e.g. when using the <font size="4"><tt>-O</tt></font>
+        compiler option.</td>
+    </tr>
+</table>
+<hr noshade color="#BE8F60">
+<table width="100%">
+    <tr>
+        <td valign="top"><a href="output.html"><font size="5"><strong>&lt;&lt;</strong></font></a></td>
+        <td align="center"><font size="2">Copyright &#169; 1996
+        Hanpeter van Vliet</font></td>
+        <td align="right" valign="top"><a href="paramfiles.html"><font
+        size="5"><strong>&gt;&gt;</strong></font></a></td>
+    </tr>
+</table>
+</body>
+</html>

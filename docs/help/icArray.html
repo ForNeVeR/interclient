@@ -1,0 +1,599 @@
+<html>
+
+<head>
+<title>InterClient Help</title>
+</head>
+
+<body bgcolor="#FFFFFF">
+<table BORDER="0" WIDTH="100%">
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td colspan=3><a href="../specifications/overview-summary.html">Reference</a>&nbsp;| <a href="../help/help.html">Help</a>&nbsp;| <a href="../introduction/introduction.html">Introduction</a>&nbsp;| <a href="../slide_show/coverPage.html">Slide Show</a>&nbsp;| <a href="../customHierarchy.html">Class Hierarchy</a></td>
+<td align=right valign=top rowspan=2><em>
+InterClient</em>
+</td>
+</tr>
+<tr>
+<td><font size="-2">
+<a href="icExternalResources.html">PREV</a>&nbsp;| <a href="icJavadoc.html">NEXT</a></font>
+</td>
+<td><font size="-2">
+<a href="../index.html" target="_top">FRAMES</a>
+&nbsp;| <a href="icArray.html" target="_top">NO FRAMES</a>
+</font>
+</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+<hr>
+
+<H3>InterClient Array Support</H3>
+<p>
+InterClient supports array data type as specified by JDBC 2.0 specification.
+JDBC 2.0 array support is based on SQL3 standard and does not support multidimensional
+arrays or array of arrays. InterBase, on the other hand, does support multidimensional
+arrays up to 16 dimensions. Because of these differences InterClient also
+provides an extension methods to allow a user to work with multidimensional
+arrays.
+<H4>
+Base Data Types</H4>
+InterBase supports arrays of the following data types:
+<UL>
+<LI>
+SMALLINT</LI>
+
+<LI>
+INTEGER</LI>
+
+<LI>
+LONG</LI>
+
+<LI>
+FLOAT</LI>
+
+<LI>
+DOUBLE PRECISION</LI>
+
+<LI>
+DECIMAL</LI>
+
+<LI>
+NUMERIC</LI>
+
+<LI>
+CHAR</LI>
+
+<LI>
+VARCHAR</LI>
+
+<LI>
+DATE</LI>
+</UL>
+Arrays and Blobs can not be elements of the array.
+
+<P>To write (update or insert) into a column defined as an array of one
+of the above data types, user should first create and populate a java array,
+then call PreparedStatement.setObject() method with this array as a parameter.
+The java array can be an array of objects or an array of primitive data
+types. Table 1 shows java arrays that could be used to write to an InterBase
+array of specific data type.
+<UL>Table 1
+<TABLE BORDER WIDTH="33%" >
+<TR VALIGN=BOTTOM>
+<TD VALIGN=CENTER>&nbsp;Array of&nbsp;</TD>
+
+<TD>S&nbsp;
+<BR>M&nbsp;
+<BR>A&nbsp;
+<BR>L&nbsp;
+<BR>L&nbsp;
+<BR>I&nbsp;
+<BR>N&nbsp;
+<BR>T</TD>
+
+<TD>I&nbsp;
+<BR>N&nbsp;
+<BR>T&nbsp;
+<BR>E&nbsp;
+<BR>G&nbsp;
+<BR>E&nbsp;
+<BR>R</TD>
+
+<TD>F&nbsp;
+<BR>L&nbsp;
+<BR>O&nbsp;
+<BR>A&nbsp;
+<BR>T</TD>
+
+<TD>D&nbsp;
+<BR>O&nbsp;
+<BR>U&nbsp;
+<BR>B&nbsp;
+<BR>L&nbsp;
+<BR>E</TD>
+
+<TD>D&nbsp;
+<BR>E&nbsp;
+<BR>C&nbsp;
+<BR>I&nbsp;
+<BR>M&nbsp;
+<BR>A&nbsp;
+<BR>L</TD>
+
+<TD>N&nbsp;
+<BR>U&nbsp;
+<BR>M&nbsp;
+<BR>E&nbsp;
+<BR>R&nbsp;
+<BR>I&nbsp;
+<BR>C</TD>
+
+<TD>C&nbsp;
+<BR>H&nbsp;
+<BR>A&nbsp;
+<BR>R</TD>
+
+<TD>V&nbsp;
+<BR>A&nbsp;
+<BR>R&nbsp;
+<BR>C&nbsp;
+<BR>H&nbsp;
+<BR>A&nbsp;
+<BR>R</TD>
+
+<TD>D&nbsp;
+<BR>A&nbsp;
+<BR>T&nbsp;
+<BR>E</TD>
+</TR>
+
+<TR>
+<TD>Byte
+<BR>byte</TD>
+
+<TD>x</TD>
+
+<TD>x</TD>
+
+<TD>x</TD>
+
+<TD>x</TD>
+
+<TD>x</TD>
+
+<TD>x</TD>
+
+<TD>x</TD>
+
+<TD>x</TD>
+
+<TD></TD>
+</TR>
+
+<TR>
+<TD>Short
+<BR>short</TD>
+
+<TD>X</TD>
+
+<TD>x</TD>
+
+<TD>x</TD>
+
+<TD>x</TD>
+
+<TD>x</TD>
+
+<TD>x</TD>
+
+<TD>x</TD>
+
+<TD>x</TD>
+
+<TD></TD>
+</TR>
+
+<TR>
+<TD>Integer
+<BR>int</TD>
+
+<TD>x</TD>
+
+<TD>X</TD>
+
+<TD>x</TD>
+
+<TD>x</TD>
+
+<TD>x</TD>
+
+<TD>x</TD>
+
+<TD>x</TD>
+
+<TD>x</TD>
+
+<TD></TD>
+</TR>
+
+<TR>
+<TD>Long
+<BR>long</TD>
+
+<TD>x</TD>
+
+<TD>x</TD>
+
+<TD>x</TD>
+
+<TD>x</TD>
+
+<TD>x</TD>
+
+<TD>x</TD>
+
+<TD>x</TD>
+
+<TD>x</TD>
+
+<TD></TD>
+</TR>
+
+<TR>
+<TD>Float
+<BR>float</TD>
+
+<TD>x</TD>
+
+<TD>x</TD>
+
+<TD>X</TD>
+
+<TD>x</TD>
+
+<TD>x</TD>
+
+<TD>x</TD>
+
+<TD>x</TD>
+
+<TD>x</TD>
+
+<TD></TD>
+</TR>
+
+<TR>
+<TD>Double
+<BR>double</TD>
+
+<TD>x</TD>
+
+<TD>x</TD>
+
+<TD>x</TD>
+
+<TD>X</TD>
+
+<TD>x</TD>
+
+<TD>x</TD>
+
+<TD>x</TD>
+
+<TD>x</TD>
+
+<TD></TD>
+</TR>
+
+<TR>
+<TD>BigDecimal</TD>
+
+<TD>x</TD>
+
+<TD>x</TD>
+
+<TD>x</TD>
+
+<TD>x</TD>
+
+<TD>X</TD>
+
+<TD>X</TD>
+
+<TD>x</TD>
+
+<TD>x</TD>
+
+<TD></TD>
+</TR>
+
+<TR>
+<TD>Boolean
+<BR>boolean</TD>
+
+<TD>x</TD>
+
+<TD>x</TD>
+
+<TD>x</TD>
+
+<TD>x</TD>
+
+<TD>x</TD>
+
+<TD>x</TD>
+
+<TD>x</TD>
+
+<TD>x</TD>
+
+<TD></TD>
+</TR>
+
+<TR>
+<TD>String</TD>
+
+<TD>x</TD>
+
+<TD>x</TD>
+
+<TD>x</TD>
+
+<TD>x</TD>
+
+<TD>x</TD>
+
+<TD>x</TD>
+
+<TD>X</TD>
+
+<TD>X</TD>
+
+<TD>x</TD>
+</TR>
+
+<TR>
+<TD>Date</TD>
+
+<TD></TD>
+
+<TD></TD>
+
+<TD></TD>
+
+<TD></TD>
+
+<TD></TD>
+
+<TD></TD>
+
+<TD>x</TD>
+
+<TD>x</TD>
+
+<TD>X</TD>
+</TR>
+
+<TR>
+<TD>Timestamp</TD>
+
+<TD></TD>
+
+<TD></TD>
+
+<TD></TD>
+
+<TD></TD>
+
+<TD></TD>
+
+<TD></TD>
+
+<TD>x</TD>
+
+<TD>x</TD>
+
+<TD>X</TD>
+</TR>
+</TABLE>
+&nbsp;</UL>
+If, for example, you want to write to a column defined as array of FLOAT,
+java array of Byte, byte, Short, short, Integer, int, Long, long, Float,
+float, Double, double, BigDecimal, Boolean, boolean or String could be
+used. The prefered way though is to use an array of Float or float. Special
+care should be taken if an array with a data type other than Float/float
+is used. If you decide to use an array of double (8 bytes) in this case,
+each element must contain a value that can be stored in float (4 bytes).
+It is ok though if a user chooses to use an array of Byte, byte, Short,
+short, Integer, int,&nbsp; Long, long, Boolean, boolean.
+
+<P>It is possible to have an array of objects of different classes. If
+you want to write to a column defined as an array of DATE, for example,
+you can define an array of Objects and assign objects of different classes
+(Date or Timestamp) to the elements of this array.
+
+<P><TT>&nbsp;&nbsp;&nbsp; Object[] arrayOfDates = new Object[4];</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; arrayOfDates[0] = new Date(93, 2, 5);</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; arrayOfDates[2] = new Date(94, 6, 21);</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; arrayOfDates[1] = new Timestamp(94, 4, 10, 12,
+50, 0, 0);</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; arrayOfDates[3] = new Timestamp(96, 2, 20, 14,
+50, 0, 0);</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; preparedStatement.setObject (parameterIndex,
+arrayOfDates);</TT>
+
+<P>If you leave an element of an array of objects unassigned (null), exception
+is thrown.
+
+<P>When reading an array from InterBase, it is returned to user as an array
+of objects or primitive data types corresponding to big X in table 1. If
+big X refers to both array of objects and array of primitive data types,
+the latter is returned. For example, if a column is defined as array of
+CHAR, Array.getArray() returns an array of Strings, if&nbsp; a column is
+defined as array of INTEGER, Array.getArray() returns an array of int.
+<H4>
+Array Dimensions</H4>
+InterBase supports multidimensional arrays up to 16 dimensions. Size of
+each dimension is defined by specifying lower and upper bounds when creating
+an array column. The bound can be any positive or negative number that
+can be stored in 2 bytes. Because JDBC 2.0 does not support multidimensional
+arrays, several extension methods have been added:
+<UL>ParameterMetaData class
+<BR><TT>int[][] getArrayDimensions (int parameterIndex) throws SQLException;</TT>
+<BR>ResultSetMetaData class
+<BR><TT>int[][] getArrayDimensions (int columnIndex) throws SQLException;</TT>
+<BR>Array class
+<BR><TT>Object getArray(int[][] sliceDescriptor) throws SQLException;</TT></UL>
+The first two methods return information about number of array dimensions
+and each dimension bounds. This information is returned in 2-dimensional
+array. Elements [0][0] and [0][1] give you lower and upper bounds of the
+first dimension, elements [1][0] and [1][1] contain lower and upper bounds
+of the second dimension, and so on. The first index cannot be greater than
+15 because there are maximum of 16 dimensions in InterBase's arrays.
+<BR>If, for example, array column is defined in a database as INTEGER[-5:10][3:5],
+then getArrayDimensions method returns 2 dimensional array with for elements
+as element[0][0] = -5, [0][1] = 10, [1][0] = 3 and [1][1] = 5.
+<H4>
+Array Slices</H4>
+JDBC 2.0 allows you to read a part of array - slice. There is no way to
+write an array slice. Because JDBC arrays are one dimensional arrays, you
+just need to specify index of the first element of a slice and a number
+of element to read.
+<UL>Array class
+<BR><TT>Object getArray(long index, int count) throws SQLException;</TT></UL>
+If you want to read a slice of a multidimensional array you should use
+an extension getArray method mentioned earlier in this section and provide
+a description on the slice in the form of 2-dimensional array as a parameter
+to this method. Of course, for each dimension slice's lower bound must
+not be less than the array's lower bound and slice's upper bound must not be
+greater than the array's upper bound. If you have an array that was defined
+as INTERGER[1:3][2:4] with the following values:
+<UL>&nbsp;
+<TABLE BORDER COLS=4 WIDTH="18%" >
+<TR>
+<TD>IB&nbsp;
+<BR>&nbsp;index</TD>
+
+<TD>2</TD>
+
+<TD>3</TD>
+
+<TD>4</TD>
+</TR>
+
+<TR>
+<TD>1</TD>
+
+<TD>10</TD>
+
+<TD>20</TD>
+
+<TD>30</TD>
+</TR>
+
+<TR>
+<TD>2</TD>
+
+<TD>40</TD>
+
+<TD>50</TD>
+
+<TD>60</TD>
+</TR>
+
+<TR>
+<TD>3</TD>
+
+<TD>70</TD>
+
+<TD>80</TD>
+
+<TD>90</TD>
+</TR>
+</TABLE>
+&nbsp;</UL>
+then get ArrayDimension returns a two-dimensional array with the following values:
+element[0][0] = 1, [0][1] = 3, [1][0] = 2, [1][1] = 4.
+If you want to read a slice defined
+by lower bound = 2 and upper bound = 3 for both dimensions, you should
+create new 2D array (or use the existing one if you no longer need it)
+and assign following values to its elements:
+<UL>element[0][0] = 2;
+<BR>element[0][1] = 3;
+<BR>element[1][0] = 2;
+<BR>element[1][1] = 3;</UL>
+Then you call getArray() method and specify this 2D array as input parameter.
+The result is:
+<UL>&nbsp;
+<TABLE BORDER COLS=3 WIDTH="14%" >
+<TR>
+<TD>java&nbsp;
+<BR>index</TD>
+
+<TD>0</TD>
+
+<TD>1</TD>
+</TR>
+
+<TR>
+<TD>0</TD>
+
+<TD>40</TD>
+
+<TD>50</TD>
+</TR>
+
+<TR>
+<TD>1</TD>
+
+<TD>70</TD>
+
+<TD>80</TD>
+</TR>
+</TABLE>
+&nbsp;</UL>
+
+<p>
+<hr>
+<a name="navbar_bottom"><!-- --></a>
+<table BORDER="0" WIDTH="100%">
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td colspan=3><a href="../specifications/overview-summary.html">Reference</a>&nbsp;| <a href="../help/help.html">Help</a>&nbsp;| <a href="../introduction/introduction.html">Introduction</a>&nbsp;| <a href="../slide_show/coverPage.html">Slide Show</a>&nbsp;| <a href="../customHierarchy.html">Class Hierarchy</a></td>
+<td align=right valign=top rowspan=2><em>
+InterClient</em>
+</td>
+</tr>
+<tr>
+<td><font size="-2">
+<a href="icExternalResources.html">PREV</a>&nbsp;| <a href="icJavadoc.html">NEXT</a></font>
+</td>
+<td><font size="-2">
+<a href="../index.html" target="_top">FRAMES</a>
+&nbsp;| <a href="icArray.html" target="_top">NO FRAMES</a>
+</font>
+</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+<hr>
+<font size="-1">
+Send comments or suggestions to <a href="mailto:interclient@interbase.com">interclient@interbase.com</a>
+</font>
+
+</BODY>
+</HTML>
+
+

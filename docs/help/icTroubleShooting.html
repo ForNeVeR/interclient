@@ -1,0 +1,408 @@
+<html>
+
+<head>
+<title>InterClient Help</title>
+</head>
+
+<body bgcolor="#FFFFFF">
+<table BORDER="0" WIDTH="100%">
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td colspan=3><a href="../specifications/overview-summary.html">Reference</a>&nbsp;| <a href="../help/help.html">Help</a>&nbsp;| <a href="../introduction/introduction.html">Introduction</a>&nbsp;| <a href="../slide_show/coverPage.html">Slide Show</a>&nbsp;| <a href="../customHierarchy.html">Class Hierarchy</a></td>
+<td align=right valign=top rowspan=2><em>
+InterClient</em>
+</td>
+</tr>
+<tr>
+<td><font size="-2">
+<a href="icUninstallingInterClient.html">PREV</a>&nbsp;| <a href="icTechSupport.html">NEXT</a></font>
+</td>
+<td><font size="-2">
+<a href="../index.html" target="_top">FRAMES</a>
+&nbsp;| <a href="icTroubleShooting.html" target="_top">NO FRAMES</a>
+</font>
+</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+<hr>
+
+<h3>Troubleshooting Common Problems</h3>
+
+<ol>
+<li><a href="#a">Testing your Local Installation</a>
+<li><a href="#b">Testing an Applet Configuration</a>
+<li><a href="#c">Troubleshooting the "No suitable driver" error</a>
+<li><a href="#d">Troubleshooting "Access is denied" starting InterServer</a>
+<li><a href="#e">Deciphering messages logged to the interserver.log file</a>
+<li><a href="#f">The Communication Diagnostics icon in the Windows InterClient Program Group does not work</a>
+<li><a href="#g">Getting Connection Refused on high-throughput servers</a>
+<li><a href="#h">InstallShield crashes - Access violation in _INS0432._MP</a>
+</ol>
+
+<hr>
+
+<p>
+<a name="a"><h4>Testing your Local Installation</h4></a>
+
+<p>
+  First, verify that the installation has appended your
+  CLASSPATH with the interclient.jar file.
+
+<p>
+  Second, on Windows NT/95, select the InterServer Configuration 
+  Utility icon in the InterClient program group and start the
+  InterServer service or application (usually, but not necessarily,
+  on your InterBase server).  On Unix the interserver service is 
+  started automatically by inetd if your <code>/etc/services</code> and 
+  <code>/etc/inetd.conf</code> are configured properly.
+
+<p>
+  Finally, on Windows NT/95, select the Communication Diagnostics
+  icon from the InterClient program group.  If Java is installed
+  on your local machine and interclient.jar is in your CLASSPATH,
+  then a GUI will appear for making a test connection using the
+  locally installed driver.  Alternatively, and on Unix, you may
+  invoke the Communication Diagnostics Utility from the command line
+  using
+<pre>
+    java interbase.interclient.utils.CommDiag
+</pre>
+
+<p>
+<a name="b"><h4>Testing an Applet Configuration</h4></a>
+
+<p>
+  CommDiag may also be run as an applet on clients in which neither
+  the JDK nor InterClient is installed.  Using a Java enabled browser,
+  browse CommDiag.html off a web server
+  which has InterClient deployed.  If you run InterClient applets
+  such as CommDiag through a browser, then you may need to remove the 
+  interclient.jar from your local CLASSPATH to avoid a
+  security exception.
+  A browser's default security policy may only allow socket connections
+  to the host which is the source of the class file
+  which is attempting the connection.
+  So the security manager needs to be sure that the source host of the
+  downloaded InterClient class files is the same as 
+  the database server host.
+  If the interclient.jar is being picked up from your local disk,
+  rather than being downloaded along with an applet such as CommDiag,
+  then this may be difficult for the security manager to determine.
+
+<p>
+  You may also run CommDiag through the appletviewer.
+
+<p>
+  On Unix:
+<pre>
+    unset CLASSPATH
+    appletviewer CommDiag.html
+</pre>
+  On Windows 95/NT:
+<pre>
+    set CLASSPATH=
+    appletviewer CommDiag.html
+</pre>
+  You may need to unset your CLASSPATH temporarily in your command
+  session when viewing a local applet; otherwise you could receive a
+  java.lang.IllegalAccessError.  CommDiag.html contains
+  an applet tag which references the interclient.jar archive.
+
+<p>
+  Depending on your browser's security policy, untrusted applets may
+  not be allowed to open network connections to arbitrary hosts, 
+  except for the host that provided the .class files. 
+  This is either the host where the html page came from, 
+  or the host specified in the codebase parameter in the applet tag,
+  with codebase taking precendence. Under this security policy, 
+  untrusted applets will only operate if InterServer is installed on the same web 
+  server host that serves the interclient.jar file.  If you choose
+  to deploy InterServer on another host then you may need to digitally
+  sign your applet together with the interclient.jar file so
+  that the entire applet is trusted.
+  InterServer is *not* involved in the certification process,
+  its an issue between the browser and the downloaded jar.
+  Browsers are all configured differently, so see the
+  vendor-specific documentation for your browser.
+  Some browsers (e.g. HotJava) can be configured to allow
+  arbitrary socket connections even for untrusted applets,
+  others (e.g. Netscape) have their own proprietary security
+  api to allow an untrusted applet to request privileges from
+  the browser.
+
+<p>
+  Be sure to name the originating host exactly as it was specified 
+  when the applet was loaded into the browser. 
+  That is, if you load an HTML page using the URL 
+<pre>
+    http://foo.state.edu/~me/CommDiag.html
+</pre>
+  then your applet will be able to connect to its host only by using
+  the name foo.state.edu in the jdbc URL
+<pre>
+    jdbc:interbase://foo.state.edu//databases/employee.gdb
+</pre>
+  Using the IP address for foo.state.edu won't work, and using a
+  "shorthand" form of the host name, like foo.state instead of 
+  foo.state.edu, won't work.
+</p>
+
+<p>
+<a name="c"><h4>Troubleshooting the "No suitable driver" exception</h4></a>
+
+<p>
+This exception is issued by the JDBC Driver Manager and
+usually occurs during a call to DriverManager.getConnection().
+The cause can be failing to load the appropriate JDBC driver before calling
+getConnection(), or specifying an invalid JDBC URL - one that isn't
+recognized by any loaded JDBC driver. 
+
+<p>
+This error can also occur due to a bug in the JDK 1.1.x
+with Class.forName().  Because of a race condition in 
+the class loader, it is sometimes possible that the class loader
+is prevented from executing the static section of code
+in the driver class.  This would prevent the loaded driver
+class from registering itself with the driver manager.
+So Class.forName () may appear to succeed with no exception thrown,
+but the driver may not be registered with the driver manager.
+A work around is to obtain a connection from an explicitly constructed
+driver instance as follows:
+<pre> 
+java.sql.Driver d = new interbase.interclient.Driver ();
+java.sql.Connection c = d.connect ("jdbc:interbase://server/c:/databases/atlas.gdb", 
+                                   "sysdba", "masterkey");
+</pre>
+
+<p>
+Here are some typical reasons for getting the <i>no suitable driver</i> error:
+<ul>
+<li> The InterClient driver is not in your CLASSPATH.
+  <ul>
+  <li> If you're working with Sun's JDK, then make
+       sure the correct file specifiation for
+       interclient.jar is in your system's CLASSPATH environment variable.
+  <li> If you're working with JBuilder, then make sure that your project property setting
+       for Class Path has the correct file specification for interclient.jar.
+       Choose <i>File | Project Properties</i> to view these properties.
+       Also check your JBuilder.INI file and see the 
+       JBuilder Integration Notes that come with InterClient.
+  </ul>
+<li> The InterClient driver has not been loaded.
+  <ul>
+  <li> Check your spelling and capitalization of the InterClient driver name.<br> 
+       Make sure you specify interbase.interclient.Driver with the capital D.<br>
+       For example,
+       <pre>
+       Class.forName ("interbase.interclient.Driver");
+       </pre>
+  </ul>
+<li> The InterClient driver does not recognize the database URL syntax.
+  <ul>
+  <li>Check the subprotocol in the URL.<br>
+     URLs for InterClient must start with jdbc:interbase:<br>
+     For example,
+     <pre>
+     DriverManager.getConnection ("jdbc:interbase://server/c:/databases/atlas.gdb", ...);
+     </pre>
+  </ul>
+<li> The InterClient driver has not been registered.
+  <ul> 
+  <li> The class loader bug in JDK 1.1.x was encountered.  See notes above.
+  </ul>
+</ul>
+Finally, try using the Communication Diagnostics program that comes with InterClient and
+see if you can connect that way.
+
+<p>
+<a name="d"><h4>Troubleshooting "Access is denied" when trying to start the InterServer service</h4></a>
+
+<p>
+Only one customer has reported this problem, and its
+cause is currently unknown.
+If you encounter this problem, please send email to
+<a href="mailto:interclient@interbase.com">interclient@interbase.com</a>.
+
+<p>
+<a name="e"><h4>Deciphering messages logged to the interserver.log file</h4></a>
+
+<p>
+In general, interserver errors are relayed back to
+InterClient and surfaced via an SQLException.
+However, if the socket is unexpectedly disconnected,
+or some other error occurs on the socket,
+then relay of the error message back to the client
+over the same socket may be impossible.
+So the purpose of the interserver.log file is 
+for the logging of messages that
+cannot be relayed back to InterClient.
+
+<p>
+Messages logged to the interserver.log file are
+usually innocuous and caused by client application
+neglect to close the socket gracefully using
+the 
+<a href="../specifications/interbase/interclient/Connection.html#close">Connection.close()</a>
+or <a href="../specifications/interbase/interclient/ServerManager.html#close">ServerManager.close()</a> methods.
+InterServer spends its idle time waiting
+for requests from InterClient.  If InterClient
+terminates abruptly without using Connection.close()
+then InterServer will detect an error on the socket,
+and log a message to the interserver.log file.
+This is of no real concern to the user, as 
+the connection is closed, just not in a graceful
+manner.
+
+<p>
+However, socket failures could be caused for 
+more insidious reasons, such as someone cutting the network
+wire with a pair of scissors.  In such case,
+a message to interserver.log is logged since
+there is no way to relay an exception back to 
+InterClient.
+
+<p>
+Here are the message codes which may be logged
+to the interserver.log file.  The integer code
+simply indicates the exact location in the 
+InterServer source where the message originated.
+
+<table>
+<tr>
+<td>JDBC/Net [100-199]
+<td>Unable to read bytes from socket
+</tr>
+<tr>
+<td>JDBC/Net [200-299]
+<td>Unable to write bytes to socket
+</tr>
+</table>
+
+<p>
+<a name="f"><h4>The Communication Diagnostics icon in the Windows InterClient Program Group does not work</h4></a>
+
+<p>
+If a version of the JDK 1.1 was not in your system PATH when
+InterClient was installed, the CommDiag program group
+icon will not have the correct properties.
+On NT, use the Control Panel to edit the user Environment variable
+PATH to include the JDK 1.1 bin directory on your system.
+Also, edit the ClassPath Environment variable and include
+interclient.jar if it is not already present in the path.
+Next, right click on the InterClient program group in the
+Windows start menu and select "open".  This will bring
+up the InterClient program group icons in a separate window.
+Select the Communications Diagnostics icon, right click,
+and select "properties".  Now insert "java " in front
+of the class name "interbase.interclient.utils.CommDiag"
+in the target location field property.
+<p>
+Alternatively, the Communications Diagnostics utility may also be 
+run from the command-line using
+<pre>
+java interbase.interclient.utils.CommDiag
+</pre>
+
+<p>
+<a name="g"><h4>Getting Connection Refused on high-throughput servers</h4></a>
+
+<p>
+If you send many connection requests to InterServer within a certain
+timeframe,  you may experience hanging processes or "Connection refused"
+error messages.  This happens because the number of requests per minutes
+exceeds the maximum defined by inetd, thereby causing inetd to
+mistakenly tag interserver as a broken service.  Broken services are
+kept out of operation for usually ten minutes before they are allowed to
+receive new connections.
+<p>
+The inetd super-daemon has a default maximum of 40 invocations per
+minute on many operating systems, including Solaris and Linux.  These
+values usually can be adjusted by the system administrator.
+<p>
+For Solaris, modify the startup scripts that launch inetd so that inetd
+uses the -r parameter.  Refer to the Solaris documentation for details.
+<p>
+For Linux, modify the interserver entry in /etc/inetd.conf, changing
+'nowait' to 'nowait.100' or higher.  After the changes are made, send a
+hangup signal, SIGHUP, to the inetd process so that it rereads the
+inetd.conf file.
+
+<p>
+<a name="h"><h4>InstallShield crashes - Access violation in _INS0432._MP</h4></a>
+<p>
+If you have JBuilder installed and an access violation occurs at the end
+of the installation for InterClient, this may be because the
+IDEClassPath setting within the JBuilder.INI file exceeds 1024 bytes.
+The workaround to this problem is to edit the JBuilder.INI file manually
+by following these steps:
+<ol>
+<li> Run regedit.exe and delete the following key:
+<pre>
+HKEY_LOCAL_MACHINE\SOFTWARE\InterBase Corp\InterClient
+</pre>
+
+<li> Shut down JBuilder if it is running. Open the JBuilder.ini file with
+a text editor.  You can find this file in the JBuilder bin directory.
+Make a backup copy of this file.  Search for a line that begins with
+'IDEClassPath' and change this word to 'OLDIDEClassPath'.  Insert a line
+above this one that reads 'IDEClassPath=x'. Save the file.
+
+<li> Rerun the InterClient installation program.  There should be no error
+this time.
+
+<li> After the installation is complete. Re-open the JBuilder.ini file
+with a text editor.  You may notice that the IDEClassPath value has a
+reference to the InterClient jar file.  It may look like this:
+<pre>
+IDEClassPath=c:\Program Files\InterBase Corp\InterClient\interclient.jar;x
+</pre>
+The actual path depends on where you installed InterClient. Delete the
+trailing <code>x</code> in the IDEClassPath and merge this value with the
+OLDIDEClassPath. The final outcome is the original IDEClassPath setting
+with the InterClient jar file and an semi-colon added to it.  Save the
+JBuilder.INI file.
+</ol>
+
+<p>
+<hr>
+<a name="navbar_bottom"><!-- --></a>
+<table BORDER="0" WIDTH="100%">
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td colspan=3><a href="../specifications/overview-summary.html">Reference</a>&nbsp;| <a href="../help/help.html">Help</a>&nbsp;| <a href="../introduction/introduction.html">Introduction</a>&nbsp;| <a href="../slide_show/coverPage.html">Slide Show</a>&nbsp;| <a href="../customHierarchy.html">Class Hierarchy</a></td>
+<td align=right valign=top rowspan=2><em>
+InterClient</em>
+</td>
+</tr>
+<tr>
+<td><font size="-2">
+<a href="icUninstallingInterClient.html">PREV</a>&nbsp;| <a href="icTechSupport.html">NEXT</a></font>
+</td>
+<td><font size="-2">
+<a href="../index.html" target="_top">FRAMES</a>
+&nbsp;| <a href="icTroubleShooting.html" target="_top">NO FRAMES</a>
+</font>
+</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+<hr>
+<font size="-1">
+Send comments or suggestions to <a href="mailto:interclient@interbase.com">interclient@interbase.com</a>
+</font>
+
+</body>
+</html>

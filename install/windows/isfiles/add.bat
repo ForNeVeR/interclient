@@ -1,0 +1,1 @@
+cvs ci -m "adding these files as binaries, they are need for the NT installshield install" COMPILE.EXE CTL3D.DLL CTL3D32S.DLL Ctl3d32.dll Exebuild.exe ICOMP.EXE ISVERW.EXE PACKLIST.EXE SPLIT.EXE _inst32i.ex_ _isdel.exe _isres.dll _isres.dll.bak _setup.dll _setup.lib add.bat corecomp.ini delete.bat i32stub.exe i32stubc.exe isdbgn.dll msvcrt40.dll setup.exe setup.ini uninst.exe

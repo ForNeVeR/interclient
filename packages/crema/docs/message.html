@@ -1,0 +1,150 @@
+<!DOCTYPE HTML PUBLIC "-//W3O/DTD HTML//EN">
+
+<html>
+<head>
+<title>Crema - Messages</title>
+<meta name="GENERATOR" content="Microsoft FrontPage 1.1">
+<meta name="FORMATTER" content="Microsoft FrontPage 1.1">
+</head>
+<body bgcolor="#1B0C02" text="#C28F60" link="#FF8000"
+vlink="#FF8000">
+<p><font face="Comic Sans MS,Arial,Helvetica"><font size="5"><strong>Messages</strong></font></p>
+<hr noshade color="#BE8F60">
+<p><strong>Cannot find class ???<br>
+Please check your CLASSPATH</strong></p>
+<blockquote>
+    <p>Crema needed the .class file for the specified class but
+    could not find it on your CLASSPATH. (In addition to the
+    classes you want to obfuscate, Crema needs the definitions of
+    all their superclasses and interfaces to check for method
+    overrides). Please correct the situation and try again.</p>
+</blockquote>
+<p><strong>Error reading ???</strong></p>
+<blockquote>
+    <p>The specified file could not be loaded. Check if the file
+    exists and make sure you have read permission.</p>
+</blockquote>
+<p><strong>???: File already exists; use -o to force overwrite</strong></p>
+<blockquote>
+    <p>The specified file already exists and you have not used
+    the <font size="4"><tt>-o</tt></font> option. Delete the
+    file, or include the <font size="4"><tt>-o</tt></font>
+    option, and try again.</p>
+</blockquote>
+<p><strong>Invalid argument for -xc option</strong></p>
+<blockquote>
+    <p>The argument of the <font size="4"><tt>-xc</tt></font>
+    option must be a fully qualified class name, e.g. &quot;<font
+    size="4"><tt>CoolApp</tt></font>&quot; or &quot;<font
+    size="4"><tt>my.pkg.MyClass</tt></font>&quot;.</p>
+</blockquote>
+<p><strong>Invalid argument for -xm option</strong></p>
+<blockquote>
+    <p>The argument of the <font size="4"><tt>-xm</tt></font>
+    option must be a fully qualified member name, e.g. &quot;<font
+    size="4"><tt>CoolApp.main</tt></font>&quot; or &quot;<font
+    size="4"><tt>my.pkg.MyClass.myMember</tt></font>&quot;.</p>
+</blockquote>
+<p><strong>Invalid argument for -e option</strong></p>
+<blockquote>
+    <p>The argument of the <font size="4"><tt>-e</tt></font>
+    option must be a file extension and must start with a dot,
+    e.g. &quot;<font size="4"><tt>.class</tt></font>&quot;.</p>
+</blockquote>
+<p><strong>Invalid bytecode in ???</strong></p>
+<blockquote>
+    <p>The .class file of the specified class is invalid.
+    Recompile it, then try again.</p>
+</blockquote>
+<p><strong>Loading ???</strong></p>
+<blockquote>
+    <p>The specified .class file is being loaded. This is an
+    informational message that only appears if you use the <font
+    size="4"><tt>-v</tt></font> option.</p>
+</blockquote>
+<p><strong>Method ??? calls Class.forName()<br>
+Be sure to exclude (with -xc) the classes that may be referenced
+here!</strong></p>
+<blockquote>
+    <p>The specified method calls Class.forName to access a class
+    with a particular name (presumably to create an instance of
+    that class). This will no longer work if the referenced
+    classes are renamed by Crema. Hence you must be sure to
+    exclude those class names from obfuscation, by using the <font
+    size="4"><tt>-xc</tt></font> parameter.<br>
+    <br>
+    If the classes that are referenced here are not part of your
+    project, but will be supplied by a user or 3rd party, you
+    don't have to do anything.</p>
+</blockquote>
+<p><strong>Method ??? calls Class.getName()<br>
+Be sure to exclude (with -xc) the classes that may be referenced
+here!</strong></p>
+<blockquote>
+    <p>The specified method calls Class.getName to obtain the
+    qualified name of a class. When the name of the referenced
+    class is obfuscated, your program may behave differently. To
+    avoid that, exclude the classes that are potentially
+    referenced here by means of the <font size="4"><tt>-xc</tt></font>
+    parameter.<br>
+    <br>
+    If you know that the actual name of the class does not matter
+    (for instance because it is only displayed) you can ignore
+    this message.</p>
+</blockquote>
+<p><strong>Missing argument for ??? option</strong></p>
+<blockquote>
+    <p>The command line options <font size="4"><tt>-@</tt></font>, <font
+    size="4"><tt>-msg</tt></font>, <font size="4"><tt>-xc</tt></font>, <font
+    size="4"><tt>-xm</tt></font>, <font size="4"><tt>-d</tt></font>
+    and <font size="4"><tt>-e</tt></font> take one argument. You
+    must separate the argument from the option with a space.</p>
+</blockquote>
+<p><strong>No classes specified</strong></p>
+<blockquote>
+    <p>You did not specify any .class files for Crema to process.
+    Perhaps you used a wildcard that failed to match any files.</p>
+</blockquote>
+<p><strong>???: No matching files</strong></p>
+<blockquote>
+    <p>The wildcard specification shown did not match any files.
+    This is an informational message only.</p>
+</blockquote>
+<p><strong>Obfuscating ???</strong></p>
+<blockquote>
+    <p>The specified class is being obfuscated. This is an
+    informational message that only appears if you use the <font
+    size="4"><tt>-v</tt></font> option.</p>
+</blockquote>
+<p><strong>Out of memory. Re-run with a larger heap.</strong></p>
+<blockquote>
+    <p>Crema could not allocate sufficient memory to process all
+    classes. Run Crema again, specifying a larger maximum heap
+    size to the Java virtual machine. For instance, to specify a
+    maximum heap size of 16 MB with the JDK, use:</p>
+    <p><font size="4"><tt>java -mx16m Crema [options]
+    &lt;files&gt;</tt></font></p>
+</blockquote>
+<p><strong>Saving ??? as ???</strong></p>
+<blockquote>
+    <p>The specified class is being saved in the specified file.
+    This is an informational message that only appears if you use
+    the <font size="4"><tt>-v</tt></font> option.</p>
+</blockquote>
+<p><strong>Unrecognized parameter &quot;???&quot;</strong></p>
+<blockquote>
+    <p>The specified parameter is not a valid Crema parameter.
+    Check the spelling.</p>
+</blockquote>
+<hr noshade color="#BE8F60">
+<table width="100%">
+    <tr>
+        <td valign="top"><a href="examples.html"><font size="5"><strong>&lt;&lt;</strong></font></a></td>
+        <td align="center"><font size="2">Copyright &#169; 1996
+        Hanpeter van Vliet</font></td>
+        <td align="right" valign="top"><a
+        href="troubleshooting.html"><font size="5"><strong>&gt;&gt;</strong></font></a></td>
+    </tr>
+</table>
+</body>
+</html>

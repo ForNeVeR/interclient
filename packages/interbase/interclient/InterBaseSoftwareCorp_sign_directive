@@ -1,0 +1,38 @@
+# The contents of this file are subject to the Interbase Public
+# License Version 1.0 (the "License"); you may not use this file
+# except in compliance with the License. You may obtain a copy
+# of the License at http://www.Interbase.com/IPL/
+#
+# Software distributed under the License is distributed on an
+# "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either express
+# or implied. See the License for the specific language governing
+# rights and limitations under the License.
+#
+# The Original Code was created by Inprise Corporation
+# and its predecessors. Portions created by Borland/Inprise are
+# Copyright (C) 1992-1998 and 1999-2000 Borland/Inprise. Portions
+# created by InterBase Software Corporation are Copyright (C)
+# 1998-1999 InterBase Software Corporation.
+#
+# Copyright (C) 2000 InterBase Software Corporation
+# All Rights Reserved.
+# Contributor(s): ______________________________________.
+# Jar signing directive. This is the directive file used by javakey to 
+# sign a jar file.
+
+# Which signer to use. This must be in the system's database.
+signer=InterBaseSoftwareCorp
+
+# Cert number to use for this signer. This determines which
+# certificate will be included in the PKCS7 block. This is mandatory
+# and is 1 based.  
+cert=1
+
+# Cert chain depth of a chain of certificate to include. This is
+# currently not supported.
+chain=0
+
+# The name to give to the signature file and associated signature
+# block.  (i.e. DUKESIGN.SF and DUKESIGN.DSA). This must be 8
+# characters or less.
+signature.file=IC_SIGN

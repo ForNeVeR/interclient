@@ -1,0 +1,134 @@
+/*
+ * The contents of this file are subject to the Interbase Public
+ * License Version 1.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy
+ * of the License at http://www.Inprise.com/IPL.html
+ *
+ * Software distributed under the License is distributed on an
+ * "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either express
+ * or implied. See the License for the specific language governing
+ * rights and limitations under the License.
+ *
+ * The Original Code was created by Inprise Corporation
+ * and its predecessors. Portions created by Inprise Corporation are
+ * Copyright (C) Inprise Corporation.
+ * All Rights Reserved.
+ * Contributor(s): ______________________________________.
+ */
+#define LightDisabled	7
+#define YellowLightOn	6
+#define YellowLightOff	5
+#define GreenLightOn	4
+#define GreenLightOff	3
+#define RedLightOn	2
+#define RedLightOff	1
+STRINGTABLE 
+{
+ 1, "InterServer Configuraton"
+ 2, "Service Priority"
+ 3, "Service Control"
+ 4, "InterServer license file directory"
+ 5, "Server Startup"
+ 6, "..."
+ 7, "&Remove"
+ 8, "OK"
+ 9, "Cancel"
+ 10, "Next >"
+ 11, "The InterServer service is currently running.%sPlease stop the service and try again."
+ 12, "Removing InterServer from the registry will prevent\r\nall applications that use InterServer from working.\r\n\nAre you sure you want to continue?"
+ 13, "The InterServer configuration information was not found in the registry. %sUsing default values."
+ 14, "An error occured launching the application.%sPlease make sure there are enough Windows resources free."
+ 15, "An error occured launching the browser.%sPlease make sure there are enough Windows resources free."
+}
+
+
+STRINGTABLE 
+{
+ 16, "The InterServer service could not be started.%sPlease make sure that this account has the proper account priviledges."
+ 17, "The InterServer service could not be stopped.%sPlease make sure that this account has the proper account priviledges."
+ 18, "The InterServer service could not be paused.%sMake sure that the service is running before trying to pause it."
+ 19, "The InterServer service could not be removed from the services database."
+ 20, "This login does not have the proper security to open the services database."
+ 21, "The InterServer service that is being queried is currently marked as deleted."
+ 22, "The InterServer service has been disabled.%sUse the Windows control panel to re-enable it."
+ 23, "The InterServer service is already running."
+ 24, "The InterServer service is not running.%sThe service must be started before continuing."
+ 25, "The path specified for the service is not found."
+ 26, "Drive %s: is not responding."
+ 27, "You must specify the directory containing the InterServer license file.\r\nClick the browse button to choose a valid directory."
+ 28, "The InterServer server could not be added to the Windows startup group.%sYou need administrator rights to add icons to common program groups."
+ 29, "The InterServer server could not be removed from the Windws startup group.%sYou need administrator rights to add icons to common program groups."
+ 30, "The InterServer configuration information could not be added to the registry."
+ 31, "The InterServer configuration information from the startup group could not be read."
+}
+
+
+STRINGTABLE 
+{
+ 32, "The server could not be found in directory %s."
+ 33, "%s is not a valid directory.  Defaulting to the current drive and directory."
+ 34, "InterServer does not seem to be installed to %s.  Please check to be sure the root directory is correct."
+ 35, "The InterServer license file\r\n\tIC_LICENSE.DAT\r\ncould not be found.\r\nPlease click on the browse button to choose a different directory."
+ 36, "License file (ic_license.dat)|ic_license.dat"
+ 37, "ic_license.dat"
+ 38, "InterServer Startup"
+ 39, "The server could not be started.\r\nPlease make sure that %s is a valid path and EXE."
+ 40, "interserver.exe"
+ 41, "InterServer (interserver.exe)|interserver.exe"
+ 42, "The path to InterServer could not be found.  Defaulting to manual startup."
+ 43, "Would you like to start the server now?"
+ 44, "InterServer could not be installed as a service.\r\nMake sure that this login has proper security access."
+ 45, "The InterServer license file could not be found in the directory specified.%sPlease specify a different directory."
+ 46, "This function requires Administrator account privileges.\r\nPlease log into an account that has Administrator privileges."
+ 47, "The account you are logged into must have Administrator\r\nrights in order to remove a service."
+}
+
+
+STRINGTABLE 
+{
+ 48, "InterServer"
+ 50, "Windows &Startup %s"
+ 51, "&Manual Startup"
+ 52, "On startup as a Ser&vice ( Recommended )"
+ 53, "On &demand as a Service"
+ 54, "&Normal Priority"
+ 55, "&High Priority"
+ 56, "S&tart Service"
+ 57, "Sto&p Service"
+ 58, "&Pause Service"
+ 59, "STARTUP"
+ 60, "If the InterServer registry information is removed, InterServer will not run."
+}
+
+
+STRINGTABLE 
+{
+ 100, "Enter or select the InterServer directory."
+ 101, "&Path"
+ 102, "&Directories"
+ 103, "Dri&ves"
+ 104, "Browse for ic_license.dat"
+ 105, "Browse for interserver.exe"
+}
+
+RedLightOff BITMAP "Led1off.bmp"
+
+
+RedLightOn BITMAP "Led1on.bmp"
+
+
+GreenLightOff BITMAP "Led2off.bmp"
+
+
+GreenLightOn BITMAP "Led2on.bmp"
+
+
+YellowLightOff BITMAP "Led3off.bmp"
+
+
+YellowLightOn BITMAP "Led3on.bmp"
+
+
+LightDisabled BITMAP "Leddsbl.bmp"
+
+

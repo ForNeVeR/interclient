@@ -1,0 +1,228 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>InterClient at BorCon '98</title>
+</head>
+
+<body bgcolor="#FFFFFF" background="../images/background.jpg">
+<table BORDER="0" WIDTH="100%">
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td colspan=3><a href="../specifications/overview-summary.html">Reference</a>&nbsp;| <a href="../help/help.html">Help</a>&nbsp;| <a href="../introduction/introduction.html">Introduction</a>&nbsp;| <a href="../slide_show/coverPage.html">Slide Show</a>&nbsp;| <a href="../customHierarchy.html">Class Hierarchy</a></td>
+<td align=right valign=top rowspan=2><em>
+InterClient</em>
+</td>
+</tr>
+<tr>
+<td><font size="-2">
+<a href="jdbc2core.html">PREV</a>&nbsp;| <a href="performanceHints.html">NEXT</a></font>
+</td>
+<td><font size="-2">
+<a href="../index.html" target="_top">FRAMES</a>
+&nbsp;| <a href="coverPage.html" target="_top">NO FRAMES</a>
+</font>
+</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+<hr>
+
+<big><big>
+<center>
+<h1>JDBC 2 Standard Extension API</h1>
+</center>
+<p>
+Specification to be released for public review Summer 98
+<p>
+<small><small><i>
+Still in javasoft partner review, but should be released soon
+for public review.
+<p>
+More advanced than core api, and generally depends on modules provided by the other
+java extension apis, especially enterprise java beans.
+The java extension interfaces exist in the suite of javax packages,
+so for example, the jdbc 2 standard extension interfaces exists in package javax.sql,
+the enterprise transaction interfaces exist in package javax.transaction.
+The javax packages will be employeed extensively by enterprise java beans.
+Enterprise java beans is a server-side component model, whereas java beans
+are a client-side component model.
+<p>
+Each one of these is a major topic in itself but i've prepared a brief
+overview for each topic.
+</i></small></small>
+<p>
+<ul>
+<li>Rowsets<br>
+<small><small><i>
+If you think of a result set as a cursor, then think of
+a rowset as a self-contained collection of rows, disconnected
+from a database connection.
+So rowsets are always scrollable, and even more important,
+a rowset may be serialized to disk.
+That is, a rowset is a serializable java bean.
+A rowset can be used while disconnected from the database.
+A rowset is a container for tabular data that's updatable and serializable
+and can even be moved around the network independently from any
+database connection.  As tabular self-contained data, a rowset can even
+come from non-SQL data sources.  No locks are maintained by the database;
+when changes need to be propagated back to the
+database, an optimistic concurrency algorithm is used
+which ensures the original values of the rowset were not changed
+while the rowset was disconnected from the database.
+If changes to the original database values represented by a rowset do occur,
+an update conflict is issued and nothing is updated.
+Think of a rowset as a disconnected, serializable, updatable
+self contained java bean for tabular data.
+As a java bean, it can be stored to disk at will and restored at will,
+and be used at design time in a visual builder.
+<p>
+Rowsets also allow multiple cursors on its data.
+But the main difference from a result set is
+that for a rowset, all of it's rows are completely cached,
+so it exists independently from the database.
+<p>
+Not all rowsets are updatable, many dbms vendors are unable to dynamically determine
+the table from which a result column originated, so the jdbc 2 specification doesn't require joins
+to be updatable, some of which could be.
+InterClient will support updates on rowsets created thru joins provided
+a unique row identifier is selected for each joined table.
+</i></small></small>
+<li>Connection pooling<br>
+<small><small><i>
+The idea behind connection pooling is to reuse database connections.
+This is important when there are many connections coming and going
+regularly from a client. When a connection is closed,
+rather than just closing the physical connection to the database, the connection
+can be put into a connection pool for possible reuse by another
+client, or another thread wishing to establish a connection to the
+same database.
+How long it remains in the pool depends on your pooling algorithm.
+A driver can implement its own pool, but it's only aware of its
+own connections, so it can only pool connections created by that driver.
+But there could be several drivers on the client, with heterogenous
+data sources.  So jdbc 2 will include
+a pooling module that will sit on top of jdbc, and manage a collective
+pool so to speak for all jdbc drivers on the client.  So each driver
+will implement certain hooks that allow the pooling module to get at
+its pooled connections, and the driver will notify the pooling
+module on top of jdbc whenever it is finished with a connection.
+<p>
+Sun provides the interfaces for the connection pooling module which
+resides on top of jdbc, but does not provide an implementation.
+Pooling modules will be provided by 3rd party vendors, and they'll probably
+be integrated with transaction servers.
+<p>
+Pooling modules are meant to
+be used by enterprise java beans.
+</i></small></small>
+<li>XA distributed transactions<br>
+<small><small><i>
+This is a two phase commit protocol implemented underneath of the XA resources interface.
+<p>
+This is similarly architecturally to connection pooling, in that any one
+particular driver can only be aware of its own connections in a
+distributed transaction, so to allow for heterogeneous data sources,
+there are hooks that must be implemented by each driver,
+and a transaction module, aka java transaction service (JTS),
+sits on top of jdbc.
+<p>
+The hooks that need to be implemented are essentially two-phase commit.
+So the driver implements the two phase commit protocol with methods
+such as prepare, commit, abort which operate across multiple connections.
+Please note that this is driver functionality.
+Two-phase commit is implemented in the client library.
+InterClient implements its own client library and cannot
+rely on the two-phase commit protocol implemented in the
+InterBase C client library.  
+<p>
+Like connection pooling, a driver's implementatoin of two phase commit only
+allows it to manage distributed connections within the driver itself.
+The transaction module, which is known as a java transaction service,
+allows distributed transactions which span multiple drivers or even non-jdbc
+data sources!  So the JTS can coordinate activities across heterogeneous
+data sources.  The JTS is a standard java mapping
+of the OMG Object Transaction Service (OTS) which is meant to be used
+by a CORBA orb for managing transactions. So interclient-xa can
+be used either by CORBA distributed transactions or
+by Enterprise Java Beans.
+Visibroker has its own integrated transaction service.
+<p>
+The enterprise java beans component architecture allows a server bean to
+perform distributed transactions seamlessly across heterogenous data sources
+using a JTS.  The enterprise java beans themselves will be able to communicate either using
+RMI or RMI over IIOP so that enterprise java beans can fully interoperate with CORBA applications.
+This technology is expected to be released for early access
+this summer as a java standard extension.
+</i></small></small>
+<li>JNDI name service support<br>
+<small><small><i>
+InterClient will support the Java Naming and Directory Interface as an alternative
+way of naming databases to the standard jdbc 1 database url naming conventions.
+With the current methods in jdbc 1, an application has to explicitly
+load any particular drivers it may need (eg. Class.forName()), and when an application needs to get
+a connection, it has to specify a jdbc subprotocol which is also specific to a particular
+driver (eg. jdbc:interbase:).
+The idea with JNDI is to free the application from having to make these decisions,
+and put the information about what driver should be used with what database
+into some kind of naming service repository.  So a database could be moved from
+one machine to the next, and only the name repository would have to change, not
+the application.
+The JNDI is simply an interface that interclient will plug into for accessing directory
+service information provided by some JNDI service provider implementation such as LDAP.
+I'm not sure what the format of the data stored will be,
+but it should provide
+for driver independence, at least in the jdbc application.
+The naming service will attach a particular driver to use for a particular database,
+and there will be some kind of logical name associated with the database.
+<p>
+Notice that a name service provides a server-side registry of databases,
+rather than the client-side aliases we're used to from ODBC and BDE.
+<p>
+A jndi url would be something like "jdbc:interbase:jndi:LDAP_hostname:port_number/...".
+The jndi service provider implementation could use an LDAP server (lightweight directory access protocol).
+</i></small></small>
+</ul>
+</big></big>
+
+<p>
+<hr>
+<a name="navbar_bottom"><!-- --></a>
+<table BORDER="0" WIDTH="100%">
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td colspan=3><a href="../specifications/overview-summary.html">Reference</a>&nbsp;| <a href="../help/help.html">Help</a>&nbsp;| <a href="../introduction/introduction.html">Introduction</a>&nbsp;| <a href="../slide_show/coverPage.html">Slide Show</a>&nbsp;| <a href="../customHierarchy.html">Class Hierarchy</a></td>
+<td align=right valign=top rowspan=2><em>
+InterClient</em>
+</td>
+</tr>
+<tr>
+<td><font size="-2">
+<a href="jdbc2core.html">PREV</a>&nbsp;| <a href="performanceHints.html">NEXT</a></font>
+</td>
+<td><font size="-2">
+<a href="../index.html" target="_top">FRAMES</a>
+&nbsp;| <a href="coverPage.html" target="_top">NO FRAMES</a>
+</font>
+</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+<hr>
+<font size="-1">
+Send comments or suggestions to <a href="mailto:interclient@interbase.com">interclient@interbase.com</a>
+</font>
+
+</body>
+</html>

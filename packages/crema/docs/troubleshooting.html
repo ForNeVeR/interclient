@@ -1,0 +1,80 @@
+<!DOCTYPE HTML PUBLIC "-//W3O/DTD HTML//EN">
+
+<html>
+<head>
+<title>Crema - Troubleshooting</title>
+<meta name="GENERATOR" content="Microsoft FrontPage 1.1">
+<meta name="FORMATTER" content="Microsoft FrontPage 1.1">
+</head>
+<body bgcolor="#1B0C02" text="#C28F60" link="#FF8000"
+vlink="#FF8000">
+<p><font face="Comic Sans MS,Arial,Helvetica"><font size="5"><strong>Troubleshooting</strong></font></p>
+<hr noshade color="#BE8F60">
+<table border="1" cellpadding="7" cellspacing="0" width="100%">
+    <tr>
+        <th align="left" valign="top" width="50%">Problem</th>
+        <th align="left" valign="top" width="50%">Cause/Solution</th>
+    </tr>
+    <tr>
+        <td valign="top">Message &quot;Cannot find class
+        java/lang/Thread&quot;</td>
+        <td valign="top">The Java virtual machine cannot start
+        up. Check your Java installation, in particular your
+        classpath. The standard Java class library should be on
+        your classpath (or in a standard location).</td>
+    </tr>
+    <tr>
+        <td valign="top">Message &quot;Cannot find class
+        Crema&quot;</td>
+        <td>The Java virtual machine cannot find Crema. Check
+        your Crema <a href="installation.html">installation</a>.
+        Try the alternative installation if nothing else helps.</td>
+    </tr>
+    <tr>
+        <td valign="top" width="50%">The main applet class (the
+        one derived from java.applet.Applet) is renamed to
+        &quot;$nn.crema&quot; where nn is a number.</td>
+        <td valign="top" width="50%">You have not declared the
+        class public. Change the class declaration, then
+        recompile and reobfuscate.</td>
+    </tr>
+    <tr>
+        <td valign="top" width="50%">The main application class
+        (the one containing void main()) is renamed to
+        &quot;nn.crema&quot; or &quot;$nn.crema&quot; where nn is
+        a number.</td>
+        <td valign="top" width="50%">You have not declared the
+        class public. Change the class declaration, then
+        recompile and reobfuscate.</td>
+    </tr>
+    <tr>
+        <td valign="top" width="50%">Applet works locally but not
+        when loaded from a server.</td>
+        <td valign="top" width="50%">The applet contains illegal
+        identifiers. Many browsers (including Netscape Navigator
+        3) refuse to load such applets from a server. Re-run the <strong>full</strong>
+        version of Crema <strong>without</strong> the <font
+        size="4"><tt>-ill</tt></font> switch.</td>
+    </tr>
+    <tr>
+        <td valign="top" width="50%">Applet does not work with
+        Netscape Navigator 2.</td>
+        <td valign="top" width="50%">The applet contains illegal
+        identifiers. Netscape Navigator 2 refuses to load such
+        applets, even from the local filesystem. Re-run the <strong>full</strong>
+        version of Crema <strong>without</strong> the <font
+        size="4"><tt>-ill</tt></font> switch.</td>
+    </tr>
+</table>
+<hr noshade color="#BE8F60">
+<table width="100%">
+    <tr>
+        <td valign="top"><a href="message.html"><font size="5"><strong>&lt;&lt;</strong></font></a></td>
+        <td align="center"><font size="2">Copyright &#169; 1996
+        Hanpeter van Vliet</font></td>
+        <td align="right" valign="top"><a href="techsupport.html"><font
+        size="5"><strong>&gt;&gt;</strong></font></a></td>
+    </tr>
+</table>
+</body>
+</html>

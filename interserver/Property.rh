@@ -1,0 +1,60 @@
+/*
+ * The contents of this file are subject to the Interbase Public
+ * License Version 1.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy
+ * of the License at http://www.Inprise.com/IPL.html
+ *
+ * Software distributed under the License is distributed on an
+ * "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either express
+ * or implied. See the License for the specific language governing
+ * rights and limitations under the License.
+ *
+ * The Original Code was created by Inprise Corporation
+ * and its predecessors. Portions created by Inprise Corporation are
+ * Copyright (C) Inprise Corporation.
+ * All Rights Reserved.
+ * Contributor(s): ______________________________________.
+ */
+
+#define IDC_STATIC                      -1
+
+#define GENERAL_DLG                     1
+#define IDM_SHUTDOWN                    101
+#define IDM_CANCEL                      102
+#define IDM_OPEN                        103
+#define IDM_OPENPOPUP                   104
+#define IDM_PROPERTIES                  105
+#define IDM_CONFIGURE			106
+
+#define IDS_SERVERPROD_NAME             201
+#define IDS_PATH                        202
+#define IDS_VERSION                     203
+#define IDS_PROPERTIES                  204
+#define IDS_SHUTDOWN                    205
+#define IDS_CAPABILITIES		206
+#define IDS_JDBC			207
+#define IDS_CONFIGURE			208
+
+#define IDC_PRODNAME                    301
+#define IDC_IBSVR_ICON                  302
+#define IDC_LOCATION_TEXT               303
+#define IDC_VERSION_TEXT                304
+#define IDC_CAPABILITIES_TEXT		305
+#define IDC_LOCATION    	        306
+#define IDC_VERSION  	                307
+#define IDC_CAPABILITIES		308
+#define IDC_CLIENT			309
+#define IDC_SERVER			310
+#define IDC_INTERBASE			311
+
+#define IMM_NO_SERVICE			401
+#define IMM_ALREADY_RUNNING		402
+#define IMM_SERVICE_RUNNING		403
+#define IMM_SERVICE_PAUSED		404
+#define IMM_HUNG_SERVER			405
+#define IMM_NOCONFIGURE			406
+#define IMM_NOINIT			407
+
+#define IDI_IBSVR                       1001
+#define IDI_IBSVR_SMALL                 1001
+

@@ -1,0 +1,135 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>InterClient at BorCon '98</title>
+</head>
+
+<body bgcolor="#FFFFFF" background="../images/background.jpg">
+<table BORDER="0" WIDTH="100%">
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td colspan=3><a href="../specifications/overview-summary.html">Reference</a>&nbsp;| <a href="../help/help.html">Help</a>&nbsp;| <a href="../introduction/introduction.html">Introduction</a>&nbsp;| <a href="../slide_show/coverPage.html">Slide Show</a>&nbsp;| <a href="../customHierarchy.html">Class Hierarchy</a></td>
+<td align=right valign=top rowspan=2><em>
+InterClient</em>
+</td>
+</tr>
+<tr>
+<td><font size="-2">
+<a href="demoPerformance.html">PREV</a>&nbsp;| <a href="rpcVsMom.html">NEXT</a></font>
+</td>
+<td><font size="-2">
+<a href="../index.html" target="_top">FRAMES</a>
+&nbsp;| <a href="coverPage.html" target="_top">NO FRAMES</a>
+</font>
+</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+<hr>
+
+<big><big>
+<center>
+<h1>Tiered Application Architecture</h1>
+</center>
+<p>
+<small><small><i>
+Ok, we've covered driver architecture, now let's look at application architecture.
+</i></small></small>
+<p>
+Two Tier Architecture
+<p>
+<img src="images/2tierArch.gif" border="0" align=left>
+<p>
+Three Tier Architecture
+<p>
+<img src="images/3tierArch.gif" border="0" align=left>
+<small><small><i>
+The 2-tier architecture is your traditional client/server application architecture,
+it doesn't matter what class jdbc driver architecture you're using, that's irrelevant.
+<p>
+A 3-tier architecture is a term usually applied to an application architecture.
+But the term may also be applied to driver architectures as well.
+The documentation for class 3 drivers will describe their driver architecture
+as 3-tier, but the usual meaning of the term is a 3-tier application architecture
+that is independent of the architecture of jdbc driver used.
+<p>
+We've seen how to distribute the driver into client/server components,
+now a tiered application architecture distributes the application itself into
+client and server components.
+<p>
+The middle tier maintains control over access and updates to your corporate data.
+<p>
+A tiered architecture is more secure.
+The application server regulates access to data according
+to business rules and application requirements.
+<p>
+The client application could be an applet, that's irrelevant.
+<p>
+The communication between the client application and the application server
+involves high level requests, not jdbc requests.
+And the protocol used between client application and application server is not defined -
+it could be CORBA or RMI (both RPCs) and is usually RPC-based,
+but it could also be a message based protocol.
+<p>
+So there's two kinds of middleware in the 3-tier model,
+the application middleware to the middle tier,
+and the database middleware to the 3rd tier.
+In turn, for each of these middlewares, there are
+2 kinds of distributed communication protocols: RPC based or message based.
+<p>
+The application middleware could be RPC-based or message-based, but
+the database middleware is almost always message based for efficiency reasons.
+The message protocol
+for database middleware is vendor specific, based on proprietary protocols,
+and is hidden from the application layers.
+<p>
+The application server may employ enterprise java beans (a component
+model for the server), or CORBA objects.
+The default communication protocol between distributed enterprise java beans is RMI,
+but Sun is currently working on RMI over IIOP so that RMI will be CORBA compatible.
+</i></small></small>
+
+</big></big>
+
+<p>
+<hr>
+<a name="navbar_bottom"><!-- --></a>
+<table BORDER="0" WIDTH="100%">
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td colspan=3><a href="../specifications/overview-summary.html">Reference</a>&nbsp;| <a href="../help/help.html">Help</a>&nbsp;| <a href="../introduction/introduction.html">Introduction</a>&nbsp;| <a href="../slide_show/coverPage.html">Slide Show</a>&nbsp;| <a href="../customHierarchy.html">Class Hierarchy</a></td>
+<td align=right valign=top rowspan=2><em>
+InterClient</em>
+</td>
+</tr>
+<tr>
+<td><font size="-2">
+<a href="demoPerformance.html">PREV</a>&nbsp;| <a href="rpcVsMom.html">NEXT</a></font>
+</td>
+<td><font size="-2">
+<a href="../index.html" target="_top">FRAMES</a>
+&nbsp;| <a href="coverPage.html" target="_top">NO FRAMES</a>
+</font>
+</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+<hr>
+<font size="-1">
+Send comments or suggestions to <a href="mailto:interclient@interbase.com">interclient@interbase.com</a>
+</font>
+
+</body>
+</html>

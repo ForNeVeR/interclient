@@ -1,0 +1,86 @@
+# The contents of this file are subject to the Interbase Public
+# License Version 1.0 (the "License"); you may not use this file
+# except in compliance with the License. You may obtain a copy
+# of the License at http://www.Inprise.com/IPL.html
+#
+# Software distributed under the License is distributed on an
+# "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either express
+# or implied. See the License for the specific language governing
+# rights and limitations under the License.
+#
+# The Original Code was created by Inprise Corporation
+# and its predecessors. Portions created by Inprise Corporation are
+# Copyright (C) Inprise Corporation.
+# All Rights Reserved.
+# Contributor(s): ______________________________________.
+#-------------------------------- InterServer MAKEFILE ---------------------------------
+#       This makefile builds the InterServer objects needed for the license manager
+#
+#        1         2         3         4         5         6         7         8
+#2345678901234567890123456789012345678901234567890123456789012345678901234567890
+
+!include include.mak
+
+MS_LINK=	kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib
+
+IS_FILES=       cdr.cpp error.cpp ib_array.cpp ib_blob.cpp ib_buffer.cpp ib_catalog.cpp \ 
+		ib_connection.cpp ib_connectionconfiguration.cpp ib_charactersets.cpp \
+		ib_connectioninformation.cpp ib_databuffer.cpp \
+		ib_information.cpp ib_inputbuffer.cpp ib_ldbytes.cpp ib_ldstring.cpp \
+		ib_resultset.cpp ib_sqlexception.cpp ib_statement.cpp ib_status.cpp \
+		ib_transaction.cpp ib_transactionconfiguration.cpp \
+		ib_transactioninformation.cpp ib_types.cpp interserver.cpp interservice.cpp\
+		jibsnet.cpp jibsremote.cpp nettcp.cpp property.cpp VersionInformation.cpp\
+		session.cpp vector.cpp window.cpp \
+		communicationsqlexception.cpp 
+
+IS_OBJS=      	$(IS_FILES:.cpp=.obj)
+
+OUT_FLAG=	-out:$(.path.obj)\interserver.exe
+
+IS_FLAGS = 	-machine:i386 -subsystem:windows
+
+RESOURCE_LINK=	$(.path.res)\interserver.res
+
+WIN_LIBS=	advapi32.lib shell32.lib uuid.lib comctl32.lib wsock32.lib 
+
+IB_LIBS=	gds32_ms.lib
+
+
+IC_MISC=        $(.path.obj)\versioninformation.obj
+#-----------------------------------------------------------------------------
+interserver.exe: $(.path.obj)\interserver.rsp $(.path.res)\interserver.res
+	$(ECHO) $(OUT_FLAG) > tmp.rsp
+	$(ECHO) $(IS_FLAGS) >> tmp.rsp
+	$(ECHO) $(RESOURCE_LINK) >> tmp.rsp
+	$(ECHO) $(MS_LINK) >> tmp.rsp
+	$(ECHO) $(WIN_LIBS) >> tmp.rsp
+	$(ECHO) $(IB_LIBS) >> tmp.rsp
+	$(LINK) $(LINK_OPTS) @tmp.rsp @$(.path.obj)\interserver.rsp 
+	$(RM) tmp.rsp
+	$(RM) $(.path.obj)\interserver.rsp
+
+$(.path.res)\interserver.res: property.rc version_95.rc
+	$(BRC32) -dBORLAND_RESOURCE_COMPILER -r -w32 -fo$(.path.res)\interserver.res property.rc
+
+$(.path.obj)\interserver.rsp: $(IS_OBJS) 
+	$(RM) $<
+	ls $** >> $<
+!
+#	&$(ECHO) $** >> $<
+
+
+isconfig32.res: isconfig32.rc
+	$(BRC32) -r -w32 -foisconfig32.res isconfig32.rc
+
+isconfig.res: isconfig.rc
+	$(BRC32) -r -w32 -foisconfig.res isconfig.rc
+
+version_w32.res: version_95.rc
+	$(BRC32) -DBORLAND_RESOURCE_COMPILER -DISCONFIG -r -w32 -foversion_w32.res version_95.rc
+
+isconfig.exe: main.dfm isconfig.res isconfig32.res version_w32.res
+	$(DCC) $(DCC_FLAGS) isconfig.dpr -E$(.path.obj)
+!
+	$(TOUCH) $(.path.obj)\isconfig.exe
+

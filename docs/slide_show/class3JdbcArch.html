@@ -1,0 +1,118 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>InterClient at BorCon '98</title>
+</head>
+
+<body bgcolor="#FFFFFF" background="../images/background.jpg">
+<table BORDER="0" WIDTH="100%">
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td colspan=3><a href="../specifications/overview-summary.html">Reference</a>&nbsp;| <a href="../help/help.html">Help</a>&nbsp;| <a href="../introduction/introduction.html">Introduction</a>&nbsp;| <a href="../slide_show/coverPage.html">Slide Show</a>&nbsp;| <a href="../customHierarchy.html">Class Hierarchy</a></td>
+<td align=right valign=top rowspan=2><em>
+InterClient</em>
+</td>
+</tr>
+<tr>
+<td><font size="-2">
+<a href="networkCapableDrivers.html">PREV</a>&nbsp;| <a href="class4JdbcArch.html">NEXT</a></font>
+</td>
+<td><font size="-2">
+<a href="../index.html" target="_top">FRAMES</a>
+&nbsp;| <a href="coverPage.html" target="_top">NO FRAMES</a>
+</font>
+</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+<hr>
+
+<big><big>
+<center>
+<h1>Class 3 JDBC Driver Architecture</h1>
+</center>
+<img src="images/class3JdbcArch.gif" border="0" align=left>
+<small><small><i>
+A class 3 driver is the first of two distributed solutions.
+In this case, the driver is distributed into client
+and server components.
+</i></small></small>
+<p>
+All client components are pure Java
+<p>
+Driver subsumes DBMS client library and protocol
+<p>
+<small><small><i>
+The dbms api could either be a server api or a client api.
+So the jdbc server may reside in a middle tier and is called a gateway
+if it can proxy service to a remote database server.
+This could occur if the jdbc server uses a dbms client library.
+<p>
+Besides an all-java client, there's another advantage to this architecture.
+The jdbc protocol is tailored for jdbc access and control.
+So the better performance of class 2 drivers is not because of an
+inherently better architecture, it's because jdbc protocols are newer.
+<p>
+For interbase, the jdbc client library is called interclient,
+and the jdbc server is called interserver.
+The dbms api for interserver is isc, the dbms api for datagateway
+is the bde.  Notice that for datagateway, the bde has moved from
+being a client api to being a server api on the middle tier.
+Actually, the jdbc client itself could be on a middle tier, and the
+application on top of it may be an enterprise java bean, this depends
+on the application architecture, not the driver architecture, but for
+the time being think of jdbc as being on the client.
+<p>
+For interclient the jdbc server, known as interserver, runs on windows, solaris, hp/ux,
+and coming soon are linux and sco.
+<p>
+Just as a simple example to demonstrate the difference between a bridge and a distributed driver,
+consider the driver functionality for ResultSet.next().  A bridge
+would map next() to isc_dsql_fetch(), whereas a distributed client library would
+either step thru its local internal cache of rows, or receive a prefetched set of rows off the wire
+if the internal cache was exhausted.
+</i></small></small>
+</big></big>
+
+<p>
+<hr>
+<a name="navbar_bottom"><!-- --></a>
+<table BORDER="0" WIDTH="100%">
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td colspan=3><a href="../specifications/overview-summary.html">Reference</a>&nbsp;| <a href="../help/help.html">Help</a>&nbsp;| <a href="../introduction/introduction.html">Introduction</a>&nbsp;| <a href="../slide_show/coverPage.html">Slide Show</a>&nbsp;| <a href="../customHierarchy.html">Class Hierarchy</a></td>
+<td align=right valign=top rowspan=2><em>
+InterClient</em>
+</td>
+</tr>
+<tr>
+<td><font size="-2">
+<a href="networkCapableDrivers.html">PREV</a>&nbsp;| <a href="class4JdbcArch.html">NEXT</a></font>
+</td>
+<td><font size="-2">
+<a href="../index.html" target="_top">FRAMES</a>
+&nbsp;| <a href="coverPage.html" target="_top">NO FRAMES</a>
+</font>
+</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+<hr>
+<font size="-1">
+Send comments or suggestions to <a href="mailto:interclient@interbase.com">interclient@interbase.com</a>
+</font>
+
+</body>
+</html>

@@ -1,0 +1,32 @@
+ /*=======================================================================*/
+ /*                 Stirling Technologies, Inc.  (c) 1990-1995            */
+ /*                        Schaumburg, Illinois 60173                     */
+ /*                           All Rights Reserved.                        */
+ /*                             InstallShield (R)                         */
+ /*=======================================================================*/
+
+ //-------------------------------------------------------------------------
+ //
+ //
+ //   File    : sdprodct.rul
+ //
+ //   Purpose : This file contains the code for the SdProductName
+ //             script dialog function.
+ //
+ //-------------------------------------------------------------------------
+
+ /*------------------------------------------------------------------------*/
+ /*                                                                        */
+ /*   Function: SdProductName                                              */
+ /*                                                                        */
+ /*   Descrip:  This dialog will steup the product name.                   */
+ /*   Misc:                                                                */
+ /*                                                                        */
+ /*------------------------------------------------------------------------*/
+function SdProductName( szProductName )
+        begin
+
+           szSdProduct = szProductName;
+
+        end;
+

@@ -1,0 +1,110 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>InterClient at BorCon '98</title>
+</head>
+
+<body bgcolor="#FFFFFF" background="../images/background.jpg">
+<table BORDER="0" WIDTH="100%">
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td colspan=3><a href="../specifications/overview-summary.html">Reference</a>&nbsp;| <a href="../help/help.html">Help</a>&nbsp;| <a href="../introduction/introduction.html">Introduction</a>&nbsp;| <a href="../slide_show/coverPage.html">Slide Show</a>&nbsp;| <a href="../customHierarchy.html">Class Hierarchy</a></td>
+<td align=right valign=top rowspan=2><em>
+InterClient</em>
+</td>
+</tr>
+<tr>
+<td><font size="-2">
+<a href="bdeArch.html">PREV</a>&nbsp;| <a href="class2JdbcArch.html">NEXT</a></font>
+</td>
+<td><font size="-2">
+<a href="../index.html" target="_top">FRAMES</a>
+&nbsp;| <a href="coverPage.html" target="_top">NO FRAMES</a>
+</font>
+</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+<hr>
+
+<big><big>
+<center>
+<h1>Class 1 JDBC Driver Architecture</h1>
+</center>
+<br>
+<img src="images/class1JdbcArch.gif" border="0" align=left>
+<p>
+<small><small><i>
+There are 4 classes of jdbc drivers, class 1 and 2 are similar to your traditional
+driver architecture.
+</i></small></small>
+<p>
+A class 1 driver is a bridge from the JDBC API to the ODBC API.
+<p>
+<small><small><i>
+Both jdbc and odbc are based on cli, so this mapping is a natural,
+and allows Java applications to access a database with existing
+odbc support.
+<p>
+JavaSoft provides this jdbc-odbc bridge as part of the jdk.
+There is only one jdbc-odbc bridge, but there is a separate
+odbc driver for each database.
+</i></small></small>
+<p>
+DBMS client library provides client/server
+<p>
+<small><small><i>
+Jdbc is a java api, and the bridge is written in java;
+odbc is a c api, and an odbc driver is written in C.
+So the jdbc-odbc bridge is what i call a language driver; the semantic difference
+between odbc and jdbc is minimal, the main difference is the language barrier.
+So this same kind of architecture could be used by
+other language drivers, eg. a perl to odbc bridge.
+</i></small></small>
+</big></big>
+<br>
+<br>
+<br>
+<br>
+<p>
+<hr>
+<a name="navbar_bottom"><!-- --></a>
+<table BORDER="0" WIDTH="100%">
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td colspan=3><a href="../specifications/overview-summary.html">Reference</a>&nbsp;| <a href="../help/help.html">Help</a>&nbsp;| <a href="../introduction/introduction.html">Introduction</a>&nbsp;| <a href="../slide_show/coverPage.html">Slide Show</a>&nbsp;| <a href="../customHierarchy.html">Class Hierarchy</a></td>
+<td align=right valign=top rowspan=2><em>
+InterClient</em>
+</td>
+</tr>
+<tr>
+<td><font size="-2">
+<a href="bdeArch.html">PREV</a>&nbsp;| <a href="class2JdbcArch.html">NEXT</a></font>
+</td>
+<td><font size="-2">
+<a href="../index.html" target="_top">FRAMES</a>
+&nbsp;| <a href="coverPage.html" target="_top">NO FRAMES</a>
+</font>
+</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+<hr>
+<font size="-1">
+Send comments or suggestions to <a href="mailto:interclient@interbase.com">interclient@interbase.com</a>
+</font>
+
+</body>
+</html>

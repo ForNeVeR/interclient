@@ -1,0 +1,163 @@
+<html>
+
+<head>
+<title>InterClient Help</title>
+</head>
+
+<body bgcolor="#FFFFFF">
+<table BORDER="0" WIDTH="100%">
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td colspan=3><a href="../specifications/overview-summary.html">Reference</a>&nbsp;| <a href="../help/help.html">Help</a>&nbsp;| <a href="../introduction/introduction.html">Introduction</a>&nbsp;| <a href="../slide_show/coverPage.html">Slide Show</a>&nbsp;| <a href="../customHierarchy.html">Class Hierarchy</a></td>
+<td align=right valign=top rowspan=2><em>
+InterClient</em>
+</td>
+</tr>
+<tr>
+<td><font size="-2">
+<a href="icTechSupport.html">PREV</a>&nbsp;| <a href="icURLSyntax.html">NEXT</a></font>
+</td>
+<td><font size="-2">
+<a href="../index.html" target="_top">FRAMES</a>
+&nbsp;| <a href="icGettingAConnection.html" target="_top">NO FRAMES</a>
+</font>
+</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+<hr>
+
+<h3>Getting a Connection</h3>
+
+<ol>
+<li><a href="#a">Using the JDBC 1 Driver API</a>
+<li><a href="#b">Using the JDBC 2 DataSource API (InterClient 2 Only)</a>
+</ol>
+
+<hr>
+<p><strong><a name="a">Using the JDBC 1 Driver API</a></strong>
+<p>
+Connections are traditionally established using an explicit database URL
+through the DriverManager as follows:
+<pre>
+Class.forName ("interbase.interclient.Driver");
+java.sql.Connection c =
+  DriverManager.getConnection ("jdbc:interbase://server/c:/database-dir/atlas.gdb",
+                               "sysdba", "masterkey");
+</pre>
+Connections may also be established through a Driver instance as follows:
+<pre>
+java.sql.Driver d = new interbase.interclient.Driver ();
+java.sql.Connection c = d.connect ("jdbc:interbase://server/c:/database-dir/atlas.gdb", 
+                                   "sysdba", "masterkey");
+</pre>
+When the Driver class is loaded,
+an anonymous driver instance is automatically created and registered 
+with the driver manager. 
+The driver manager will locate the driver instance based on the 
+URL prefix "jdbc:interbase:". 
+<p>
+<b>Note:</b> Because of a bug in the JDK 1.1.x with Class.forName().  
+There is a race condition in
+the class loader, and it is sometimes possible that the class loader
+is prevented from executing the static section of code
+in the driver class.  This would prevent the loaded driver
+class from registering itself with the driver manager.
+So Class.forName () may appear to succeed with no exception thrown,
+but the driver may not be registered with the driver manager.
+One work-around is to obtain a connection from an explicitly constructed
+driver instance as follows:
+<pre> 
+java.sql.Driver d = new interbase.interclient.Driver ();
+java.sql.Connection c = d.connect ("jdbc:interbase://server/c:/database-dir/atlas.gdb", 
+                                   "sysdba", "masterkey");
+</pre>
+<p>
+For further details, see the InterClient examples directory for class
+<a href="../examples/DriverExample.txt">DriverExample.java</a>
+<p>
+When using the JDBC 1 DriverManager/Driver API,
+connection properties may also be passed to the driver
+when a connection is requested with
+<ul>
+<li>
+<a href="../specifications/interbase/interclient/Driver.html#connect(java.lang.String, java.util.Properties)">
+Driver.connect (String databaseURL, java.util.Properties)</a> or
+<li>java.sql.DriverManager.getConnection (String databaseURL, java.util.Properties).
+</ul>
+<p>
+See <a href="icConnectionProperties.html">DataSource and Connection Properties</a>
+for a specification of the InterClient connection properties (InterClient 2 Only).
+
+<p><strong><a name="b">Using the JDBC 2 DataSource API (InterClient 2 Only)</a></strong>
+<p>
+The JDBC 2 Standard Extension introduces a
+<a href="../specifications/interbase/interclient/DataSource.html">
+DataSource</a>
+facility and provides an alternative to the JDBC 1 DriverManager, essentially
+duplicating all of the driver manager’s useful functionality. Although, both mechanisms
+may be used by the same application if desired, JavaSoft encourages developers to
+regard the DriverManager as a legacy feature of the JDBC API. Applications should
+use the DataSource API whenever possible.
+A JDBC implementation that is accessed via the DataSource API is not automatically
+registered with the DriverManager. The DriverManager, Driver, and
+DriverPropertyInfo interfaces may be deprecated in the future.
+<p>
+See the API Reference for class
+<a href="../specifications/interbase/interclient/DataSource.html">
+DataSource</a>
+for an example of how to register an InterClient data source object with
+a JNDI naming service, and an example of
+looking up a data source registered in with JNDI.
+<p>
+See <a href="icConnectionProperties.html">DataSource and Connection Properties</a>
+for a specification of the InterClient data source properties.
+<p>
+For example code using DataSources see
+<a href="../examples/DataSourceExample.txt">DataSourceExample.java</a>,
+<a href="../examples/JNDIExample.txt">JNDIExample.java</a>,
+and
+<a href="../examples/ServerManagerExample.txt">ServerManagerExample.java</a>.
+
+<p>
+<hr>
+<a name="navbar_bottom"><!-- --></a>
+<table BORDER="0" WIDTH="100%">
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td colspan=3><a href="../specifications/overview-summary.html">Reference</a>&nbsp;| <a href="../help/help.html">Help</a>&nbsp;| <a href="../introduction/introduction.html">Introduction</a>&nbsp;| <a href="../slide_show/coverPage.html">Slide Show</a>&nbsp;| <a href="../customHierarchy.html">Class Hierarchy</a></td>
+<td align=right valign=top rowspan=2><em>
+InterClient</em>
+</td>
+</tr>
+<tr>
+<td><font size="-2">
+<a href="icTechSupport.html">PREV</a>&nbsp;| <a href="icURLSyntax.html">NEXT</a></font>
+</td>
+<td><font size="-2">
+<a href="../index.html" target="_top">FRAMES</a>
+&nbsp;| <a href="icGettingAConnection.html" target="_top">NO FRAMES</a>
+</font>
+</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+<hr>
+<font size="-1">
+Send comments or suggestions to <a href="mailto:interclient@interbase.com">interclient@interbase.com</a>
+</font>
+
+</body>
+</html>

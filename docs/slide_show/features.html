@@ -1,0 +1,151 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>InterClient at BorCon '98</title>
+</head>
+
+<body bgcolor="#FFFFFF" background="../images/background.jpg">
+<table BORDER="0" WIDTH="100%">
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td colspan=3><a href="../specifications/overview-summary.html">Reference</a>&nbsp;| <a href="../help/help.html">Help</a>&nbsp;| <a href="../introduction/introduction.html">Introduction</a>&nbsp;| <a href="../slide_show/coverPage.html">Slide Show</a>&nbsp;| <a href="../customHierarchy.html">Class Hierarchy</a></td>
+<td align=right valign=top rowspan=2><em>
+InterClient</em>
+</td>
+</tr>
+<tr>
+<td><font size="-2">
+<a href="usingIcWithJBuilder.html">PREV</a>&nbsp;| <a href="featureDemos.html">NEXT</a></font>
+</td>
+<td><font size="-2">
+<a href="../index.html" target="_top">FRAMES</a>
+&nbsp;| <a href="coverPage.html" target="_top">NO FRAMES</a>
+</font>
+</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+<hr>
+
+<big><big>
+<center>
+<h1>Feature Overview</h1>
+</center>
+<p>
+<ul>
+<li>Full JDBC support<br>
+<small><small><i>
+InterClient may be the most fully functional jdbc driver available.<br>
+Here's some information found in the release notes of other jdbc drivers:
+<ul>
+<li>With dbAnywhere to sql server (now called adaptive server) a statement with a result set
+must either be explicitly closed or the result set exhausted before it can be reused.
+This is a limitation enforced
+by the DbLIB client libraries to process all of the results before issuing another SQL request.
+<li>
+Also with dbAnywhere, ResultSet.getBytes() is not supported to Sybase/MS sql server.
+<li>
+dbANYWHERE does not support DATE and TIME literals, escape characters in LIKE clauses are not
+supported, outer join escape syntax is not supported.
+<li>
+Using jConnect for SQL Server you cannot use the following DatabaseMetaData methods on a connection
+in the middle of a transaction: getColumns(), getColumnPrivileges(),
+getTablePrivileges(), getPrimaryKeys(),getCrossReference(),getIndexInfo().
+So if autocommit is off, you can't precede any of these methods with uncommitted SQL execution!
+This is because these methods create temporary tables using CREATE TABLE which is
+not allowed within a multi-statement transaction in SQL Server.
+<li>
+outer join escape syntax is not supported for SQL Server.
+<li>
+row counts (from executeUpdate) are not available for SQL Anywhere.
+<li>
+stored procedures in SQL Anywhere cannot return both result sets and output parameters, they can return only one
+or the other.
+<li>
+setAutoCommit off didn't work in SQLAnywhere prior to 5.5.
+</ul>
+</i></small></small>
+<li>Reliability and ease of use<br>
+<small><small><i>
+InterClient is easy to configure and use.  Compare with Sybase jConnect
+in which procedures must be installed on the server in advance before
+database meta data can be accessed.
+</i></small></small>
+<li>Internationalization<br>
+<small><small><i>
+We support 20 of the 22 interbase character sets for direct transliterations into interbase.
+Data is transliterated to the character set of choice, generally using the native
+locale-specific encoding of the user.  This provides much better performance
+than drivers that use only a single universal encoding on the wire.
+<br>
+Interclient is completely localized, with easily translatable resource bundles
+for all error messages and hard-wired text used by the driver.
+</i></small></small>
+<li>Extensions<br>
+<small><small><i>
+We currently have extensions for describing input meta data (ParameterMetaData),
+as well as the ability to retrieve
+result set meta data before a prepared statement is executed.
+Support for features unique to interbase are forthcoming.
+</i></small></small>
+<li>High performance.
+<small><small><i>
+Leverages the flexibility of a class 3 driver, and shrink-wrapped around InterBase.
+</i></small></small>
+<li>Pure Java
+<small><small><i>
+Fully portable zero-config/zero-install client.<br>
+</i></small></small>
+<li>Well ported JDBC server
+<small><small><i>
+Most JDBC servers work only on Windows<br>
+</i></small></small>
+<li>Multitier configuration
+<small><small><i>
+Service may be proxied to any interbase server thru an interserver middle tier.<br>
+</i></small></small>
+</ul>
+</big></big>
+
+<p>
+<hr>
+<a name="navbar_bottom"><!-- --></a>
+<table BORDER="0" WIDTH="100%">
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td colspan=3><a href="../specifications/overview-summary.html">Reference</a>&nbsp;| <a href="../help/help.html">Help</a>&nbsp;| <a href="../introduction/introduction.html">Introduction</a>&nbsp;| <a href="../slide_show/coverPage.html">Slide Show</a>&nbsp;| <a href="../customHierarchy.html">Class Hierarchy</a></td>
+<td align=right valign=top rowspan=2><em>
+InterClient</em>
+</td>
+</tr>
+<tr>
+<td><font size="-2">
+<a href="usingIcWithJBuilder.html">PREV</a>&nbsp;| <a href="featureDemos.html">NEXT</a></font>
+</td>
+<td><font size="-2">
+<a href="../index.html" target="_top">FRAMES</a>
+&nbsp;| <a href="coverPage.html" target="_top">NO FRAMES</a>
+</font>
+</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+<hr>
+<font size="-1">
+Send comments or suggestions to <a href="mailto:interclient@interbase.com">interclient@interbase.com</a>
+</font>
+
+</body>
+</html>

@@ -1,0 +1,213 @@
+<HTML>
+<HEAD>
+<TITLE>InterClient Introduction</TITLE>
+</HEAD>
+
+<body bgcolor="#FFFFFF">
+<table BORDER="0" WIDTH="100%">
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td colspan=3><a href="../specifications/overview-summary.html">Reference</a>&nbsp;| <a href="../help/help.html">Help</a>&nbsp;| <a href="../introduction/introduction.html">Introduction</a>&nbsp;| <a href="../slide_show/coverPage.html">Slide Show</a>&nbsp;| <a href="../customHierarchy.html">Class Hierarchy</a></td>
+<td align=right valign=top rowspan=2><em>
+InterClient</em>
+</td>
+</tr>
+<tr>
+<td><font size="-2">
+<a href="PROGGprf.html">PREV</a>&nbsp;| <a href="PROGjdbc.html">NEXT</a></font>
+</td>
+<td><font size="-2">
+<a href="../index.html" target="_top">FRAMES</a>
+&nbsp;| <a href="PROGGov.html" target="_top">NO FRAMES</a>
+</font>
+</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+<hr>
+
+<H2>
+InterClient Architecture</H2>
+The <B>JDBC API</B> is the framework for the InterClient API. The JDBC
+API is a Java application programming interface to SQL databases that was
+developed by Sun Microsystems. As a Java/InterClient developer, it's important
+to be familiar with JDBC and how it is driving client-server database applications
+development.
+<H3>
+About the JDBC API</H3>
+
+<CENTER><IMG SRC="images/fig1.gif" ></CENTER>
+
+<CENTER>
+<H5>
+Figure 1 - JDBC Architecture</H5></CENTER>
+Java developers wanted to write code that is independent of the DBMS or
+database connection type being used, so Sun decided to support the Java
+community by defining a framework for generic SQL database access. The
+JDBC API is a generic call-level SQL interface that allows Java developers
+to develop DBMS-independent Java applications and tools using a single
+interface. The JDBC API does the following:
+<UL>
+<LI>
+Allows programmers to write to a single database interface</LI>
+
+<LI>
+Enables Java application development tools and products to be DBMS-independent</LI>
+
+<LI>
+Allows database vendors to provide a wide variety of connectivity solutions</LI>
+</UL>
+
+<DL>
+<DT>
+<DFN><B>Note</B>: JDBC constructs are <B>interfaces</B> which the InterClient
+<B>classes</B> support. The JDBC interface is simply an API that provides
+entry points to the JDBC; there is no code associated with it. The InterClient
+classes provide the code that actually implements the JDBC API.</DFN></DT>
+</DL>
+
+<H3>
+Why Use Java?</H3>
+Java is a robust, secure, easy to use, easy to understand language, and
+applications written in Java can be downloaded automatically on a network.
+This makes it an excellent language framework for developing client/server
+database applications. Java's ability to deliver executable content over
+the Internet/Intranet allows Web pages to contain dynamic and interactive
+content, where the best a Java-less Web has to offer is static, hyperlinked
+content.
+<H3>
+About InterClient</H3>
+As an all-Java JDBC driver, InterClient enables platform-independent, client/server
+development for the Internet and corporate Intranets. The advantage of
+an all-Java driver versus a native-code driver is that you can deploy InterClient-based
+applets without having to manually load platform-specific JDBC drivers
+on each client system (the Web servers automatically download the InterClient
+classes along with the applets). Therefore, there's no need to manage local
+native database libraries, which simplifies administration and maintenance
+of customer applications. As part of a Java applet, InterClient can be
+dynamically updated, further reducing the cost of application deployment
+and maintenance.
+
+<P>InterClient allows Java applets and applications to:
+<UL>
+<LI>
+Open and maintain a high-performance, direct connection to an InterBase
+database server</LI>
+
+<LI>
+Bypass resource-intensive, stateless Web server access methods</LI>
+
+<LI>
+Allow higher throughput speeds and reduced Web server traffic</LI>
+</UL>
+
+<H3>
+InterClient Audience</H3>
+The primary audience for InterClient is developers who wish to create Java-based
+client-server applications. Java developers should be able to seamlessly
+swap RDBMS back-ends underneath their JDBC applications. InterClient provides
+a small footprint, easy to maintain RDBMS (InterBase) as the back end to
+JDBC applications. An InterBase backend is an ideal solution because it's
+small, economical, and conforms to the same SQL standards as the JDBC.
+
+<P>InterBase developers who are writing new Java-based client programs
+can use InterClient to access their existing InterBase databases. Because
+InterClient is an all-Java driver, it can also be used on Sun's new NC
+(Network Computer), a desktop machine that runs applets. The NC has no
+hard drive or CD ROM; users access all of their applications and data via
+applets downloaded from servers.
+<H3>
+InterClient Architecture</H3>
+
+<CENTER>
+<H6>
+<IMG SRC="images/fig2.gif" ></H6></CENTER>
+
+<CENTER>
+<H6>
+Figure 2 - InterClient Architecture</H6></CENTER>
+The InterClient product consists of two major pieces:
+<UL>
+<LI>
+A client-side Java package, called <B>InterClient</B>, containing a library
+of Java classes that implement most of the JDBC API and a set of extensions
+to the JDBC API. This package interacts with the JDBC Driver Manager to
+allow client-side Java applications and applets to interact with InterBase
+databases.</LI>
+
+<LI>
+A server-side driver, called <B>InterServer</B>. This server-side middleware
+serves as a translator between the InterClient-based clients and the InterBase
+database server.</LI>
+</UL>
+Developers can deploy InterClient-based clients in two ways:
+<UL>
+<LI>
+<B>Java</B> <B>applets</B> are Java programs that can be included in an
+HTML page with the &lt;APPLET> tag, served via a web server, and viewed
+and used on a client system using a Java-enabled web browser. This deployment
+method doesn't require manual installation of the InterClient package on
+the client system. It does however require a Java-enabled browser on the
+client system.</LI>
+
+<LI>
+<B>Java</B> <B>applications</B> are stand-alone Java programs for execution
+on a client system. This deployment method requires the InterClient package,
+and a Java Runtime Environment (JRE) installed on the client system.&nbsp;
+The JRE includes the JDBC Driver Manager.</LI>
+</UL>
+
+<H4>
+InterClient Communication</H4>
+InterClient is a driver for managing interactions between a Java applet
+or application and an InterBase database server. On a client system, InterClient
+works with the JDBC Driver Manager to handle client requests through the
+JDBC API. To access an InterBase database, InterClient communicates via
+a TCP/IP connection with an InterServer translator that runs on the same
+system as the InterBase database server. InterServer forwards InterClient
+requests to the InterBase server and passes back the results to the InterClient
+process on the client machine.
+
+
+<p>
+<hr>
+<a name="navbar_bottom"><!-- --></a>
+<table BORDER="0" WIDTH="100%">
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td colspan=3><a href="../specifications/overview-summary.html">Reference</a>&nbsp;| <a href="../help/help.html">Help</a>&nbsp;| <a href="../introduction/introduction.html">Introduction</a>&nbsp;| <a href="../slide_show/coverPage.html">Slide Show</a>&nbsp;| <a href="../customHierarchy.html">Class Hierarchy</a></td>
+<td align=right valign=top rowspan=2><em>
+InterClient</em>
+</td>
+</tr>
+<tr>
+<td><font size="-2">
+<a href="PROGGprf.html">PREV</a>&nbsp;| <a href="PROGjdbc.html">NEXT</a></font>
+</td>
+<td><font size="-2">
+<a href="../index.html" target="_top">FRAMES</a>
+&nbsp;| <a href="PROGGov.html" target="_top">NO FRAMES</a>
+</font>
+</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+<hr>
+<font size="-1">
+Send comments or suggestions to <a href="mailto:interclient@interbase.com">interclient@interbase.com</a>
+</font>
+
+</BODY>
+</HTML>

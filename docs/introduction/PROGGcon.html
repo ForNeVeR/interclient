@@ -1,0 +1,170 @@
+<HTML>
+<HEAD>
+<TITLE>InterClient Introduction</TITLE>
+</HEAD>
+
+<body bgcolor="#FFFFFF">
+<table BORDER="0" WIDTH="100%">
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td colspan=3><a href="../specifications/overview-summary.html">Reference</a>&nbsp;| <a href="../help/help.html">Help</a>&nbsp;| <a href="../introduction/introduction.html">Introduction</a>&nbsp;| <a href="../slide_show/coverPage.html">Slide Show</a>&nbsp;| <a href="../customHierarchy.html">Class Hierarchy</a></td>
+<td align=right valign=top rowspan=2><em>
+InterClient</em>
+</td>
+</tr>
+<tr>
+<td><font size="-2">
+<a href="PROGdrvr.html">PREV</a>&nbsp;| <a href="PROGGsql.html">NEXT</a></font>
+</td>
+<td><font size="-2">
+<a href="../index.html" target="_top">FRAMES</a>
+&nbsp;| <a href="PROGGcon.html" target="_top">NO FRAMES</a>
+</font>
+</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+<hr>
+
+<H2>Opening a Database Connection</H2>
+After loading the driver (or explicitly creating one), you can open a connection
+to the database. There are two ways to do this: with the DriverManager's
+<B>getConnection()</B> method or the driver object's <B>connect()</B> method.
+<H3>
+Using the DriverManager to Get a Connection</H3>
+When you want to access a database, you can get a <B>java.sql.Connection</B>
+object from the JDBC management layer's <B>java.sql.DriverManager.getConnection()</B>
+method. The <B>getConnection()</B> method takes a URL string and a <B>java</B>.<B>util</B>.<B>Properties</B>
+object as arguments. For each connection request, the DriverManager uses
+the URL to locate a driver that can connect to the database represented
+by the URL. If the connection is successful, a <B>java.sql.Connection</B>
+object is returned. The following example shows the syntax for establishing
+a database connection:
+<PRE>
+Class.forName ("interbase.interclient.Driver");
+Connection c = DriverManager.getConnection (url,properties);
+</PRE>
+The <B>Connection</B> object in turn provides access to all of the InterClient
+classes and methods that allow you to execute SQL statements and get back
+the results.
+
+<H3>
+Defining Connection Parameters</H3>
+The arguments to <B>connect</B>() or <B>getConnection</B>() must be defined
+before trying to create the connection. They are the database <I>URL</I>
+and the <I>connection properties</I>.
+<H4>
+Syntax for Specifying Database URLs</H4>
+InterClient follows the JDBC standard for specifying databases using URLs.
+The JDBC URL standard provides a framework so that different drivers can
+use different naming systems that are appropriate for their own needs.
+Each driver only needs to understand its own URL naming syntax; it can
+reject any other URLs that it encounters. A JDBC URL is structured as follows:
+<PRE>jdbc:subprotocol:subname</PRE>
+The <I>subprotocol</I> names a particular kind of database connection,
+which is in turn supported by one or more database drivers. The DriverManager
+decides which driver to use based on which subprotocol is registered for
+each driver. The contents and syntax of <I>subname</I> in turn depend upon
+the <I>subprotocol</I>. If the network address is included in the <I>subname</I>,
+the naming convention for the <I>subname</I> is:
+<PRE>//hostname:/subsubname</PRE>
+<I>subsubname</I> can have any arbitrary syntax.
+<H4>
+Defining an InterClient URL</H4>
+InterClient URLs have the following format:
+<PRE>jdbc:interbase://<I>server</I>/<I>full_db_path</I></PRE>
+"interbase"<I> </I>is the subprotocol, and <I>server </I>is the hostname
+of the InterBase server. <I>Full_db_path </I>(i.e., "subsubname") is the
+full pathname of a database file, including the server's root (/) directory.
+If the InterBase server is a Windows NT system, you must include the drive
+name as well. InterClient doesn't support passing any attributes in the
+URL. For local connections, use:
+<PRE>server = "localhost"</PRE>
+
+<DL>
+<DT>
+<DFN><B>Note</B>: The "/" between the server and full_db_path is treated
+as a delimiter only. When specifying the path for a Unix-based database,
+you must include the initial "/" for the root directory in addition to
+the "/" for the delimiter.</DFN></DT>
+</DL>
+
+<H4>
+Examples</H4>
+For example, with a Unix-based database, the URL
+<PRE>dbURL = "jdbc:interbase://accounts//dbs/orders.gdb"</PRE>
+refers to the database "orders.gdb" in the directory "/dbs" on the Unix
+server "accounts." 
+<p>
+The URL
+<PRE>dbURL = "jdbc:interbase://support/C:/dbs/customer.gdb"</PRE>
+refers to the database "customer.gdb" in the directory "/dbs" on drive
+C of the Wings or Win95 or NT server "support."
+<H4>
+Defining the Connection Properties</H4>
+Connection properties must also be defined before trying to open a database
+connection. To do this, you pass in a <B>java.util.Properties</B> object,
+which maps between tag strings and value strings. Two typical properties
+are "user" and "password." First, create the <B>Properties</B> object:
+<PRE>java.util.Properties properties = new java.util.Properties();</PRE>
+Now create the connection arguments. <I>user </I>and <I>password</I> are
+either literal strings or string variables. They must be the username and
+password on the InterBase database that you are connecting to:
+<PRE>properties.put ("user", user);
+
+properties.put ("password", password);</PRE>
+Now create the connection with the URL and connection properties parameters:
+<PRE>Connection c = DriverManager.getConnection(url, properties);</PRE>
+
+<H3>
+Security</H3>
+Client applications use standard database user name and password verification
+to access an InterBase database. InterClient encrypts the user name and
+password for transmission over the network.
+
+<p>
+For further details on establishing connections, refer to
+the InterClient examples directory.
+
+<p>
+<hr>
+<a name="navbar_bottom"><!-- --></a>
+<table BORDER="0" WIDTH="100%">
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td colspan=3><a href="../specifications/overview-summary.html">Reference</a>&nbsp;| <a href="../help/help.html">Help</a>&nbsp;| <a href="../introduction/introduction.html">Introduction</a>&nbsp;| <a href="../slide_show/coverPage.html">Slide Show</a>&nbsp;| <a href="../customHierarchy.html">Class Hierarchy</a></td>
+<td align=right valign=top rowspan=2><em>
+InterClient</em>
+</td>
+</tr>
+<tr>
+<td><font size="-2">
+<a href="PROGdrvr.html">PREV</a>&nbsp;| <a href="PROGGsql.html">NEXT</a></font>
+</td>
+<td><font size="-2">
+<a href="../index.html" target="_top">FRAMES</a>
+&nbsp;| <a href="PROGGcon.html" target="_top">NO FRAMES</a>
+</font>
+</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+<hr>
+<font size="-1">
+Send comments or suggestions to <a href="mailto:interclient@interbase.com">interclient@interbase.com</a>
+</font>
+
+</BODY>
+</HTML>

@@ -1,0 +1,187 @@
+<HTML>
+<HEAD>
+<TITLE>InterClient Introduction</TITLE>
+</HEAD>
+
+<body bgcolor="#FFFFFF">
+<table BORDER="0" WIDTH="100%">
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td colspan=3><a href="../specifications/overview-summary.html">Reference</a>&nbsp;| <a href="../help/help.html">Help</a>&nbsp;| <a href="../introduction/introduction.html">Introduction</a>&nbsp;| <a href="../slide_show/coverPage.html">Slide Show</a>&nbsp;| <a href="../customHierarchy.html">Class Hierarchy</a></td>
+<td align=right valign=top rowspan=2><em>
+InterClient</em>
+</td>
+</tr>
+<tr>
+<td><font size="-2">
+<a href="PROGGts.html">PREV</a>&nbsp;| NEXT</font>
+</td>
+<td><font size="-2">
+<a href="../index.html" target="_top">FRAMES</a>
+&nbsp;| <a href="PROGdepl.html" target="_top">NO FRAMES</a>
+</font>
+</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+<hr>
+
+<H2>Deploying InterClient Programs</H2>
+Once you've developed your InterClient programs, there are two ways to
+deploy them: as Java applets embedded on an HTML page, or as stand-alone
+all-Java applications running on a client system.
+<H3>
+Deploying InterClient Programs as Applets</H3>
+
+<CENTER>
+<H6>
+<IMG SRC="images/fig2.gif" ></H6></CENTER>
+
+<CENTER>
+<H6>
+Figure 4 - Using Applets to access InterBase</H6></CENTER>
+InterClient programs can be implemented as Java applets that are downloaded
+over the Internet as part of an HTML web page. An InterClient applet uses
+JDBC to provide access to a remote InterBase server in the following manner:
+<OL>
+<LI>
+A user accesses the HTML page where the InterClient applet resides.</LI>
+
+<LI>
+The applet bytecode is downloaded to the client machine from the Web server.</LI>
+
+<LI>
+The applet code executes on the client machine, causing the InterClient
+package (i.e., the InterClient classes and the InterClient driver) to be
+downloaded from the Web server.</LI>
+
+<LI>
+The InterClient driver communicates with the InterServer process, which
+in turn establishes a connection to the InterBase server.</LI>
+
+<LI>
+The InterBase server executes SQL statements and returns the results to
+the InterServer, which then passes on the results to the user running the
+InterClient applet.</LI>
+
+<LI>
+When the applet is finished executing, the applet itself and the InterClient
+driver and classes disappear from the client machine.</LI>
+</OL>
+
+<H4>
+Client Components</H4>
+In order to run InterClient applets, the client machine must have the following
+software loaded:
+<UL>
+<LI>
+A Java-enabled browser</LI>
+</UL>
+
+<H4>
+Server Components</H4>
+The software that resides on the server system includes:
+<UL>
+<LI>
+The InterServer process</LI>
+
+<LI>
+The InterBase server process</LI>
+
+<LI>
+The Web server process</LI>
+
+<LI>
+The program applets</LI>
+
+<LI>
+The InterClient classes</LI>
+</UL>
+The server software may be distributed on separate server machines.
+
+<H3>
+Deploying InterClient Programs as Applications</H3>
+
+<CENTER>
+<H6>
+<IMG SRC="images/fig5.gif" ></H6></CENTER>
+
+<CENTER>
+<H6>
+Figure 5 - Using stand-alone Java applications to access InterBase</H6></CENTER>
+InterClient programs can also be deployed as stand-alone Java applications.
+These applications both reside on and execute from the client machine;
+they're not downloaded from a server. The most common use for these types
+of Java applications is within a company or corporate "Intranet," where
+the application can access corporate database servers on a local or wide
+area network. However, you can also use Java applications to access databases
+via the Internet.
+<H4>
+Client Components</H4>
+To run Java applications using InterClient, the software that must be installed
+on the client system includes:
+<UL>
+<LI>
+The Java programs (compiled bytecode)</LI>
+
+<LI>
+The InterClient package, including the driver and all of the classes</LI>
+
+<LI>
+A Java Runtime Environment (JRE)</LI>
+</UL>
+
+<H4>
+Server Components</H4>
+The server components that must be installed include:
+<UL>
+<LI>
+The InterServer process</LI>
+
+<LI>
+The InterBase server process</LI>
+</UL>
+
+
+<p>
+<hr>
+<a name="navbar_bottom"><!-- --></a>
+<table BORDER="0" WIDTH="100%">
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td colspan=3><a href="../specifications/overview-summary.html">Reference</a>&nbsp;| <a href="../help/help.html">Help</a>&nbsp;| <a href="../introduction/introduction.html">Introduction</a>&nbsp;| <a href="../slide_show/coverPage.html">Slide Show</a>&nbsp;| <a href="../customHierarchy.html">Class Hierarchy</a></td>
+<td align=right valign=top rowspan=2><em>
+InterClient</em>
+</td>
+</tr>
+<tr>
+<td><font size="-2">
+<a href="PROGGts.html">PREV</a>&nbsp;| NEXT</font>
+</td>
+<td><font size="-2">
+<a href="../index.html" target="_top">FRAMES</a>
+&nbsp;| <a href="PROGdepl.html" target="_top">NO FRAMES</a>
+</font>
+</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+<hr>
+<font size="-1">
+Send comments or suggestions to <a href="mailto:interclient@interbase.com">interclient@interbase.com</a>
+</font>
+
+</BODY>
+</HTML>

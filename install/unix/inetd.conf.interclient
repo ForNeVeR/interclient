@@ -1,0 +1,1 @@
+interserver stream tcp nowait root /usr/interclient/bin/interserver interserver

@@ -1,0 +1,484 @@
+#!/bin/sh
+# set -x
+#  InterClient installation script
+#  Copyright (c) Borland International, Inc., 1996
+#  All rights reserved.
+
+umask 022
+
+TOUCHTIME=0007181500
+#
+#  Path for finding important commands
+#
+PATH=.:/usr/bin:/usr/ucb:$PATH;export PATH
+#
+#
+#  Default installation directories
+#
+PACKAGE_NAME=interbase/interclient
+INSTDEFDIR=/usr/interclient
+DOCROOTDEFDIR=/usr/http
+#
+#  Default is InterServer not installed
+#
+INSTSERVER=0
+#
+#  InterServer license file
+#
+#SERVERLIC=ic_license.dat
+#
+# License Agreement
+#
+LICENSE=License.txt
+#
+#  Directory we are installing from
+#
+MYPWD=`pwd`
+#
+#  Log file
+#
+MYLOG=${MYPWD}/install.log
+#
+# check to see that install being down by root
+#
+MYUSER=`whoami`
+if [ "$MYUSER" != "root" ]
+    then
+      echo "you must be the superuser to install InterClient" | tee -a $MYLOG
+      exit
+fi
+#
+#  Version information
+#
+VERSION=VERSION.TXT
+#
+#  Legal license
+#
+PRODUCT=InterClient
+#
+#  Product revision
+#
+REVISION=2.00.01
+#
+#  What operating system are we running on
+#  Set appropriate flags
+#
+OSNAME=`uname -s`
+if [ "$OSNAME" = "SunOS" ]
+then
+  if [ `uname -r | cut -f1 -d.` -ge 5 ]
+  then
+    OSNAME=solaris
+  fi
+fi
+case $OSNAME in
+  solaris)
+    TARFLAGS=xpvf
+    ;;
+  SunOS)
+    TARFLAGS=xpvf
+    ;;
+  HP-UX)
+    TARFLAGS=xvf
+    ;;
+  AIX)
+    TARFLAGS=xpvf
+    ;;
+  *)
+    TARFLAGS=xpvf
+    ;;
+esac
+#
+#  Names of the archives to extract from
+#
+TAR_FILE="interclient.tar"  # contains all installable components
+SERVER="icserver.tar.Z"     # contains the server
+DRIVER="icdriver.tar.Z"     # contains the driver
+#
+#  Prompt for and validate the installation directory
+#  A default installation directory is supplied
+#
+get_dir()
+{
+  while :
+  do
+    echo " " | tee -a $MYLOG
+    echo "Enter the installation directory as an absolute path starting from root." | tee -a $MYLOG
+    echo "If the default directory /usr/interclient is not used," | tee -a $MYLOG
+    echo "a soft link /usr/interclient will be created to point to your installation directory." | tee -a $MYLOG
+    echo "Enter the root directory [${INSTDEFDIR}] : \c" | tee -a $MYLOG
+    read INSTDIR
+    echo ${INSTDIR} >> ${MYLOG}
+    if [ "x$INSTDIR" = x ]
+    then
+      INSTDIR=$INSTDEFDIR
+    fi
+    #
+    #  Check that we got an absolute path from root
+    #
+    case $INSTDIR in
+      /*)
+        ;;
+      *)  
+        echo " " | tee -a $MYLOG
+        echo "You must enter an absolute path starting from root, for example :"
+        echo "Enter the root directory [${INSTDEFDIR}] : /usr/interclient"
+        continue
+        ;;
+    esac
+    #
+    #  Test for the existence of the chosen installation directory
+    #
+    if [ ! -d $INSTDIR ]
+    then
+      #
+      #  Should we create the installation directory
+      #
+      echo " " | tee -a $MYLOG
+      echo "The directory ${INSTDIR} does not exist." | tee -a $MYLOG
+      echo "Select \"Q\" to quit, or" | tee -a $MYLOG
+      echo "       \"Y\" to create the directory, or" | tee -a $MYLOG
+      echo "       \"N\" to select a new directory." | tee -a $MYLOG
+      echo "Enter selection [Y] : \c" | tee -a $MYLOG
+      read CREATE
+      echo ${CREATE} >> ${MYLOG}
+      if [ "x$CREATE" = x -o "$CREATE" = y -o "$CREATE" = Y -o "$CREATE" = yes -o "$CREATE" = YES ]
+      then
+        #
+        #  Create the necessary directories in the InterClient root directory 
+        #
+	echo " " | tee -a $MYLOG
+	echo "Creating root directory ${INSTDIR} ..." | tee -a $MYLOG
+	IFSDEF=$IFS
+	IFS=/
+	TEMPDIR=$IFS
+	for i in $INSTDIR
+	do
+	  IFS=$IFSDEF
+	  TEMPDIR=$TEMPDIR$i
+	  if [ ! -d $TEMPDIR ]
+	  then
+	    mkdir $TEMPDIR
+	    #
+	    #  Test exit status to see if mkdir command failed
+	    #
+	    if [ "$?" -ne 0 ]
+	    then
+	      echo " " | tee -a $MYLOG
+	      echo "Unable to create the directory ${TEMPDIR}." | tee -a $MYLOG
+	      echo "The cause may be incorrect pathname syntax or inadequate system privileges." | tee -a $MYLOG
+	      echo "Verify both of the above and rerun this script." | tee -a $MYLOG
+	      exit 1
+	    fi
+          fi
+	  IFS=/
+       	  TEMPDIR=$TEMPDIR/
+        done
+	IFS=$IFSDEF
+	echo " " | tee -a $MYLOG
+        echo "Directory ${INSTDIR} created." | tee -a $MYLOG
+        break
+      elif [ "$CREATE" = q -o "$CREATE" = Q -o "$CREATE" = quit -o "$CREATE" = QUIT ]
+      then
+        echo " " | tee -a $MYLOG
+	echo "You have elected to quit the installation." | tee -a $MYLOG
+        echo "You can rerun the installation script at a later time." | tee -a $MYLOG
+	exit 2
+      else
+        echo " " | tee -a $MYLOG
+        echo "You have elected not to create the directory ${INSTDIR}." | tee -a $MYLOG
+        echo "Choose another directory." | tee -a $MYLOG
+      fi
+    else
+      echo " " | tee -a $MYLOG
+      echo "Warning, the directory ${INSTDIR} already exists." | tee -a $MYLOG
+      echo "The installation script may overwrite existing files." | tee -a $MYLOG
+      echo "Select \"Q\" to quit, or" | tee -a $MYLOG
+      echo "       \"Y\" to overwrite existing files, or" | tee -a $MYLOG
+      echo "       \"N\" to select a new directory." | tee -a $MYLOG
+      echo "Enter selection [N] : \c" | tee -a $MYLOG
+      read EXISTING
+      echo ${EXISTING} >> ${MYLOG}
+      if [ "$EXISTING" = y -o "$EXISTING" = Y -o "$EXISTING" = yes -o "$EXISTING" = YES ]
+      then
+        echo " " | tee -a $MYLOG
+        echo "You have elected to use existing directory ${INSTDIR}." | tee -a $MYLOG
+        break
+      else
+        echo "You have elected not to use the existing directory ${INSTDIR}." | tee -a $MYLOG
+        echo "Choose another directory." | tee -a $MYLOG
+      fi
+    fi
+  done
+}
+#
+#  Basic product information
+#
+echo "Installation script for product  : ${PRODUCT}" | tee -a $MYLOG
+echo "                        revision : ${REVISION}" | tee -a $MYLOG
+      echo "                        date     : `date`" | tee -a $MYLOG
+      echo " " | tee -a $MYLOG
+      echo "The installation is logged in the file ${MYLOG}." | tee -a $MYLOG
+      echo " "
+      echo "Press Enter to continue \c"
+      read WHATEVER
+      #
+      # Verify that previous versions of interclient are uninstalled
+      #
+      if [ -d $INSTDEFDIR ]
+      then
+	echo " " | tee -a $MYLOG
+	echo "Remove directory or soft link /usr/interclient" | tee -a $MYLOG
+	echo "And then run this script again." | tee -a $MYLOG
+        exit 1
+      fi
+      #
+      # Warning about /etc/inetd.conf change, removed...
+      #
+	#
+	# Extract components for install
+	#
+	if [ ! -f $MYPWD/$TAR_FILE ]
+	then
+	  echo " " | tee -a $MYLOG
+	  echo "Missing installation tar file ${TAR_FILE}." | tee -a $MYLOG
+	  echo "Extract all files from media and run this script again." | tee -a $MYLOG
+	  exit 1
+	fi
+	cd $MYPWD
+	echo " " | tee -a $MYLOG
+	echo "Executing : tar ${TARFLAGS} $MYPWD/$TAR_FILE ..." | tee -a $MYLOG
+	tar $TARFLAGS $MYPWD/$TAR_FILE >> $MYLOG 2>&1
+	if [ $? -ne 0 ]
+	then
+	  echo " " | tee -a $MYLOG
+	  echo "Unable to extract files from ${TAR_FILE}." | tee -a $MYLOG
+	  echo "Extract all files from media and run this script again." | tee -a $MYLOG
+	  exit 1
+	fi
+	#
+	# Display the license file
+	#
+	if [ -f $LICENSE ]
+	then
+	  echo " "
+	  pg -p "Press Enter to continue" $LICENSE
+	fi
+	echo " "
+	#
+	#  Select the products to install
+	#
+	while :
+	do
+	  #
+	  #   Prompt user for products to install
+	  #   The default is to install all the products
+	  #
+	  # ...snip...We'll just hardwire it to install option 1 for now
+	  INSTSELECT=1
+	  if [ "$INSTSELECT" = 1 ]
+	  then
+    #	echo " " | tee -a $MYLOG
+    #	echo "You have selected the Development Environment installation" | tee -a $MYLOG
+	    break
+	  elif [ "$INSTSELECT" = 2 ]
+	  then
+	    echo " " | tee -a $MYLOG
+	    echo "You have selected the Development and Web Server Environment installation" | tee -a $MYLOG
+	    break
+	  elif [ "$INSTSELECT" = 3 ]
+	  then
+	    echo " " | tee -a $MYLOG
+	    echo "You have selected the Web Server Environment installation" | tee -a $MYLOG
+	    break
+	  elif [ "$INSTSELECT" = 4 ]
+	  then
+	    echo " " | tee -a $MYLOG
+	    echo "You have selected the Runtime Class Files Only installation" | tee -a $MYLOG
+	    break
+	  elif [ "$INSTSELECT" = q -o "$INSTSELECT" = Q -o "$INSTSELECT" = quit -o "$INSTSELECT" = QUIT ]
+	  then
+	    echo " " | tee -a $MYLOG
+	    echo "You have elected to quit the installation." | tee -a $MYLOG
+	    echo "You can rerun the installation script at a later time." | tee -a $MYLOG
+	    exit 2
+	  else
+	    echo "Invalid selection." | tee -a $MYLOG
+	  fi
+	done
+	#
+	#  Get company name in the log file for support
+	#
+	while :
+	do
+	  echo " " | tee -a $MYLOG
+	  echo "Enter the Company Name [Q to quit] : \c" | tee -a $MYLOG
+	  read ORGNAME
+	  if [ "x$ORGNAME" = x ]
+	  then
+	    continue
+	  elif [ "$ORGNAME" = q -o "$ORGNAME" = Q -o "$ORGNAME" = quit -o "$ORGNAME" = QUIT ]
+	  then
+	    echo " " | tee -a $MYLOG
+	    echo "You have elected to quit the installation." | tee -a $MYLOG
+	    echo "You can rerun the installation script at a later time." | tee -a $MYLOG
+	    exit 2
+	  fi
+	  echo ${ORGNAME} >> ${MYLOG}
+	  break
+	done
+	#
+	#  Get user name in the log file for support
+	#
+	while :
+	do
+	  echo " " | tee -a $MYLOG
+	  echo "Enter your Name [Q to quit] : \c" | tee -a $MYLOG
+	  read USERNAME
+	  if [ "x$USERNAME" = x ]
+	  then
+	    continue
+	  elif [ "$USERNAME" = q -o "$USERNAME" = Q -o "$USERNAME" = quit -o "$USERNAME" = QUIT ]
+	  then
+	    echo " " | tee -a $MYLOG
+	    echo "You have elected to quit the installation." | tee -a $MYLOG
+	    echo "You can rerun the installation script at a later time." | tee -a $MYLOG
+	    exit 2
+	  fi
+	  echo ${USERNAME} >> ${MYLOG}
+	  break
+	done
+	#
+	#  Extract the software to install, based on selection
+	#
+	if [ "$INSTSELECT" = 1 ]
+	then
+	  if [ ! -f $MYPWD/$SERVER ]
+	  then
+	    echo " " | tee -a $MYLOG
+	    echo "Missing installation file ${SERVER}." | tee -a $MYLOG
+	    echo "Extract all files from media and run this script again." | tee -a $MYLOG
+	    exit 1
+	  elif [ ! -f $MYPWD/$DRIVER ]
+	  then
+	    echo " " | tee -a $MYLOG
+	    echo "Missing installation file ${DRIVER}." | tee -a $MYLOG
+	    echo "Extract all files from media and run this script again." | tee -a $MYLOG
+	    exit 1
+	  else
+	    get_dir
+	    INSTSERVER=1
+	    cd $INSTDIR
+	    echo " " | tee -a $MYLOG
+	    echo "Executing : zcat ${SERVER} | tar ${TARFLAGS} - ..." | tee -a $MYLOG
+	    zcat $MYPWD/$SERVER | tar $TARFLAGS - >> $MYLOG 2>&1
+	    if [ $? -ne 0 ]
+	    then
+	      echo " " | tee -a $MYLOG
+	      echo "Unable to extract files from ${SERVER}." | tee -a $MYLOG
+	      echo "Extract all files from media and run this script again." | tee -a $MYLOG
+	      exit 1
+	    fi
+	    echo " " | tee -a $MYLOG
+	    echo "Executing : zcat ${DRIVER} | tar ${TARFLAGS} - ..." | tee -a $MYLOG
+	    zcat $MYPWD/$DRIVER | tar $TARFLAGS - >> $MYLOG 2>&1
+	    if [ $? -ne 0 ]
+	    then
+	      echo " " | tee -a $MYLOG
+	      echo "Unable to extract files from ${DRIVER}." | tee -a $MYLOG
+	      echo "Extract all files from media and run this script again." | tee -a $MYLOG
+	      exit 1
+	    fi
+	  fi
+	fi
+	#
+	#
+	#  Create version file, with product installation information
+	#
+	echo "InterBase Software Corp." >> ${INSTDIR}/${VERSION}
+	echo "Product Registration for the ${PRODUCT} product." >> ${INSTDIR}/${VERSION}
+	  echo "Product Revision [${REVISION}]" >> ${INSTDIR}/${VERSION}
+	  echo "Installation Date [`date`]" >> ${INSTDIR}/${VERSION}
+	  echo "Company Name [$ORGNAME]" >> ${INSTDIR}/${VERSION}
+	  echo "User Name [$USERNAME]" >> ${INSTDIR}/${VERSION}
+	    echo "Products Installed : InterServer" >> ${INSTDIR}/${VERSION}
+	    echo "                     InterClient Driver" >> ${INSTDIR}/${VERSION}
+	    echo " " | tee -a $MYLOG
+	    #echo "Copying ${SERVERLIC} to ${INSTDIR} ..." | tee -a $MYLOG
+	    #cp $MYPWD/$SERVERLIC $INSTDIR/$SERVERLIC >> $MYLOG 2>&1
+	  echo " " >> ${INSTDIR}/${VERSION}
+	  #
+	  #  Finish up
+	  #
+	    #
+	    # If TCP is installed, update both services and servers databases
+	    #
+	    HUPNEEDED='n'
+	    echo " " | tee -a $MYLOG
+	    echo "Checking /etc/services..." | tee -a $MYLOG
+	    if [ -f /etc/services ]; then
+	      grep -s interserver /etc/services
+	      if test $? != 0 ; then
+		HUPNEEDED='y'
+		echo "Adding interserver entry to /etc/services..." | tee -a $MYLOG
+		cat /etc/services ${MYPWD}/services.interclient > services
+		mv services /etc/services
+	      else
+		echo " " | tee -a $MYLOG
+		echo "If the above services entry is not identical to" | tee -a $MYLOG
+		cat ${MYPWD}/services.interclient >> $MYLOG 2>&1
+		cat ${MYPWD}/services.interclient
+		echo "Then this services entry must be modified manually with an editor" | tee -a $MYLOG
+	      fi
+	    fi
+	    echo " " | tee -a $MYLOG
+	    echo "Checking /etc/inetd.conf..." | tee -a $MYLOG
+	    if [ -f /etc/inetd.conf ]; then
+	      grep -s interserver /etc/inetd.conf  
+	      if test $? != 0 ; then
+		HUPNEEDED='y'
+		echo "Adding interserver entry to /etc/inetd.conf..." | tee -a $MYLOG
+		cat /etc/inetd.conf ${MYPWD}/inetd.conf.interclient > inetd.conf
+		mv inetd.conf /etc/inetd.conf
+	      else
+		echo " " | tee -a $MYLOG
+		echo "If the above inetd configuration entry is not identical to" | tee -a $MYLOG
+		cat ${MYPWD}/inetd.conf.interclient >> $MYLOG 2>&1
+		cat ${MYPWD}/inetd.conf.interclient
+		echo "Then the entry must be modified manually and inetd restarted with kill -HUP" | tee -a $MYLOG
+	      fi
+	    fi
+	    # sleep 3
+	    if [ "$HUPNEEDED" = 'y' ]
+	    then
+	      echo "Sending restart signal to inet daemon..." | tee -a $MYLOG
+	      INETPID=`ps -e | grep inetd | awk '{print $1}'`
+	      kill -HUP $INETPID
+	    fi
+	    #
+	    # create soft link /usr/interclient if installation
+	    # was not done there
+	    #
+	    if [ "$INSTDIR" != "$INSTDEFDIR" ]
+	    then
+	      echo " " | tee -a $MYLOG
+	      echo "Creating soft link /usr/interclient to ${INSTDIR}" | tee -a $MYLOG
+	      ln -s ${INSTDIR} ${INSTDEFDIR}
+	    fi
+	    echo " " | tee -a $MYLOG
+	    echo "To run local InterClient Java applications you must" | tee -a $MYLOG
+	    echo "append your CLASSPATH environment variable as follows" | tee -a $MYLOG
+	    echo " " | tee -a $MYLOG
+	    echo "  ${INSTDEFDIR}/interclient.jar:\$CLASSPATH" | tee -a $MYLOG
+	    echo "" | tee -a $MYLOG
+	    echo "Test your installation with the CommDiag Java application using:" | tee -a $MYLOG
+	    echo "  java interbase.interclient.utils.CommDiag" | tee -a $MYLOG
+	    echo " " | tee -a $MYLOG
+	    echo "Browse the InterClient documentation from the local URL:" | tee -a $MYLOG
+	    echo "  /usr/interclient/docs/index.html" | tee -a $MYLOG
+	  echo " " | tee -a $MYLOG
+	  echo "The above installation notes and a record of the installation" | tee -a $MYLOG
+	  echo "can be found in the file ${MYLOG}." | tee -a $MYLOG
+	  echo " " | tee -a $MYLOG
+	  echo "InterClient Installation is complete." | tee -a $MYLOG
+	  exit 0

@@ -1,0 +1,156 @@
+<HTML>
+<HEAD>
+<TITLE>InterClient Introduction</TITLE>
+</HEAD>
+
+<body bgcolor="#FFFFFF">
+<table BORDER="0" WIDTH="100%">
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td colspan=3><a href="../specifications/overview-summary.html">Reference</a>&nbsp;| <a href="../help/help.html">Help</a>&nbsp;| <a href="../introduction/introduction.html">Introduction</a>&nbsp;| <a href="../slide_show/coverPage.html">Slide Show</a>&nbsp;| <a href="../customHierarchy.html">Class Hierarchy</a></td>
+<td align=right valign=top rowspan=2><em>
+InterClient</em>
+</td>
+</tr>
+<tr>
+<td><font size="-2">
+<a href="PROGGov.html">PREV</a>&nbsp;| <a href="PROGdrvr.html">NEXT</a></font>
+</td>
+<td><font size="-2">
+<a href="../index.html" target="_top">FRAMES</a>
+&nbsp;| <a href="PROGjdbc.html" target="_top">NO FRAMES</a>
+</font>
+</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+<hr>
+
+<H2>
+Using the JDBC (java.sql) Interfaces</H2>
+
+<CENTER>
+<H5>
+<IMG SRC="images/fig3.gif" ></H5></CENTER>
+
+<CENTER>
+<H5>
+Figure 3 - JDBC Interfaces</H5></CENTER>
+The JDBC API is a set of Java interfaces that allow database applications
+to open connections to a database, execute SQL statements, and process
+the results. These include:
+<UL>
+<LI>
+<B>java.sql.DriverManager</B>, which loads the specific drivers and supports
+creating new database connections</LI>
+
+<LI>
+<B>java.sql.Connection</B>, which represents a connection to a specific
+database</LI>
+
+<LI>
+<B>java.sql.Statement</B>, which allows the application to execute a SQL
+statement</LI>
+
+<LI>
+<B>java.sql.PreparedStatement</B>, which represents a pre-compiled SQL
+statement</LI>
+
+<LI>
+<B>java.sql.CallableStatement</B>, which represents a call to a stored
+procedure in the database</LI>
+
+<LI>
+<B>java.sql.ResultSet</B>, which controls access to the rows resulting
+from a statement execution</LI>
+</UL>
+
+<H3>
+The DriverManager Class</H3>
+The <B>DriverManager</B> class is part of the <B>java.sql</B> package.
+The JDBC framework supports multiple database drivers. The DriverManager
+manages all JDBC drivers that are loaded on a system; it tries to load
+as many drivers as it can find. For each connection request, it locates
+a driver to connect to the target database URL. The DriverManager also
+enforces security measures defined by the JDBC specification.
+<H3>
+The Driver Class</H3>
+Each database driver must provide a class that implements the <B>java.sql.Driver</B>
+interface. The <B>interbase.interclient.Driver</B> class is an all-Java
+implementation of a JDBC driver that is specific to InterBase. The <B>interbase.interclient
+</B>package supports most of the JDBC classes and methods plus some added
+extensions that are not part of the JDBC API.
+
+<P>To access an InterBase database, the InterClient driver communicates
+via a TCP/IP connection with an InterServer process that runs on the same
+system as the InterBase database server. InterServer forwards InterClient
+requests to the InterBase server. InterBase processes the SQL statements
+and passes the results back to the InterServer, which then passes the results
+to the InterClient driver.
+<H4>
+Multi-threading</H4>
+Any JDBC driver must comply with the JDBC standard for multi-threading,
+which requires that all operations on Java objects be able to handle concurrent
+execution. For a given connection, several threads must be able to safely
+operate simultaneously. The InterClient driver is "thread-safe." For example,
+your application can execute two or more statements over the same connection
+concurrently, and process both result sets concurrently without generating
+errors or ambiguous results.
+<H3>
+The Connection Class</H3>
+After creating a <B>Driver</B> object, you can open a connection to the
+database by creating a <B>Connection</B> object. A database driver can
+manage many connection objects. The <B>Connection</B> object establishes
+and manages the connection to your particular database. Within a given
+connection, you can execute SQL statements and receive the result sets.
+
+<P>The <B>java.sql.Connection</B> interface represents a connection to
+a particular database. The JDBC specification allows a single application
+to support multiple connections to one or more databases, using one or
+more database drivers. When you establish your connection using this class,
+the DriverManager selects an appropriate driver from those loaded based
+on the subprotocol specified in the URL, which is passed as a connection
+parameter.
+
+<p>
+<hr>
+<a name="navbar_bottom"><!-- --></a>
+<table BORDER="0" WIDTH="100%">
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td colspan=3><a href="../specifications/overview-summary.html">Reference</a>&nbsp;| <a href="../help/help.html">Help</a>&nbsp;| <a href="../introduction/introduction.html">Introduction</a>&nbsp;| <a href="../slide_show/coverPage.html">Slide Show</a>&nbsp;| <a href="../customHierarchy.html">Class Hierarchy</a></td>
+<td align=right valign=top rowspan=2><em>
+InterClient</em>
+</td>
+</tr>
+<tr>
+<td><font size="-2">
+<a href="PROGGov.html">PREV</a>&nbsp;| <a href="PROGdrvr.html">NEXT</a></font>
+</td>
+<td><font size="-2">
+<a href="../index.html" target="_top">FRAMES</a>
+&nbsp;| <a href="PROGjdbc.html" target="_top">NO FRAMES</a>
+</font>
+</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+<hr>
+<font size="-1">
+Send comments or suggestions to <a href="mailto:interclient@interbase.com">interclient@interbase.com</a>
+</font>
+
+</BODY>
+</HTML>

@@ -1,0 +1,189 @@
+<html>
+
+<head>
+<title>InterClient Help</title>
+</head>
+
+<body bgcolor="#FFFFFF">
+<table BORDER="0" WIDTH="100%">
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td colspan=3><a href="../specifications/overview-summary.html">Reference</a>&nbsp;| <a href="../help/help.html">Help</a>&nbsp;| <a href="../introduction/introduction.html">Introduction</a>&nbsp;| <a href="../slide_show/coverPage.html">Slide Show</a>&nbsp;| <a href="../customHierarchy.html">Class Hierarchy</a></td>
+<td align=right valign=top rowspan=2><em>
+InterClient</em>
+</td>
+</tr>
+<tr>
+<td><font size="-2">
+<a href="icResources.html">PREV</a>&nbsp;| <a href="icCharacters.html">NEXT</a></font>
+</td>
+<td><font size="-2">
+<a href="../index.html" target="_top">FRAMES</a>
+&nbsp;| <a href="icJDBCTypes.html" target="_top">NO FRAMES</a>
+</font>
+</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+<hr>
+
+<h3>
+JDBC to InterBase Native Type Mapping
+</h3>
+
+<p>
+Mapping from JDBC types to the preferred InterBase and Java types.<br>  
+The driver converts between types according
+to the JDBC specification.
+
+<p>
+<table BORDER WIDTH="100%">
+<tr>
+<td><b>JDBC Type Name</b></td>
+<td><b>InterBase Type Name</b></td>
+<td><b>Java Type Name</b></td>
+</tr>
+<tr>
+<td>CHAR(n)</td>
+<td>CHAR(n) <i>see <a href="#note1">note 1</a></i></td>
+<td>java.lang.String</td>
+</tr>
+<tr>
+<td>VARCHAR(n)</td>
+<td>VARCHAR(n) <i>see <a href="#note1">note 1</a></i></td>
+<td>java.lang.String</td>
+</tr>
+<tr>
+<td>LONGVARCHAR</td>
+<td>BLOB SUB_TYPE TEXT <i>see <a href="#note1">note 1</a></i></td>
+<td>String <i>or</i> java.io.InputStream
+</tr>
+<tr>
+<td>BINARY(n)</td>
+<td>CHAR(n) CHARACTER SET BINARY</td>
+<td>byte[]</td>
+</tr>
+<tr>
+<td>VARBINARY(n)</td>
+<td>VARCHAR(n) CHARACTER SET BINARY</td>
+<td>byte[]</td>
+</tr>
+<tr>
+<td>LONGVARBINARY</td>
+<td>BLOB SUB_TYPE 0</td>
+<td>byte[] <i>or</i> java.io.InputStream
+</tr>
+<tr>
+<td>DATE</td>
+<td>DATE <i>see <a href="#note2">note 2</a></i></td>
+<td>java.sql.Date</td>
+</tr>
+<tr>
+<td>TIME</td>
+<td>DATE <i>see <a href="#note2">note 2</a></i></td>
+<td>java.sql.Time</td>
+</tr>
+<tr>
+<td>TIMESTAMP</td>
+<td>DATE <i>see <a href="#note2">note 2</a></i></td>
+<td>java.sql.Timestamp</td>
+</tr>
+<tr>
+<td>SMALLINT</td>
+<td>SMALLINT</td>
+<td>short</td>
+</tr>
+<tr>
+<td>INTEGER</td>
+<td>INTEGER</td>
+<td>int</td>
+</tr>
+<tr>
+<td>REAL</td>
+<td>FLOAT</td>
+<td>float</td>
+</tr>
+<tr>
+<td>DOUBLE</td>
+<td>DOUBLE PRECISION</td>
+<td>double</td>
+</tr>
+<tr>
+<td>NUMERIC(p,s)</td>
+<td>NUMERIC(p,s)</td>
+<td>java.math.BigDecimal</td>
+</tr>
+<tr>
+<td>DECIMAL(p,s)</td>
+<td>DECIMAL(p,s)</td>
+<td>java.math.BigDecimal</td>
+</tr>
+<tr>
+<td>OTHER</td>
+<td>ARRAY <i>see <a href="#note3">note 3</a></i></td>
+<td>java.lang.Object</td>
+</tr>
+</table>
+
+<p>
+<a name="note1"><b>Note 1:</b></a>
+See <a href="icCharacters.html">
+Character Set Support.
+</a>
+
+<p>
+<a name="note2"><b>Note 2:</b></a>
+An InterBase DATE stores both date and time down to the
+number of seconds since Jan 1, 100 AD.  The precision
+stored is actually 10,000th of a second but sub-second
+times are not currently supported by InterClient.
+
+<p>
+<a name="note3"><b>Note 3:</b></a>
+InterBase arrays are currently treated as binary blob data.
+Future releases of InterClient will add support for InterBase arrays
+as an extension to the JDBC API.
+
+
+<p>
+<hr>
+<a name="navbar_bottom"><!-- --></a>
+<table BORDER="0" WIDTH="100%">
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td colspan=3><a href="../specifications/overview-summary.html">Reference</a>&nbsp;| <a href="../help/help.html">Help</a>&nbsp;| <a href="../introduction/introduction.html">Introduction</a>&nbsp;| <a href="../slide_show/coverPage.html">Slide Show</a>&nbsp;| <a href="../customHierarchy.html">Class Hierarchy</a></td>
+<td align=right valign=top rowspan=2><em>
+InterClient</em>
+</td>
+</tr>
+<tr>
+<td><font size="-2">
+<a href="icResources.html">PREV</a>&nbsp;| <a href="icCharacters.html">NEXT</a></font>
+</td>
+<td><font size="-2">
+<a href="../index.html" target="_top">FRAMES</a>
+&nbsp;| <a href="icJDBCTypes.html" target="_top">NO FRAMES</a>
+</font>
+</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+<hr>
+<font size="-1">
+Send comments or suggestions to <a href="mailto:interclient@interbase.com">interclient@interbase.com</a>
+</font>
+
+</BODY>
+</HTML>
