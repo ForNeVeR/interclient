@@ -19,17 +19,17 @@ package interbase.interclient;
 
 // This class contains version information which is surfaced via the api.
 // Some are surfaced thru JDBC extended methods.
-// It also contains license options for enabling driver features 
+// It also contains license options for enabling driver features
 // such as "client/server edition" and "expiration date".
 // In this way, the VersionInformation.class file acts in
 // a similar capacity as the InterBase license.dat file;
-// It can be used for extending the expiration date, or enabling other 
+// It can be used for extending the expiration date, or enabling other
 // optional features of an existing driver.
 // <p>
 // This license information is included in a class rather than
 // a flat file such as license.dat because there are security
-// restrictions for java applets reading local files. 
-// Another essential difference between this class and license.dat 
+// restrictions for java applets reading local files.
+// Another essential difference between this class and license.dat
 // is that this class contains final statics that are essentially "macro-expanded"
 // throughout the other classes in the interclient library
 // which use this version information.
@@ -38,7 +38,7 @@ package interbase.interclient;
 // class to modify an existing interclient library.
 // One way to get around this problem would be to wrap your static values
 // with a static method to force runtime references to look at this class
-// (eg. getExpirationDate ()).  
+// (eg. getExpirationDate ()).
 // However, there are several problems with this approach.
 // <ul>
 // <li> The approach requires that this class not be obfuscated, even though
@@ -67,7 +67,7 @@ package interbase.interclient;
 final class Globals
 {
   // --------------------------------version info-------------------------------
-  
+
   final static int testBuild_ = 0;
   final static int betaBuild_ = 1;
   final static int finalBuild_ = 2;
@@ -85,7 +85,7 @@ final class Globals
   final static int interclientMinorVersion__ = 00;
   final static int interclientBuildNumber__ = 1;
   final static int interclientBuildCertification__ = testBuild_;
-  final static String[] interclientCompatibleJREVersions__ = new String[] {"1.2"};
+  final static String[] interclientCompatibleJREVersions__ = new String[] {"1.3"};
   final static int[] compatibleIBVersions__ = new int[] {5, 6};
   final static String interclientVersionString__ =
     interclientMajorVersion__ + "." +
@@ -93,7 +93,7 @@ final class Globals
     interclientBuildNumber__ +
     ((interclientBuildCertification__ == testBuild_) ? " Test Build" :
     ((interclientBuildCertification__ == betaBuild_) ? " Beta" : "")) +
-    " for JRE 1.2" +
+    " for JRE 1.3" +
     " and InterBase v5 and v6";
 
   // for
@@ -112,7 +112,7 @@ final class Globals
   // the current date is beyond this expiration date.
   // If null, the driver will not expire.
   // for Driver.getExpirationDate ()
-  final static java.util.Date interclientExpirationDate__; 
+  final static java.util.Date interclientExpirationDate__;
 
   // Surfaced thru a JDBC extended method:
   //   Driver.clientServerEdition ()
@@ -124,7 +124,7 @@ final class Globals
   final static int defaultServerPort__ = 3060;
 
   // --------------------------------------------------------------------------
-  
+
   static private java.util.ResourceBundle resources__;
   static java.sql.SQLException exceptionsOnLoadResources__ = null;
   private final static Object[] emptyArgs__ = new Object[] {};
@@ -162,7 +162,7 @@ final class Globals
   }
 
   static String getResource (String key, Object[] args)
-  {      
+  {
     try {
       return java.text.MessageFormat.format (resources__.getString (key), args);
     }

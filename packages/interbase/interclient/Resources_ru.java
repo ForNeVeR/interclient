@@ -41,20 +41,20 @@ package interbase.interclient;
 // <b>Инструкции по настройке параметров локализации:</b>
 // <ol>
 // <li> Выделите содержимое существующего класса
-//      <code>interbase.interclient.Resources</code> 
-//      вызовом <code>getContents()</code>. 
+//      <code>interbase.interclient.Resources</code>
+//      вызовом <code>getContents()</code>.
 //      сохраните содержание, включая ключи и текст, в файл или распечатайте для перевода.
 // <li> Создайте класс Resources_*.java для вашего варианта локализации.
-//      Удостоверьтесь в том, что класс является общедоступным, расширяя 
+//      Удостоверьтесь в том, что класс является общедоступным, расширяя
 //      java.util.ListResourceBundle и находится в пакете interbase.interclient. Например:
 // <pre>
 // // Ресурс французского языка для InterClient.
 // package interbase.interclient;
-// 
-// public class Resources_fr extends java.util.ListResourceBundle 
+//
+// public class Resources_fr extends java.util.ListResourceBundle
 // {
 //   // Содержит переведенный текст для каждого ключа из исходного содержания Resources.
-//   static private final Object[][] contents = 
+//   static private final Object[][] contents =
 //   {
 //     {"1", "Mot de passe incorrect"}, // The password is incorrect
 //     {"2", "Saisie du mot de passe"}, // Enter your password
@@ -187,7 +187,7 @@ public class Resources_ru extends java.util.ListResourceBundle
     {ResourceKeys.invalidOperation__execute_query_on_an_update_statement,
      "Недопустимая операция executeQuery на операторе обновления данных."},
 
-    {ResourceKeys.invalidOperation__set_null_on_non_nullable_parameter, 
+    {ResourceKeys.invalidOperation__set_null_on_non_nullable_parameter,
      "Недопустимая операция присвоения null необнуляемому входному параметру."},
 
     {ResourceKeys.invalidOperation__read_at_end_of_cursor,
@@ -450,7 +450,7 @@ public class Resources_ru extends java.util.ListResourceBundle
     // *************************
     {ResourceKeys.bugCheck__0,
      "Замечен баг." +
-     "\nПожалуйста, отправьте e-mail по адресу interclient@interbase.com" +
+     "\nПожалуйста, отправьте e-mail по адресу firebird-devel@lists.sourceforge.net" +
      "\nсо ссылкой на код ошибки {0}."},
 
     // *************************************************
@@ -606,7 +606,7 @@ public class Resources_ru extends java.util.ListResourceBundle
     // ****************************
     // *** UnknownHostException ***
     // ****************************
-    {ResourceKeys.unknownHost__0, 
+    {ResourceKeys.unknownHost__0,
      "Неизвестное исключение хоста при попытке открыть сокет на сервере {0}."},
 
     // ********************************
@@ -673,7 +673,7 @@ public class Resources_ru extends java.util.ListResourceBundle
      "Неподдерживаемая возможность:" +
      " выражения SQL escape для времени '{'t ''hh:mm:ss'''}' не поддерживаются."},
 
-    {ResourceKeys.driverNotCapable__escape__ts_fractionals, 
+    {ResourceKeys.driverNotCapable__escape__ts_fractionals,
      "Неподдерживаемая возможность:" +
      " выражения SQL escape для даты+времени (timestamp) '{'ts ''yyyy-mm-dd hh:mm:ss.f...'''}' не поддерживают долей секунды."},
 

@@ -15,7 +15,7 @@
  * All Rights Reserved.
  * Contributor(s): ______________________________________.
  */
- 
+
 /**
  * contributors:
  *
@@ -43,7 +43,7 @@ package interbase.interclient;
  * as a .class file in the following order based on your locale:
  * <ol>
  * <li>Resources_language_country_variant
- * <li>Resources_language_country 
+ * <li>Resources_language_country
  * <li>Resources_language
  * <li>Resources (this is the default bundle shipped with InterClient)
  * </ol>
@@ -51,13 +51,11 @@ package interbase.interclient;
  * <b>Instructions for customizing resources for your locale:</b><br>
  * Follow these instructions only if a resource bundle for your locale is not already
  * included in the InterClient distribution.
- * You may also request the java source file for this Resources class
- * by mailing <a href="mailto:interclient@interbase.com">interclient@interbase.com</a>.
  * Having the Resources.java source file will save you from having to call
  * <code>getContents()</code> as described below.
  * <ol>
  * <li> Get the contents from this Resources class
- *      by calling {@link #getContents getContents()}. Set aside for translation; 
+ *      by calling {@link #getContents getContents()}. Set aside for translation;
  *      write the contents, including keys and text, to a file or printer for translation.
  * <li> Create a Resources_*.java class for your locale with translated text.
  *      Be sure the class is public, extends <code>java.util.ListResourceBundle</code> and
@@ -65,19 +63,19 @@ package interbase.interclient;
  * <pre>
  * // A French language resource bundle for InterClient.
  * package interbase.interclient;
- * 
- * public class Resources_fr extends java.util.ListResourceBundle 
+ *
+ * public class Resources_fr extends java.util.ListResourceBundle
  * {
  *   // Contains the translated text for each resource key from default Resources contents.
- *   static private final Object[][] contents = 
+ *   static private final Object[][] contents =
  *   {
  *     {"1", "Mot de passe incorrect"}, // The password is incorrect
  *     {"2", "Saisie du mot de passe"}, // Enter your password
  *     ...
- *     {"98", "Quitter"} // Exit 
+ *     {"98", "Quitter"} // Exit
  *   }
- * 
- *   public Object[][] getContents() 
+ *
+ *   public Object[][] getContents()
  *   {
  *     return contents;
  *   }
@@ -98,13 +96,13 @@ package interbase.interclient;
  * For more information on jar, refer to the documentation for your Java Development Kit.
  * </ol>
  * <p>
- * A good article on using resources for localization may be found at 
+ * A good article on using resources for localization may be found at
  * <a href="http://developer.java.sun.com/developer/technicalArticles/ResourceBundles.html">
  * http://developer.java.sun.com/developer/technicalArticles/ResourceBundles.html
  * </a>
  * <p>
  * <b>Note for bundle designers:</b>
- * All resource strings are processed by 
+ * All resource strings are processed by
  * {@link java.text.MessageFormat#format(String, Object[]) java.text.MessageFormat.format(String, Object[])},
  * so all occurrences of the {, } and ' characters in resource strings must
  * be delimited with quotes as '{', or '}' for the { and } characters,
@@ -121,7 +119,7 @@ public class Resources extends java.util.ListResourceBundle
   // Note: This class must be loaded before any other class in
   //       the package, therefore do not reference VersionInformation class
   //       when building resource strings.
-  
+
   final static private String lineSeparator__ = "\n";
   // java.lang.System.getProperty ("line.separator");
 
@@ -151,7 +149,7 @@ public class Resources extends java.util.ListResourceBundle
 // CJL-IB6  This really should have been changed for 1.51..
 //    {ResourceKeys.companyName,
 //     "Inprise Corporation"},
-     
+
     {ResourceKeys.companyName,
      "InterBase Software Corporation"},
 //  CJL end
@@ -191,12 +189,12 @@ public class Resources extends java.util.ListResourceBundle
     // *********************************
     {ResourceKeys.engine__default_0,
      "{0}"},
-     
+
     // *********************************
     // *** InvalidOperationException ***
     // *********************************
     {ResourceKeys.invalidOperation__connection_closed, // ICJ01
-     "Invalid operation on a closed connection."}, 
+     "Invalid operation on a closed connection."},
 
     {ResourceKeys.invalidOperation__server_connection_closed, // ICJ02
      "Invalid operation on a closed server connection."},
@@ -279,7 +277,7 @@ public class Resources extends java.util.ListResourceBundle
     {ResourceKeys.parameterConversion__array_element_instance_truncation_0, // ICJ17
      "Invalid data conversion:" +
      " Array parameter element value {0} cannot be stored without truncation."},
-     // MMM - end 
+     // MMM - end
 
     // *****************************************************************
     // *** ColumnConversionException extends DataConversionException ***
@@ -408,17 +406,17 @@ public class Resources extends java.util.ListResourceBundle
     // ***********************************************************
     {ResourceKeys.urlSyntax__bad_server_prefix_0, // ICJ60
      "Malformed InterBase database JDBC URL: {0}" +
-     lineSeparator__ + 
+     lineSeparator__ +
      "Server specification must begin with ''//<server>''" +
-     lineSeparator__ + 
+     lineSeparator__ +
      "(eg. jdbc:interbase://hal//databases/employee.gdb," +
      " or jdbc:interbase://hal/C:/databases/employee.gdb)."},
 
     {ResourceKeys.urlSyntax__bad_server_suffix_0, // ICJ61
      "Malformed InterBase database JDBC URL: {0}" +
-     lineSeparator__ + 
+     lineSeparator__ +
      "Server name must be followed by ''/<absolute path to file>''" +
-     lineSeparator__ + 
+     lineSeparator__ +
      "(eg. jdbc:interbase://hal//databases/employee.gdb," +
      " or jdbc:interbase://hal/C:/databases/employee.gdb)."},
 
@@ -427,12 +425,12 @@ public class Resources extends java.util.ListResourceBundle
     // **************************************************************
     {ResourceKeys.escapeSyntax__no_closing_escape_delimeter_0, // ICJ70
      "Malformed SQL escape syntax: Missing closing escape delimeter '}'." +
-     lineSeparator__ + 
+     lineSeparator__ +
      "The malformed syntax used was {0}."},
 
     {ResourceKeys.escapeSyntax__unrecognized_keyword_0, // ICJ71
      "Malformed SQL escape syntax: Unrecognized escape keyword." +
-     lineSeparator__ + 
+     lineSeparator__ +
      "The malformed syntax used was {0}."},
 
     {ResourceKeys.escapeSyntax__d_0, // ICJ72
@@ -442,24 +440,24 @@ public class Resources extends java.util.ListResourceBundle
 
     {ResourceKeys.escapeSyntax__ts_0, // ICJ73
      "Malformed SQL escape syntax for timestamp '{'ts ''yyyy-mm-dd hh:mm:ss.f...'''}' clause." +
-     lineSeparator__ + 
+     lineSeparator__ +
      "The malformed syntax used was {0}."},
 
     {ResourceKeys.escapeSyntax__escape_0, // ICJ74
      "Malformed SQL escape syntax for LIKE '{'escape ''escape-character'''}' clause." +
-     lineSeparator__ + 
+     lineSeparator__ +
      "The malformed syntax used was {0}."},
 
     {ResourceKeys.escapeSyntax__escape__no_quote_0, // ICJ75
      "Malformed SQL escape syntax for LIKE '{'escape ''escape-character'''}' clause." +
-     lineSeparator__ + 
+     lineSeparator__ +
      "Missing '' in escape syntax." +
-     lineSeparator__ + 
+     lineSeparator__ +
      "The malformed syntax used was {0}."},
 
     {ResourceKeys.escapeSyntax__fn_0, // ICJ76
      "Malformed SQL escape syntax for scalar function '{'fn ...'}' clause." +
-     lineSeparator__ + 
+     lineSeparator__ +
      "The malformed syntax used was {0}."},
 
     {ResourceKeys.escapeSyntax__call_0, // ICJ77
@@ -488,9 +486,9 @@ public class Resources extends java.util.ListResourceBundle
     // *************************
     {ResourceKeys.bugCheck__0, // ICJB0
      "Bug detected." +
-     lineSeparator__ + 
+     lineSeparator__ +
      "Please send mail to interclient@interbase.com" +
-     lineSeparator__ + 
+     lineSeparator__ +
      "Refer to bug code {0}."},
 
     // *************************************************
@@ -501,13 +499,13 @@ public class Resources extends java.util.ListResourceBundle
     {ResourceKeys.characterEncoding__read_0, // ICJC0
      "Character encoding error:" +
      " A character conversion exception occurred while trying to decode a String encoding from server." +
-     lineSeparator__ + 
+     lineSeparator__ +
      "The message of the CharConversionException is \"{0}\"."},
 
     {ResourceKeys.characterEncoding__write_0, // ICJC1
      "Character encoding error:" +
      " A character conversion exception occurred while trying to encode a String to send to server." +
-     lineSeparator__ + 
+     lineSeparator__ +
      "The message of the CharConversionException is \"{0}\"."},
 
     // ***************************************************************
@@ -517,7 +515,7 @@ public class Resources extends java.util.ListResourceBundle
     {ResourceKeys.remoteProtocol__unexpected_token_from_server_0, // ICJD0
      "Client/Server protocol error:" +
      " Unexpected token in network message received from InterServer." +
-     lineSeparator__ + 
+     lineSeparator__ +
      "The internal code is {0}."},
 
     {ResourceKeys.remoteProtocol__unexpected_token_from_client, // ICJD1
@@ -542,7 +540,7 @@ public class Resources extends java.util.ListResourceBundle
     {ResourceKeys.communication__user_stream__io_exception_on_read_0, // ICJE0
      "Communication error:" +
      " An IO exception occurred while reading from a user supplied input stream." +
-     lineSeparator__ + 
+     lineSeparator__ +
      "The message of the IOException is \"{0}\"."},
 
     {ResourceKeys.communication__user_stream__unexpected_eof, // ICJE1
@@ -552,61 +550,61 @@ public class Resources extends java.util.ListResourceBundle
     {ResourceKeys.communication__socket_exception_on_connect_01, // ICJE2
      "Communication error:" +
      " A socket exception occurred while trying to establish a socket connection to server {0}." +
-     lineSeparator__ + 
+     lineSeparator__ +
      "The message of the SocketException is \"{1}\"."},
 
     {ResourceKeys.communication__io_exception_on_connect_01, // ICJE3
      "Communication error:" +
      " An IO exception occurred while trying to establish a socket connection to server {0}." +
-     lineSeparator__ + 
+     lineSeparator__ +
      "The message of the IOException is \"{1}\"." +
-     lineSeparator__ + 
+     lineSeparator__ +
      "This is probably due to an interserver misconfiguration." +
-     lineSeparator__ + 
+     lineSeparator__ +
      "Is InterServer running?"},
 
     {ResourceKeys.communication__io_exception_on_disconnect_01, // ICJE4
      "Communication error:" +
      " An IO exception occurred while trying to close a socket connection to server {0}." +
-     lineSeparator__ + 
+     lineSeparator__ +
      "The message of the IOException is \"{1}\"." +
-     lineSeparator__ + 
+     lineSeparator__ +
      "This is probably due to an interserver shutdown."},
 
     {ResourceKeys.communication__io_exception_on_recv_protocol_01, // ICJE5
      "Communication error:" +
      " An IO exception occurred while trying to establish a connection protocol to server {0}." +
-     lineSeparator__ + 
+     lineSeparator__ +
      "The message of the IOException is \"{1}\"."},
 
     {ResourceKeys.communication__io_exception_on_recv_message_01, // ICJE6
      "Communication error:" +
      " An IO exception occurred while trying to receive data from server {0}." +
-     lineSeparator__ + 
+     lineSeparator__ +
      "The message of the IOException is \"{1}\"."},
 
     {ResourceKeys.communication__io_exception_on_send_message_01, // ICJE7
      "Communication error:" +
      " An IO exception occurred while trying to send data to server {0}." +
-     lineSeparator__ + 
+     lineSeparator__ +
      "The message of the IOException is \"{1}\"."},
 
     {ResourceKeys.communication__io_exception_on_read_0, // ICJE8
      "Communication error:" +
      " An IO exception occurred while trying to read data from server." +
-     lineSeparator__ + 
+     lineSeparator__ +
      "The message of the IOException is \"{0}\"."},
 
     {ResourceKeys.communication__io_exception_on_blob_read_01, // ICJE9
      "Communication error:" +
      " An IO exception occurred while trying to read a blob stream from server {0}." +
-     lineSeparator__ + 
+     lineSeparator__ +
      "The message of the IOException is \"{1}\"."},
 
     {ResourceKeys.communication__io_exception_on_blob_close_01, // ICJEA
      "Communication error:" +
      " An IO exception occurred while trying to close a blob stream from server {0}." +
-     lineSeparator__ + 
+     lineSeparator__ +
      "The message of the IOException is \"{1}\"."},
 
     {ResourceKeys.communication__interserver, // ICJEB
@@ -616,34 +614,34 @@ public class Resources extends java.util.ListResourceBundle
     // *******************************************
     // *** BlobIOException extends IOException ***
     // *******************************************
-    {ResourceKeys.blobIO__sqlException_on_read_0, 
+    {ResourceKeys.blobIO__sqlException_on_read_0,
      "JDBC IOException:" +
      " An SQL exception occurred while trying to read a blob stream from server as follows:" +
-     lineSeparator__ + 
+     lineSeparator__ +
      "{0}"},
 
     {ResourceKeys.blobIO__sqlException_on_close_0,
      "JDBC IOException:" +
      " An SQL exception occurred while trying to close a blob stream from server as follows:" +
-     lineSeparator__ + 
+     lineSeparator__ +
      "{0}"},
 
     {ResourceKeys.blobIO__sqlException_on_skip_0,
      "JDBC IOException:" +
      " An SQL exception occurred while trying to skip on a blob stream from server as follows" +
-     lineSeparator__ + 
+     lineSeparator__ +
      "{0}"},
 
     {ResourceKeys.blobIO__ioException_on_read_0,
      "JDBC IOException:" +
      " An IO exception occurred while trying to read on a blob stream from server as follows:" +
-     lineSeparator__ + 
+     lineSeparator__ +
      "{0}"},
 
     {ResourceKeys.blobIO__ioException_on_skip_0,
      "JDBC IOException:" +
      " An IO exception occurred while trying to skip on a blob stream from server as follows:" +
-     lineSeparator__ + 
+     lineSeparator__ +
      "{0}"},
 
     {ResourceKeys.blobIO__read_on_closed,
@@ -664,9 +662,9 @@ public class Resources extends java.util.ListResourceBundle
     {ResourceKeys.socketTimeout__012, // ICJF0
      "Socket timeout:" +
      " IO was interrupted while waiting to read data from server {0}." +
-     lineSeparator__ + 
+     lineSeparator__ +
      "This is probably due to a timeout on the socket after {1} seconds." +
-     lineSeparator__ + 
+     lineSeparator__ +
      "The message of the InterruptException is \"{2}\"."},
 
     // ****************************
@@ -683,7 +681,7 @@ public class Resources extends java.util.ListResourceBundle
 
     {ResourceKeys.badInstallation__security_check_on_socket_01, // ICJH1
      "Your security manager does not allow socket connections to {0} on interserver port." +
-     lineSeparator__ + 
+     lineSeparator__ +
      "The message of the SecurityException is \"{1}\"."},
 
     {ResourceKeys.badInstallation__incompatible_remote_protocols, // ICJH2
@@ -695,9 +693,9 @@ public class Resources extends java.util.ListResourceBundle
     {ResourceKeys.driverNotCapable__out_parameters, // 0A000
      "Unsupported feature:" +
      " This version of InterBase does not support OUT parameters distinct from a result set." +
-     lineSeparator__ + 
+     lineSeparator__ +
      "Use a result set." +
-     lineSeparator__ + 
+     lineSeparator__ +
      "See API reference for interbase.interclient.CallableStatement."},
 
     {ResourceKeys.driverNotCapable__schemas, // 0A000
@@ -772,15 +770,15 @@ public class Resources extends java.util.ListResourceBundle
     {ResourceKeys.outOfMemory, // ICJI0
      "Out of memory:" +
      " InterServer exhausted server memory."},
-    
+
     //david jencks 1-21-2001
     // ****************************
     // *** database meta data call method parameter errors ***
     // ****************************
-    {ResourceKeys.dbmd_getTables_invalid_table_type, 
+    {ResourceKeys.dbmd_getTables_invalid_table_type,
      "Invalid or unsupported table type."},
 
-     {ResourceKeys.dbmd_getColumnPrivileges_table_name_required, 
+     {ResourceKeys.dbmd_getColumnPrivileges_table_name_required,
      "Table Name must be a string, not null."}
 
      //end david jencks 1-21-2001

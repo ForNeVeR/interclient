@@ -30,7 +30,7 @@ package interbase.interclient;
  * close a statment's current ResultSet if an open one exists.
  *
  * @see Connection#createStatement
- * @see ResultSet 
+ * @see ResultSet
  * @author Paul Ostler
  * @author Madhukar Thakur (escape syntax processing)
  * @since <font color=red>JDBC 1, with extended behavior in JDBC 2</font>
@@ -77,13 +77,13 @@ public class Statement implements java.sql.Statement
   {
     if (!openOnClient_)
       throw new InvalidOperationException (ErrorKey.invalidOperation__statement_closed__);
-  }  
+  }
 
   void checkForEmptySQL (String sql) throws java.sql.SQLException
   {
     if (sql == null || "".equals (sql))
       throw new InvalidArgumentException (ErrorKey.invalidArgument__sql_empty_or_null__);
-  }  
+  }
 
   // finalizer should return jdbcNet buffers to a pool?
 
@@ -261,7 +261,8 @@ public class Statement implements java.sql.Statement
     int updateCountOrSelectValue = remote_EXECUTE_UPDATE_STATEMENT (sql);
 
     connection_.transactionStartedOnServer_ = true;
-    openOnServer_ = false;
+    // Change from openOnServer = false; to openOnServer = true; Bug No. 447462
+    openOnServer_ = true;
     resultSetStack_ = null;
 
     return (updateCountOrSelectValue);
@@ -316,7 +317,7 @@ public class Statement implements java.sql.Statement
   synchronized public void close () throws java.sql.SQLException
   {
     if (!openOnClient_)
-      return; 
+      return;
 
     if (openOnServer_) {
       remote_CLOSE_STATEMENT ();
@@ -741,12 +742,12 @@ public class Statement implements java.sql.Statement
    * @since <font color=red>JDBC 1</font>
    **/
   synchronized public boolean getMoreResults () throws java.sql.SQLException
-  { 
+  {
     checkForClosedStatement ();
 
     if (resultSet_ != null)
       resultSet_.close ();
- 
+
     // Pop the stack
     resultSetStack_ = null;
 
@@ -755,7 +756,7 @@ public class Statement implements java.sql.Statement
   }
 
   // seen only by subclasses
-  int estimateSendBufferSize (int sqlLength) 
+  int estimateSendBufferSize (int sqlLength)
   {
     // 50 accounts for all StatementExecuteData
     return 50 + cursorName_.length() + sqlLength;
@@ -823,7 +824,7 @@ public class Statement implements java.sql.Statement
    * @throws java.sql.SQLException if a database access error occurs, or the
    *    condition 0 <= rows <= this.getMaxRows() is not satisfied.
    * @since <font color=red>JDBC 2, since InterClient 1.50</font>
-   **/ 
+   **/
   synchronized public void setFetchSize (int rows) throws java.sql.SQLException
   {
     checkForClosedStatement ();

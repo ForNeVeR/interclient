@@ -43,13 +43,9 @@ package interbase.interclient.utils;
  * <b>Instructions for customizing resources for your locale:</b><br>
  * Follow these instructions only if a resource bundle for your locale is not already
  * included in the InterClient distribution.
- * You may also request the java source file for this Resources class
- * by mailing <a href="mailto:interclient@interbase.com"> interclient@interbase.com</a>.
- * Having the Resources.java source file will save you from having to call
- * <code>getContents()</code> as described below.
  * <ol>
  * <li> Get the contents from this Resources class
- *      by calling {@link #getContents getContents()}. Set aside for translation; 
+ *      by calling {@link #getContents getContents()}. Set aside for translation;
  *      write the contents, including keys and text, to a file or printer for translation.
  * <li> Create a Resources_*.java class for your locale with translated text.
  *      Be sure the class is public, extends java.util.ListResourceBundle and
@@ -57,19 +53,19 @@ package interbase.interclient.utils;
  * <pre>
  * // A French resource bundle for CommDiag.
  * package interbase.interclient.utils;
- * 
- * public class Resources_fr extends java.util.ListResourceBundle 
+ *
+ * public class Resources_fr extends java.util.ListResourceBundle
  * {
  *   // Contains the translated text for each resource key from default Resources contents.
- *   static private final Object[][] contents = 
+ *   static private final Object[][] contents =
  *   {
  *     {"1", "Mot de passe incorrect"}, // The password is incorrect
  *     {"2", "Saisie du mot de passe"}, // Enter your password
  *     ...
- *     {"98", "Quitter"} // Exit 
+ *     {"98", "Quitter"} // Exit
  *   }
- * 
- *   public Object[][] getContents() 
+ *
+ *   public Object[][] getContents()
  *   {
  *     return contents;
  *   }
@@ -87,13 +83,13 @@ package interbase.interclient.utils;
  * For more information on jar, refer to the documentation for your Java Development Kit.
  * </ol>
  * <p>
- * A good article on using resources for localization may be found at 
+ * A good article on using resources for localization may be found at
  * <a href="http://developer.java.sun.com/developer/technicalArticles/ResourceBundles.html">
  * http://developer.java.sun.com/developer/technicalArticles/ResourceBundles.html
  * </a>
  * <p>
  * <b>Note for bundle designers:</b>
- * All resource strings are processed by 
+ * All resource strings are processed by
  * {@link java.text.MessageFormat#format(String, Object[]) java.text.MessageFormat.format(String, Object[])},
  * so all occurrences of the {, } and ' characters in resource strings must
  * be delimited with quotes as '{', or '}' for the { and } characters,
@@ -140,7 +136,7 @@ public class Resources extends java.util.ListResourceBundle
      "InterClient JDBC protocol:             {0}"}, // jdbc:interbase:
 
     {ResourceKeys.icProtocolVersion_0,
-     "InterClient JDBC protocol version:     {0}"}, 
+     "InterClient JDBC protocol version:     {0}"},
 
     {ResourceKeys.icExpirationDate_0,
      "InterClient expiration date:           {0,date}"},
@@ -173,7 +169,7 @@ public class Resources extends java.util.ListResourceBundle
      "Verifying internal database structures. "},
 
     {ResourceKeys.connectionEstablished_0,
-     "Connection established to {0}"}, 
+     "Connection established to {0}"},
 
     {ResourceKeys.connectionClosed,
      "Test connection closed."},
@@ -202,7 +198,7 @@ public class Resources extends java.util.ListResourceBundle
 // CJL-IB6 end change
 
     {ResourceKeys.isProductName,
-     "Middleware JDBC/Net server name:             InterServer"}, 
+     "Middleware JDBC/Net server name:             InterServer"},
 
     {ResourceKeys.isProductVersion_0,
      "Middleware JDBC/Net server version:          {0}"},
@@ -311,7 +307,7 @@ public class Resources extends java.util.ListResourceBundle
 
     {ResourceKeys.mailBugsLabel,
      "Mail bugs to interclient@interbase.com"},
- 
+
     {ResourceKeys.interBaseServerLabel,
      "InterServer Host: "},
 

@@ -21,7 +21,7 @@ package interbase.interclient;
  * An internal program state inconsistency has been detected
  * and implies a bug in InterClient, InterServer or InterBase.
  * <p>
- * Please contact <a href="mailto:interclient@interbase.com">interclient@interbase.com</a>
+ * Please contact <a href="mailto:firebird-devel@lists.sourceforge.net">firebird-devel@lists.sourceforge.net</a>
  * with the bug code and a small test case if possible.
  * <p>
  * The error codes associated with this exception are
@@ -30,7 +30,7 @@ package interbase.interclient;
  * generated license error.
  *
  * @author Paul Ostler
- * @since <font color=red>Extension, since InterClient 1.0</font> 
+ * @since <font color=red>Extension, since InterClient 1.0</font>
  **/
 final public class BugCheckException extends SQLException
 {
@@ -39,7 +39,7 @@ final public class BugCheckException extends SQLException
   // Server side bug codes start at 10,000.
   // *** This is actually not used in the code, but
   // *** is useful to the developer for assigning new codes,
-  // *** just keep incrementing it.  
+  // *** just keep incrementing it.
   // *** Avoid reusing holes!
   // *** Also see server side IB_SQLException.lastBugCodeUsed__
   private final static int lastBugCodeUsed__ = 140;
@@ -47,7 +47,7 @@ final public class BugCheckException extends SQLException
   final private static String className__ = "BugCheckException";
 
   // *** InterClient constructor ****
-  BugCheckException (ErrorKey errorKey, int bugCode) 
+  BugCheckException (ErrorKey errorKey, int bugCode)
   {
     super (className__, errorKey, String.valueOf (bugCode));
   }
@@ -64,4 +64,4 @@ final public class BugCheckException extends SQLException
     super (className__, errorKeyIndex, errorCode, ibSQLCode, ibErrorMessage);
   }
 }
- 
+

@@ -67,14 +67,10 @@ package interbase.interclient;
  * of result columns.  However, future versions may not have this capability
  * by default in order to leverage any performance advantages that may
  * come with sequential-only access.
- * So in the future, random access may require setting a connection property
- * to enable this behavior.  Please send mail to 
- * <a href="mailto:interclient@interbase.com">mailto:interclient@interbase.com</a> if
- * you have an opinion about this behavior.
  *
  * @see Statement#executeQuery
  * @see Statement#getResultSet
- * @see ResultSetMetaData 
+ * @see ResultSetMetaData
  * @author Paul Ostler
  * @since <font color=red>JDBC 1, with extended behavior in JDBC 2</font>
  **/
@@ -107,13 +103,13 @@ final public class ResultSet implements java.sql.ResultSet,
   // ResultMetaData
   int resultCols_;
   String resultTableNames_[];
-  String resultColumnNames_[];  
-  String resultColumnLabels_[]; 
-  boolean resultNullables_[];   
-  int resultTypes_[];           
+  String resultColumnNames_[];
+  String resultColumnLabels_[];
+  boolean resultNullables_[];
+  int resultTypes_[];
   int resultPrecisions_[]; // adjusted sqllen
   int resultScales_[];     // sqlscale
-  int resultCharSets_[];   
+  int resultCharSets_[];
   int resultCharLengths_[];
   // MMM - array of Descriptors
   ArrayDescriptor[] arrayDescriptors_;
@@ -141,10 +137,10 @@ final public class ResultSet implements java.sql.ResultSet,
   java.sql.Timestamp adaptableTimestamp_ = null;
 
   // Called by Connection.prepareStatment() and Statement.execute()
-  ResultSet (Statement statement, 
+  ResultSet (Statement statement,
              JDBCNet jdbcNet,
              RecvMessage recvMsg,
-             int resultCols, 
+             int resultCols,
              boolean openOnServer)
   {
     resultCols_ = resultCols;
@@ -155,7 +151,7 @@ final public class ResultSet implements java.sql.ResultSet,
     resultColumnNames_ = new String [resultCols_];
     resultColumnLabels_ = new String [resultCols_];
     resultNullables_ = new boolean [resultCols_];
-    resultTypes_ = new int [resultCols_]; 
+    resultTypes_ = new int [resultCols_];
     resultPrecisions_ = new int [resultCols_];
     resultScales_= new int [resultCols_];
     resultCharSets_ = new int [resultCols_];
@@ -179,11 +175,11 @@ final public class ResultSet implements java.sql.ResultSet,
              int statementRef,
              RecvMessage recvMsg,
              JDBCNet jdbcNet,
-             int resultCols, 
+             int resultCols,
 	     String[] resultColumnNames,
 	     boolean[] resultNullables,
-	     int[] resultTypes, 
-	     int[] resultPrecisions, 
+	     int[] resultTypes,
+	     int[] resultPrecisions,
 	     int[] resultScales)
   {
     statement_ = new Statement (jdbcNet, connection);
@@ -193,7 +189,7 @@ final public class ResultSet implements java.sql.ResultSet,
     resultTableNames_ = new String [resultCols_];
     resultColumnNames_ = resultColumnNames;
     resultNullables_ = resultNullables;
-    resultTypes_ = resultTypes; 
+    resultTypes_ = resultTypes;
     resultPrecisions_ = resultPrecisions;
     resultScales_= resultScales;
 
@@ -233,7 +229,7 @@ final public class ResultSet implements java.sql.ResultSet,
       if (resultCharLengths_[i] > maxCharLength)
 	maxCharLength = resultCharLengths_[i];
     }
-    
+
     // allocate cbuf to accomodate largest result column
     cbuf_ = Globals.cache__.takeCharBuffer (maxCharLength);
   }
@@ -254,7 +250,7 @@ final public class ResultSet implements java.sql.ResultSet,
    *   ...
    * }
    * finally {
-   *   if (resultSet != null) 
+   *   if (resultSet != null)
    *     try { resultSet.close (); } catch (SQLException ohWell) {}
    *   if (statement != null)
    *     try { statement.close (); } catch (SQLException ohWell) {}
@@ -285,7 +281,7 @@ final public class ResultSet implements java.sql.ResultSet,
    *
    * <p><b>InterClient note:</b>
    * InterClient allows for interleaved calls to next() on
-   * two separate result sets. 
+   * two separate result sets.
    *
    * @return true if the new current row is valid; false if there are no more rows
    * @throws java.sql.SQLException if a database access error occurs.
@@ -308,7 +304,7 @@ final public class ResultSet implements java.sql.ResultSet,
     // >>> we'll need to detect that the "buffer is exhausted"
     // >>> and send FETCH_ROWS for the first next() of the next result set.
 
-    if (recvMsg_ == null) 
+    if (recvMsg_ == null)
       throw new InvalidOperationException (ErrorKey.invalidOperation__read_at_end_of_cursor__);
 
     if ((statement_.maxRows_ > 0) && (rowsRead_ >= statement_.maxRows_)) {
@@ -359,7 +355,7 @@ final public class ResultSet implements java.sql.ResultSet,
     saveRowPosition ();     // mark first row position
     restoreRowPosition ();  // probably a no-op
 
-    // ResultData remains in recvMsg_ buffer 
+    // ResultData remains in recvMsg_ buffer
     // awaiting subsequent ResultSet.next() and get*() calls.
 
     if (!recvMsg_.getHeaderEndOfStream ())
@@ -370,14 +366,14 @@ final public class ResultSet implements java.sql.ResultSet,
   void checkForClosedCursor () throws java.sql.SQLException
   {
     if (!openOnClient_)
-      throw new InvalidOperationException (ErrorKey.invalidOperation__result_set_closed__); 
+      throw new InvalidOperationException (ErrorKey.invalidOperation__result_set_closed__);
   }
 
   // ************************************************
   // *** Methods for random access of column data ***
   // ************************************************
 
-  void saveRowPosition () 
+  void saveRowPosition ()
   {
     recvMsg_.mark ();
   }
@@ -464,7 +460,7 @@ final public class ResultSet implements java.sql.ResultSet,
     if (adaptToRightTrimString_)
 	while ((new_nc > 0) && (cbuf_[new_nc-1] == 0x20)) { new_nc--; }
     else { // pad
-      int padTo = (statement_.maxFieldSize_ == 0) ? resultCharLengths_[columnIndex] : 
+      int padTo = (statement_.maxFieldSize_ == 0) ? resultCharLengths_[columnIndex] :
 	                                            Math.min (resultCharLengths_[columnIndex],
 							      statement_.maxFieldSize_);
       while (new_nc < padTo) { cbuf_[new_nc++] = 0x20; }
@@ -472,7 +468,7 @@ final public class ResultSet implements java.sql.ResultSet,
     return new String (cbuf_, 0, new_nc);
   }
 
-  // varchar's are *not* right trimmed by server, 
+  // varchar's are *not* right trimmed by server,
   // but are *approximately* truncated by maxFieldSize_ on server.
   String getRowData_varchar (int columnIndex) throws java.sql.SQLException
   {
@@ -497,11 +493,11 @@ final public class ResultSet implements java.sql.ResultSet,
       if (!isNull_[col]) {
 	saveColumnDataPosition (col);
 	switch (resultTypes_[col]) {
-	case IBTypes.SMALLINT__: 
-	case IBTypes.NUMERIC_SMALLINT__: 
+	case IBTypes.SMALLINT__:
+	case IBTypes.NUMERIC_SMALLINT__:
 	  recvMsg_.skipShort ();
 	  break;
-	case IBTypes.INTEGER__: 
+	case IBTypes.INTEGER__:
 	case IBTypes.NUMERIC_INTEGER__:
 	  recvMsg_.skipInt ();
 	  break;
@@ -594,7 +590,7 @@ final public class ResultSet implements java.sql.ResultSet,
    * @since <font color=red>JDBC 1</font>
    **/
   synchronized public void close () throws java.sql.SQLException
-  {  
+  {
     jdbcNet_.destroyRecvMessage (recvMsg_);
     recvMsg_ = null;
 
@@ -791,7 +787,7 @@ final public class ResultSet implements java.sql.ResultSet,
     case IBTypes.INTEGER__:
       return getRowData_int (column-1);
 
-    case IBTypes.NUMERIC_INTEGER__: 
+    case IBTypes.NUMERIC_INTEGER__:
       return java.math.BigDecimal.valueOf ((long) getRowData_int (column-1),
 				           resultScales_[column-1]).intValue ();
     case IBTypes.NUMERIC_SMALLINT__:
@@ -849,7 +845,7 @@ final public class ResultSet implements java.sql.ResultSet,
       return 0;
 
     switch (resultTypes_[column-1]) {
-    case IBTypes.NUMERIC_DOUBLE__: // scale should be maintained by IB. 
+    case IBTypes.NUMERIC_DOUBLE__: // scale should be maintained by IB.
     case IBTypes.DOUBLE__:
       return (long) getRowData_double (column-1);
 
@@ -858,10 +854,10 @@ final public class ResultSet implements java.sql.ResultSet,
     case IBTypes.INTEGER__:
       return (long) getRowData_int (column-1);
 
-    case IBTypes.NUMERIC_INTEGER__: 
+    case IBTypes.NUMERIC_INTEGER__:
       return java.math.BigDecimal.valueOf ((long) getRowData_int (column-1),
 				           resultScales_[column-1]).longValue ();
-    case IBTypes.NUMERIC_SMALLINT__: 
+    case IBTypes.NUMERIC_SMALLINT__:
       return java.math.BigDecimal.valueOf ((long) getRowData_short (column-1),
 				           resultScales_[column-1]).longValue ();
 
@@ -978,16 +974,16 @@ final public class ResultSet implements java.sql.ResultSet,
     case IBTypes.NUMERIC_DOUBLE__: // scale is maintained by IB.
     case IBTypes.DOUBLE__:
       return getRowData_double (column-1);
-    
+
     case IBTypes.SMALLINT__:
       return (double) getRowData_short (column-1);
     case IBTypes.INTEGER__:
       return (double) getRowData_int (column-1);
 
-    case IBTypes.NUMERIC_INTEGER__: 
+    case IBTypes.NUMERIC_INTEGER__:
       return java.math.BigDecimal.valueOf ((long) getRowData_int (column-1),
 				           resultScales_[column-1]).doubleValue ();
-    case IBTypes.NUMERIC_SMALLINT__: 
+    case IBTypes.NUMERIC_SMALLINT__:
       return java.math.BigDecimal.valueOf ((long) getRowData_short (column-1),
 				           resultScales_[column-1]).doubleValue ();
 
@@ -1107,12 +1103,12 @@ final public class ResultSet implements java.sql.ResultSet,
    * @since <font color=red>JDBC 1</font>
    **/
   synchronized public byte[] getBytes (int column) throws java.sql.SQLException
-  { 
+  {
     if (isNullPreamble (column))
       return null;
 
     switch (resultTypes_[column-1]) {
-    case IBTypes.CLOB__: 
+    case IBTypes.CLOB__:
     case IBTypes.BLOB__:
       // MMM - does not works for array parameters
       // case IBTypes.ARRAY__:
@@ -1332,7 +1328,7 @@ final public class ResultSet implements java.sql.ResultSet,
 			       0,
 			       0 ) );
       }
-        
+
     // fills timestamp with dummy date (1/1/1900)
     case IBTypes.TIME__:
       int encodedTime = getRowData_int (column-1);
@@ -1404,7 +1400,7 @@ final public class ResultSet implements java.sql.ResultSet,
       return null;
 
     switch (resultTypes_[column-1]) {
-    case IBTypes.CLOB__: 
+    case IBTypes.CLOB__:
     case IBTypes.BLOB__:
       // MMM - does not works for array parameters
       // case IBTypes.ARRAY__:
@@ -1450,7 +1446,7 @@ final public class ResultSet implements java.sql.ResultSet,
 
     switch (resultTypes_[column-1]) {
     case IBTypes.CLOB__:
-    case IBTypes.BLOB__: 
+    case IBTypes.BLOB__:
       // MMM - does not works for array parameters
       // case IBTypes.ARRAY__:
       // MMM - end
@@ -1492,7 +1488,7 @@ final public class ResultSet implements java.sql.ResultSet,
       return null;
 
     switch (resultTypes_[column-1]) {
-    case IBTypes.CLOB__: 
+    case IBTypes.CLOB__:
     case IBTypes.BLOB__:
       // MMM - does not works for array parameters
       // case IBTypes.ARRAY__:
@@ -1537,7 +1533,7 @@ final public class ResultSet implements java.sql.ResultSet,
   synchronized public boolean getBoolean (String columnName) throws java.sql.SQLException
   {
     return getBoolean (findColumn (columnName));
-  }  
+  }
 
   /**
    * Get the value of a column in the current row as a Java byte.
@@ -1549,7 +1545,7 @@ final public class ResultSet implements java.sql.ResultSet,
   synchronized public byte getByte (String columnName) throws java.sql.SQLException
   {
     return getByte (findColumn (columnName));
-  }  
+  }
 
   /**
    * Get the value of a column in the current row as a Java short.
@@ -1562,7 +1558,7 @@ final public class ResultSet implements java.sql.ResultSet,
   synchronized public short getShort (String columnName) throws java.sql.SQLException
   {
     return getShort (findColumn (columnName));
-  }  
+  }
 
   /**
    * Get the value of a column in the current row as a Java int.
@@ -1575,7 +1571,7 @@ final public class ResultSet implements java.sql.ResultSet,
   synchronized public int getInt (String columnName) throws java.sql.SQLException
   {
     return getInt (findColumn (columnName));
-  }  
+  }
 
   /**
    * Get the value of a column in the current row as a Java long.
@@ -1588,7 +1584,7 @@ final public class ResultSet implements java.sql.ResultSet,
   synchronized public long getLong (String columnName) throws java.sql.SQLException
   {
     return getLong (findColumn (columnName));
-  }  
+  }
 
   /**
    * Get the value of a column in the current row as a Java float.
@@ -1601,7 +1597,7 @@ final public class ResultSet implements java.sql.ResultSet,
   synchronized public float getFloat (String columnName) throws java.sql.SQLException
   {
     return getFloat (findColumn (columnName));
-  }  
+  }
 
   /**
    * Get the value of a column in the current row as a Java double.
@@ -1614,7 +1610,7 @@ final public class ResultSet implements java.sql.ResultSet,
   synchronized public double getDouble (String columnName) throws java.sql.SQLException
   {
     return getDouble (findColumn (columnName));
-  }  
+  }
 
   /**
    * Get the value of a column in the current row as a java.math.BigDecimal object.
@@ -1644,7 +1640,7 @@ final public class ResultSet implements java.sql.ResultSet,
   synchronized public byte[] getBytes (String columnName) throws java.sql.SQLException
   {
     return getBytes (findColumn (columnName));
-  }  
+  }
 
   /**
    * Get the value of a column in the current row as a java.sql.Date object.
@@ -1665,7 +1661,7 @@ final public class ResultSet implements java.sql.ResultSet,
   synchronized public java.sql.Date getDate (String columnName) throws java.sql.SQLException
   {
     return getDate (findColumn (columnName));
-  }  
+  }
 
   /**
    * Get the value of a column in the current row as a java.sql.Time object.
@@ -1707,7 +1703,7 @@ final public class ResultSet implements java.sql.ResultSet,
   synchronized public java.sql.Timestamp getTimestamp (String columnName) throws java.sql.SQLException
   {
     return getTimestamp (findColumn (columnName));
-  }  
+  }
 
   /**
    * A column value can be retrieved as a stream of ASCII characters
@@ -1729,7 +1725,7 @@ final public class ResultSet implements java.sql.ResultSet,
   synchronized public java.io.InputStream getAsciiStream (String columnName) throws java.sql.SQLException
   {
     return getAsciiStream (findColumn (columnName));
-  }  
+  }
 
   /**
    * A column value can be retrieved as a stream of Unicode characters
@@ -1754,7 +1750,7 @@ final public class ResultSet implements java.sql.ResultSet,
   synchronized public java.io.InputStream getUnicodeStream (String columnName) throws java.sql.SQLException
   {
     return getUnicodeStream (findColumn (columnName));
-  }  
+  }
 
   /**
    * A column value can be retrieved as a stream of uninterpreted bytes
@@ -1775,7 +1771,7 @@ final public class ResultSet implements java.sql.ResultSet,
   synchronized public java.io.InputStream getBinaryStream (String columnName) throws java.sql.SQLException
   {
     return getBinaryStream (findColumn (columnName));
-  }  
+  }
 
   //=====================================================================
   // Advanced features:
@@ -2003,11 +1999,11 @@ final public class ResultSet implements java.sql.ResultSet,
 	return col+1;
       }
     }
-    
+
     throw new InvalidArgumentException (ErrorKey.invalidArgument__column_name_0__,
 					columnName);
-  }  
-  
+  }
+
   void recv_ResultMetaData (RecvMessage recvMsg) throws java.sql.SQLException
   {
     if (Globals.debug__) {
@@ -2022,7 +2018,7 @@ final public class ResultSet implements java.sql.ResultSet,
         resultColumnLabels_[i] = resultColumnNames_[i];
       else
         resultColumnLabels_[i] = recvMsg.readLDSQLText ();
-        
+
       resultNullables_[i] = recvMsg.readBoolean ();
       resultTypes_[i] = recvMsg.readUnsignedByte ();
       resultPrecisions_[i] = recvMsg.readUnsignedShort ();  // adjusted sqllen
@@ -3422,7 +3418,7 @@ final public class ResultSet implements java.sql.ResultSet,
    *   null if the result was produced some other way.
    * @throws java.sql.SQLException if a database access error occurs
    * @since <font color=red>JDBC 2, since InterClient 1.50</font>
-   **/ 
+   **/
   synchronized public java.sql.Statement getStatement () throws java.sql.SQLException
   {
     return statement_;
@@ -3713,9 +3709,9 @@ final public class ResultSet implements java.sql.ResultSet,
   // This didn't work, leaving this here as a placeholder but
   // zeroed out values sent from server so as to
   // avoid a call to isc_dsql_info.
-  // isc_dsql_info just returns 0 for row count on select, 
+  // isc_dsql_info just returns 0 for row count on select,
   // probably interbase bug.
-  // 
+  //
   // public int getRowCount () throws SQLException
   // {
   //   return numRows_;
@@ -3748,7 +3744,7 @@ final public class ResultSet implements java.sql.ResultSet,
   /**
    * Adapt this result set object as described by a <code>modifier</code>
    * in the {@link Adaptor Adaptor} interface.
-   * 
+   *
    * @param modifier is either
    *   {@link Adaptor#RIGHT_TRIM_STRINGS Adaptor.RIGHT_TRIM_STRINGS} or
    *   {@link Adaptor#SINGLE_INSTANCE_TIME Adaptor.SINGLE_INSTANCE_TIME}
@@ -3758,7 +3754,7 @@ final public class ResultSet implements java.sql.ResultSet,
    * @throws java.sql.SQLException if a database access error occurs.
    * @since <font color=red>Extension, since InterClient 1.0</font>
    **/
-  synchronized public boolean adapt (int modifier, 
+  synchronized public boolean adapt (int modifier,
                                      Object extraInfo) throws java.sql.SQLException
   {
     switch (modifier) {
@@ -3782,7 +3778,7 @@ final public class ResultSet implements java.sql.ResultSet,
   /**
    * Revert back to default JDBC behavior for this object previously
    * adapted for the modification described by the given <code>modifier</code>.
-   * 
+   *
    * @param modifier is either
    *   {@link Adaptor#RIGHT_TRIM_STRINGS Adaptor.RIGHT_TRIM_STRINGS} or
    *   {@link Adaptor#SINGLE_INSTANCE_TIME Adaptor.SINGLE_INSTANCE_TIME}
@@ -3827,5 +3823,5 @@ final public class ResultSet implements java.sql.ResultSet,
       throw new ColumnIndexOutOfBoundsException (ErrorKey.columnIndexOutOfBounds__0__,
 						 column);
     }
-  }    
+  }
 }

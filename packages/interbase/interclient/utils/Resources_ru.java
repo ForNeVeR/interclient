@@ -44,24 +44,24 @@ package interbase.interclient.utils;
 //      вызовом <code>getContents()</code>.
 //      сохраните содержание, включая ключи и текст, в файл или распечатайте для перевода.
 // <li> Создайте класс Resources_*.java для вашего варианта локализации.
-//      Удостоверьтесь в том, что класс является общедоступным, расширяя 
+//      Удостоверьтесь в том, что класс является общедоступным, расширяя
 //      java.util.ListResourceBundle и находится в пакете interbase.interclient.utils. Например:
 // <pre>
 // // Ресурс французского языка для CommDiag.
 // package interbase.interclient.utils;
-// 
-// public class Resources_fr extends java.util.ListResourceBundle 
+//
+// public class Resources_fr extends java.util.ListResourceBundle
 // {
 //   // Содержит переведенный текст для каждого ключа из исходного содержания Resources.
-//   static private final Object[][] contents = 
+//   static private final Object[][] contents =
 //   {
 //     {"1", "Mot de passe incorrect"}, // The password is incorrect
 //     {"2", "Saisie du mot de passe"}, // Enter your password
 //     ...
-//     {"98", "Quitter"} // Exit 
+//     {"98", "Quitter"} // Exit
 //   }
-// 
-//   public Object[][] getContents() 
+//
+//   public Object[][] getContents()
 //   {
 //     return contents;
 //   }
@@ -89,7 +89,7 @@ package interbase.interclient.utils;
 public class Resources_ru extends java.util.ListResourceBundle
 {
   // Translations by Sergey Orlik
-  
+
   final static private Object[][] resources__ =
   {
     // ****************************
@@ -124,7 +124,7 @@ public class Resources_ru extends java.util.ListResourceBundle
      "Протокол InterClient JDBC:             {0}"}, // jdbc:interbase:
 
     {ResourceKeys.icProtocolVersion_0,
-     "Версия протокола InterClient JDBC:     {0}"}, 
+     "Версия протокола InterClient JDBC:     {0}"},
 
     {ResourceKeys.icExpirationDate_0,
      "Дата окончания действия InterClient:   {0,date}"},
@@ -154,7 +154,7 @@ public class Resources_ru extends java.util.ListResourceBundle
      "Проверка внутренней структуры базы данных. "},
 
     {ResourceKeys.connectionEstablished_0,
-     "Установлено соединение с {0}"}, 
+     "Установлено соединение с {0}"},
 
     {ResourceKeys.connectionClosed,
      "Тестовое соединение закрыто."},
@@ -273,11 +273,11 @@ public class Resources_ru extends java.util.ListResourceBundle
      "Выход"},
 
     {ResourceKeys.visitNewsgroupLabel,
-     "Посетите группу новостей forums.inprise.com/interbase.public.general"},
+     "Посетите группу новостей"},
 
     {ResourceKeys.mailBugsLabel,
-     "О найденных ошибках сообщайте по e-mail: interclient@interbase.com"},
- 
+     "О найденных ошибках сообщайте по e-mail: firebird-devel@lists.sourceforge.net"},
+
     {ResourceKeys.interBaseServerLabel,
      "Сервер InterServer: "},
 
