@@ -79,5 +79,12 @@ final public class RemoteProtocolException extends SQLException
   {
     super (className__, errorKeyIndex);
   }
+  
+    //david jencks 2-5-2001
+    RemoteProtocolException (ErrorKey errorKey, Object[] args)
+    {
+        super(className__, errorKey, args);
+    }
+
 }
  
