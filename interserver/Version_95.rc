@@ -32,7 +32,7 @@ FILETYPE        VFT_APP
   {
     BLOCK "040904E4"
     {
-      VALUE "CompanyName", "InterBase\0"
+      VALUE "CompanyName", "Firebird SQL\0"
       VALUE "FileDescription", APP_DESC
       VALUE "FileVersion", DRIVER_VERSION 
       VALUE "InternalName", INTERNAL_NAME 
