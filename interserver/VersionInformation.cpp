@@ -23,7 +23,7 @@ const char *const VersionInformation::NT_SERVICE_NAME__ = "InterServer";
 const char *const VersionInformation::NT_SERVICE_FILE_ENTRY__ = "interserver";
 
 const char *const VersionInformation::DRIVER_NAME__ = "InterClient";
-const char *const VersionInformation::DRIVER_VERSION__ = "2.00"; // string
+const char *const VersionInformation::DRIVER_VERSION__ = "2.01"; // string
 const int VersionInformation::DRIVER_MAJOR_VERSION__ = 2;
 const int VersionInformation::DRIVER_MINOR_VERSION__ = 0;
 

@@ -25,15 +25,15 @@
 #define APP_DESC			"InterServer Configuration Utility\0"
 #define INTERNAL_NAME			"ISCONFIG\0"
 #else
-#define APP_DESC			"InterServer for Windows 95/NT\0"
+#define APP_DESC			"InterServer for Windows\0"
 #define INTERNAL_NAME			"INTERSERVER\0"
 #endif 
 
 // CJL-IB6  changes made  1.51 ->> 2.0, 151 ->> 200
-#define DRIVER_VERSION			"2.00\0"
-#define PROD_NAME			"InterClient for Windows 95/NT\0"
-#define APP_VERSION			"2.00\0"
-#define FILE_VER_NUMBER 		0, 200, 0 ,0
+#define DRIVER_VERSION			"2.01\0"
+#define PROD_NAME			"InterClient for Windows\0"
+#define APP_VERSION			"2.01\0"
+#define FILE_VER_NUMBER 		0, 201, 0 ,0
 // CJL-IB6 end
 
 #else // BORLAND_RESOURCE_COMPILER
