@@ -15,6 +15,12 @@
  * All Rights Reserved.
  * Contributor(s): ______________________________________.
  */
+/**
+ * contributors:
+ *
+ *  @author <a href="mailto:davidjencks@earthlink.net">David Jencks</a>
+ *
+ */
 package interbase.interclient;
 
 /**   
@@ -244,4 +250,14 @@ class ResourceKeys
 
   // *** OutOfMemoryException ***
   final static public String outOfMemory  = "88"; //is
+
+    //david jencks 1-21-2001
+    // ****************************
+    // *** database meta data call method parameter errors ***
+    // ****************************
+  final static public String dbmd_getTables_invalid_table_type  = "dbmd_1"; //is
+
+  final static public String dbmd_getColumnPrivileges_table_name_required  = "dbmd_2"; //is
+    //end david jencks 1-21-2001
+
 }

@@ -15,6 +15,13 @@
  * All Rights Reserved.
  * Contributor(s): ______________________________________.
  */
+ 
+/**
+ * contributors:
+ *
+ *  @author <a href="mailto:davidjencks@earthlink.net">David Jencks</a>
+ *
+ */
 package interbase.interclient;
 
 /**
@@ -521,9 +528,12 @@ public class Resources extends java.util.ListResourceBundle
      "Client/Server protocol error:" +
      " Unable to establish a protocol with server for remote messaging."},
 
+     //david jencks 2-5-2001
     {ResourceKeys.remoteProtocol__bad_message_certficate_from_server, // ICJD3
      "Client/Server protocol error:" +
-     " Unrecognized network message received from InterServer."},
+     " Unrecognized network message received from InterServer:" +
+     "Incorrect interserver message certificate." +
+     "Expecting: {0} Received: {1}"},
 
     // ************************************
     // *** CommunicationException       ***
@@ -761,8 +771,19 @@ public class Resources extends java.util.ListResourceBundle
     // ****************************
     {ResourceKeys.outOfMemory, // ICJI0
      "Out of memory:" +
-     " InterServer exhausted server memory."}
+     " InterServer exhausted server memory."},
+    
+    //david jencks 1-21-2001
+    // ****************************
+    // *** database meta data call method parameter errors ***
+    // ****************************
+    {ResourceKeys.dbmd_getTables_invalid_table_type, 
+     "Invalid or unsupported table type."},
 
+     {ResourceKeys.dbmd_getColumnPrivileges_table_name_required, 
+     "Table Name must be a string, not null."}
+
+     //end david jencks 1-21-2001
   };
 
   /**
