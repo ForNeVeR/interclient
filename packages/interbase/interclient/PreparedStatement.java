@@ -72,8 +72,10 @@ public class PreparedStatement extends Statement implements java.sql.PreparedSta
   private final static java.math.BigDecimal bdMaxDoubleValue = new java.math.BigDecimal (Double.MAX_VALUE);
   private final static java.math.BigDecimal bdMinDoubleValue = new java.math.BigDecimal (-Double.MAX_VALUE);
 // CJL-IB6 add limits for new long types
-  private final static java.math.BigDecimal bdMaxLongValue = new java.math.BigDecimal (Long.MAX_VALUE);
-  private final static java.math.BigDecimal bdMinLongValue = new java.math.BigDecimal (Long.MIN_VALUE);
+ // michael wyraz, 2001-06-12:
+ //Changed to valueOf factory method from nonexistent constructor.
+  private final static java.math.BigDecimal bdMaxLongValue = java.math.BigDecimal.valueOf(Long.MAX_VALUE);
+  private final static java.math.BigDecimal bdMinLongValue = java.math.BigDecimal.valueOf(Long.MIN_VALUE);
 // CJL-IB6 end change
 
   // Called by Connection.close() to mark open statements as closed.
@@ -488,7 +490,9 @@ public class PreparedStatement extends Statement implements java.sql.PreparedSta
     case IBTypes.DECIMAL_INTEGER__:
     case IBTypes.DECIMAL_INT64__:
 // CJL-IB6 end change
-      scaledUpBd = new java.math.BigDecimal (x);
+ // michael wyraz, 2001-06-12:
+ //Changed to valueOf factory method from nonexistent constructor.
+      scaledUpBd = java.math.BigDecimal.valueOf(x);
       scaledUpBd = scaledUpBd.movePointRight (inputScales_[parameterIndex-1]);
       scaledUpBd = scaledUpBd.setScale (0, java.math.BigDecimal.ROUND_HALF_DOWN);
     }
@@ -577,7 +581,9 @@ public class PreparedStatement extends Statement implements java.sql.PreparedSta
     case IBTypes.DECIMAL_INTEGER__:
     case IBTypes.DECIMAL_INT64__:
 // CJL-IB6 end change
-      scaledUpBd = new java.math.BigDecimal (x);
+ // michael wyraz, 2001-06-12:
+ //Changed to valueOf factory method from nonexistent constructor.
+      scaledUpBd = java.math.BigDecimal.valueOf(x);
       scaledUpBd = scaledUpBd.movePointRight (inputScales_[parameterIndex-1]);
       scaledUpBd = scaledUpBd.setScale (0, java.math.BigDecimal.ROUND_HALF_DOWN);
     }
