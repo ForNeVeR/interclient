@@ -142,7 +142,11 @@ int
 NetTCP::netOpen (int sockfd, int *newSockfd, int inetdflag)
 {
   register int tmpSockfd, childpid;
-  int clilen, on;
+  //david jencks 1-19-2001 begin
+  //  int clilen, on;
+  int on;
+  socklen_t clilen;
+  //david jencks 1-19-2001 end
   struct sockaddr_in tcpCliAddr;
 
   on = 1;
