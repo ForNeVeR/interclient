@@ -14,7 +14,10 @@
  * Copyright (C) Inprise Corporation.
  * All Rights Reserved.
  * Contributor(s): ______________________________________.
+ *
+ * $Id$
  */
+
 package interbase.interclient;
 
 /**
@@ -57,7 +60,7 @@ public class XAResource implements javax.transaction.xa.XAResource
    * End a recovery scan.
    **/
   public final static int TMENDRSCAN =   0x00800000;
-    
+
   /**
    * Dissociates the caller and mark the transaction branch
    * rollback-only.
@@ -68,7 +71,7 @@ public class XAResource implements javax.transaction.xa.XAResource
    * Caller is joining existing transaction branch.
    **/
   public final static int TMJOIN =       0x00200000;
-      
+
   /**
    * Use TMNOFLAG to indicate no flags value is selected.
    **/
@@ -88,19 +91,19 @@ public class XAResource implements javax.transaction.xa.XAResource
    * Start a recovery scan.
    **/
   public final static int TMSTARTRSCAN = 0x01000000;
-    
+
 
   /**
    * Dissociate caller from transaction branch.
    **/
   public final static int TMSUCCESS =    0x04000000;
-    
+
 
   /**
    * Caller is suspending (not ending) association with transaction branch.
    **/
   public final static int TMSUSPEND =    0x02000000;
-    
+
   /**
    * Commit the global transaction specified by xid.
    *
@@ -249,12 +252,17 @@ public class XAResource implements javax.transaction.xa.XAResource
    *
    * @param the transaction timeout value in seconds.
    *
+   * @return true if transaction timeout value is set successfully; otherwise false.
+   *
    * @throws javax.transaction.xa.XAException An error has occurred. Possible exception values
    * are XAER_RMERR, XAER_RMFAIL, or XAER_INVAL.
    * @since <font color=red>JDBC 2 Standard Extension, proposed for future release, not yet supported</font>
    **/
-  synchronized public void setTransactionTimeout(int seconds) throws javax.transaction.xa.XAException
-  {}
+  //Torsten-start 08-11-2000
+  synchronized public boolean setTransactionTimeout(int seconds) throws javax.transaction.xa.XAException {
+    return false; //not yet supported
+  }
+  //Torsten-end 08-11-2000
 
   /**
    * Start work on behalf of a transaction branch specified in xid
@@ -272,4 +280,22 @@ public class XAResource implements javax.transaction.xa.XAResource
   synchronized public void start (javax.transaction.xa.Xid xid, int flags) throws javax.transaction.xa.XAException
   {}
 
+  //Torsten-start 08-11-2000
+  /**
+   * This method is called to determine if the resource manager instance
+   * represented by the target object is the same as the resouce manager instance
+   * represented by the parameter xares.
+   *
+   * @param xares An XAResource object whose resource manager instance is to be compared
+   * with the resource manager instance of the target object.
+   *
+   * @throws XAException An error has occurred. Possible exceptions
+   * are XAER_RMERR, XAER_RMFAIL.
+   *
+   * @since <font color=red>JDBC 2 Standard Extension, proposed for future release, not yet supported</font>
+   * **/
+  synchronized public boolean isSameRM(javax.transaction.xa.XAResource xares) throws javax.transaction.xa.XAException {
+    return false;
+  }
+  //Torsten-end 08-11-2000
 }

@@ -14,7 +14,10 @@
  * Copyright (C) Inprise Corporation.
  * All Rights Reserved.
  * Contributor(s): ______________________________________.
+ *
+ * $Id$
  */
+
 package interbase.interclient;
 
 /**
@@ -34,14 +37,10 @@ public class XAConnection extends PooledConnection implements javax.sql.XAConnec
    * @throws java.sql.SQLException if a database access error occurs
    * @since <font color=red>JDBC 2 Standard Extension, proposed for future release, not yet supported</font>
    */
-  synchronized public javax.jts.xa.XAResource getXAResource () throws java.sql.SQLException
+  //Torsten-start 08-11-2000
+  synchronized public javax.transaction.xa.XAResource getXAResource () throws java.sql.SQLException
   {
     throw new DriverNotCapableException (ErrorKey.driverNotCapable__jdbc2_not_yet_supported__);
   }
-
+  //Torsten-end 08-11-2000
 }
-
-
-
-
-
