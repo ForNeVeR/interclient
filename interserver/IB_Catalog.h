@@ -275,8 +275,26 @@ public:
 
 private:
 
+  //david jencks 1-24-2001
+  static const char* const spaces = "                               ";
+
   IB_Statement* createStatement ();
+
+  //david jencks 1-25-2001
+  //not unicode aware
+  IB_BOOLEAN hasNoWildcards(IB_STRING pattern);
+
+  //david jencks 1-25-2001
+  //not unicode aware
+  void stripEscape(IB_STRING pattern, IB_STRING stripped);
   
+  //david jencks 1-25-2001
+  //not unicode aware
+  void ConstructNameCondition(IB_STRING pattern, IB_STRING target,
+    IB_STRING column);
+  //david jencks 1-26-2001 new method
+  IB_Statement* runCatalogQuery(const IB_STRING queryString, 
+    const int catalogFunction);
 };
 
 #endif

@@ -15,6 +15,12 @@
  * All Rights Reserved.
  * Contributor(s): ______________________________________.
  */
+ 
+ /*extensive modifications by david jencks (davidjencks@earthlink.net)
+ *portions written by david jencks copyright 2001 david jencks
+ *In addition to use under the IPL, portions by david jencks may be used 
+ * under the LGPL
+ */
 //-*-C++-*-
 #include "IB_Catalog.h"
 
@@ -278,12 +284,84 @@ IB_Catalog::createStatement ()
   return statement;
 }
 
+//david jencks 1-26-2001 new method
+IB_Statement*
+IB_Catalog::runCatalogQuery(const IB_STRING queryString, const int catalogFunction)
+{
+  IB_Statement* statement = createStatement ();
+  IB_ResultSet* resultSet = statement->prepareNoInput (queryString);
+  resultSet->setCatalogFunction (catalogFunction);
+  resultSet->open ();
+  return statement;
+}
+
+//david jencks 1-25-2001 new method
+IB_BOOLEAN IB_Catalog::hasNoWildcards(IB_STRING pattern)
+{
+    IB_BOOLEAN previousCharWasEscape = IB_FALSE;
+    while ((*pattern != 0)) {
+        if (!previousCharWasEscape & ((*pattern == '_') || (*pattern == '%'))) {
+            return IB_FALSE;
+        }
+        previousCharWasEscape = (*pattern == '\\');
+        pattern++;
+    }
+    return IB_TRUE;
+
+}
+//david jencks 1-25-2001 new method
+void IB_Catalog::stripEscape(IB_STRING pattern, IB_STRING stripped)
+{
+    while ((*pattern != 0)) {
+        if (*pattern != '\\') {
+            *stripped++ = *pattern;
+        }
+        pattern++;
+    }
+    *stripped++ = 0;
+}
+//david jencks 1-25-2001 new method
+//takes a name pattern, output buffer, and column name
+//and puts an appropriate SQL clause in the output buffer.
+
+void IB_Catalog::ConstructNameCondition(IB_STRING pattern, IB_STRING target,
+    IB_STRING column)
+{
+    if (strcmp(pattern, "%") == 0) { 
+          //all tables requested, leave out name condition
+        sprintf(target, "");
+    }
+    else if (hasNoWildcards(pattern)) {
+          //literal table name supplied, strip escape chars and request exact match
+        char strippedPattern[31];
+        stripEscape(pattern, strippedPattern);
+        sprintf(target, 
+            "%s = '%s' and ",
+            column,
+            strippedPattern);
+    }
+    else {
+          //% or _ used,
+          //Extend the column name and the supplied match by <size of
+          // identifier> (=31) spaces.
+          //
+        sprintf(target, 
+	        "%s || '%s' like '%s%s%%' escape '\\' and ",
+            column,
+            spaces,
+            pattern,
+            spaces);
+    }
+}
+
+//david jencks 1-25-2001 rewritten
 IB_Statement*
 IB_Catalog::getProcedures (const IB_STRING procedureNamePattern)
 {
-  IB_Statement* statement = createStatement ();
+  char nameCondition[128];
 
-// CJL-IB6 change -- query needs to support all dialects
+  ConstructNameCondition(procedureNamePattern, nameCondition, "RDB$PROCEDURE_NAME");
+
   sprintf (queryStringBuffer_,  
 	   "select"
 	   " RDB$PROCEDURE_NAME,"
@@ -292,102 +370,26 @@ IB_Catalog::getProcedures (const IB_STRING procedureNamePattern)
 	   " RDB$OWNER_NAME "
 	   "from"
 	   " RDB$PROCEDURES "
-	   "where"
-	   " (RDB$PROCEDURE_NAME like '%s' or "                                 // 31 char patterns
-	   "  RDB$PROCEDURE_NAME like '%s ' or "                                // 30 
-	   "  RDB$PROCEDURE_NAME like '%s  ' or " 
-	   "  RDB$PROCEDURE_NAME like '%s   ' or "
-	   "  RDB$PROCEDURE_NAME like '%s    ' or "
-	   "  RDB$PROCEDURE_NAME like '%s     ' or "
-	   "  RDB$PROCEDURE_NAME like '%s      ' or "                           // 25
-	   "  RDB$PROCEDURE_NAME like '%s       ' or "
-	   "  RDB$PROCEDURE_NAME like '%s        ' or "
-	   "  RDB$PROCEDURE_NAME like '%s         ' or "
-	   "  RDB$PROCEDURE_NAME like '%s          ' or "
-	   "  RDB$PROCEDURE_NAME like '%s           ' or "                      // 20
-	   "  RDB$PROCEDURE_NAME like '%s            ' or "
-	   "  RDB$PROCEDURE_NAME like '%s             ' or "
-	   "  RDB$PROCEDURE_NAME like '%s              ' or "
-	   "  RDB$PROCEDURE_NAME like '%s               ' or "
-	   "  RDB$PROCEDURE_NAME like '%s                ' or "                 // 15
-	   "  RDB$PROCEDURE_NAME like '%s                 ' or "
-	   "  RDB$PROCEDURE_NAME like '%s                  ' or "
-	   "  RDB$PROCEDURE_NAME like '%s                   ' or "
-	   "  RDB$PROCEDURE_NAME like '%s                    ' or "
-	   "  RDB$PROCEDURE_NAME like '%s                     ' or "            // 10
-	   "  RDB$PROCEDURE_NAME like '%s                      ' or "
-	   "  RDB$PROCEDURE_NAME like '%s                       ' or "
-	   "  RDB$PROCEDURE_NAME like '%s                        ' or "
-	   "  RDB$PROCEDURE_NAME like '%s                         ' or "
-	   "  RDB$PROCEDURE_NAME like '%s                          ' or "       // 5
-	   "  RDB$PROCEDURE_NAME like '%s                           ' or "
-	   "  RDB$PROCEDURE_NAME like '%s                            ' or "
-	   "  RDB$PROCEDURE_NAME like '%s                             ' or "
-	   "  RDB$PROCEDURE_NAME like '%s                              ') "     // 1
+	   "where %s 1 = 1 "
 	   "order by 1",
-	   procedureNamePattern,	// 31
-	   procedureNamePattern,	// 30
-	   procedureNamePattern,
-	   procedureNamePattern,
-	   procedureNamePattern,
-	   procedureNamePattern,
-	   procedureNamePattern,	// 25
-	   procedureNamePattern,
-	   procedureNamePattern,
-	   procedureNamePattern,
-	   procedureNamePattern,
-	   procedureNamePattern,	// 20
-	   procedureNamePattern,
-	   procedureNamePattern,
-	   procedureNamePattern,
-	   procedureNamePattern,
-	   procedureNamePattern,	// 15
-	   procedureNamePattern,
-	   procedureNamePattern,
-	   procedureNamePattern,
-	   procedureNamePattern,
-	   procedureNamePattern,	// 10
-	   procedureNamePattern,
-	   procedureNamePattern,
-	   procedureNamePattern,
-	   procedureNamePattern,
-	   procedureNamePattern,	// 5
-	   procedureNamePattern,
-	   procedureNamePattern,
-	   procedureNamePattern,
-       procedureNamePattern);	// 1
+	   nameCondition);
 
-// CJL-IB6  Old pattern match relies on all spaces are trailing
-/*  sprintf (queryStringBuffer_,  
-	   "select"
-	   " RDB$PROCEDURE_NAME,"
-	   " RDB$DESCRIPTION,"
-	   " RDB$PROCEDURE_OUTPUTS,"
-	   " RDB$OWNER_NAME "
-	   "from"
-	   " RDB$PROCEDURES "
-	   "where"
-	   " (RDB$PROCEDURE_NAME like '%s' or"
-	   "  RDB$PROCEDURE_NAME like '%s %%') "
-	   "order by 1",
-	   procedureNamePattern,
-           procedureNamePattern);
-*/
-// CJL-IB6 end change
-
-  IB_ResultSet* resultSet = statement->prepareNoInput (queryStringBuffer_);
-  resultSet->setCatalogFunction (CATALOG_GET_PROCEDURES);
-  resultSet->open ();
-  return statement;
+  return runCatalogQuery(queryStringBuffer_, CATALOG_GET_PROCEDURES);
 }
 
+//david jencks 1-25-2001 rewritten
 IB_Statement*
 IB_Catalog::getProcedureColumns (const IB_STRING procedureNamePattern,
 				 const IB_STRING columnNamePattern)
 {
-  IB_Statement* statement = createStatement ();
 
-// CJL-IB6 change -- query supports all dialects  
+
+  char procedureNameCondition[128];
+  ConstructNameCondition(procedureNamePattern, procedureNameCondition, "P.RDB$PROCEDURE_NAME");
+  
+  char parameterNameCondition[128];
+  ConstructNameCondition(columnNamePattern, parameterNameCondition, "PP.RDB$PARAMETER_NAME");
+  
   sprintf (queryStringBuffer_,  
 	   "select" 
 	   " P.RDB$PROCEDURE_NAME," 
@@ -403,185 +405,25 @@ IB_Catalog::getProcedureColumns (const IB_STRING procedureNamePattern,
 	   " RDB$PROCEDURES P," 
 	   " RDB$PROCEDURE_PARAMETERS PP," 
 	   " RDB$FIELDS F "
-	   "where" 
-	   " (P.RDB$PROCEDURE_NAME like '%s' or "                                 // 31 char patterns
-	   "  P.RDB$PROCEDURE_NAME like '%s ' or "                                // 30 
-	   "  P.RDB$PROCEDURE_NAME like '%s  ' or " 
-	   "  P.RDB$PROCEDURE_NAME like '%s   ' or "
-	   "  P.RDB$PROCEDURE_NAME like '%s    ' or "
-	   "  P.RDB$PROCEDURE_NAME like '%s     ' or "
-	   "  P.RDB$PROCEDURE_NAME like '%s      ' or "                           // 25
-	   "  P.RDB$PROCEDURE_NAME like '%s       ' or "
-	   "  P.RDB$PROCEDURE_NAME like '%s        ' or "
-	   "  P.RDB$PROCEDURE_NAME like '%s         ' or "
-	   "  P.RDB$PROCEDURE_NAME like '%s          ' or "
-	   "  P.RDB$PROCEDURE_NAME like '%s           ' or "                      // 20
-	   "  P.RDB$PROCEDURE_NAME like '%s            ' or "
-	   "  P.RDB$PROCEDURE_NAME like '%s             ' or "
-	   "  P.RDB$PROCEDURE_NAME like '%s              ' or "
-	   "  P.RDB$PROCEDURE_NAME like '%s               ' or "
-	   "  P.RDB$PROCEDURE_NAME like '%s                ' or "                 // 15
-	   "  P.RDB$PROCEDURE_NAME like '%s                 ' or "
-	   "  P.RDB$PROCEDURE_NAME like '%s                  ' or "
-	   "  P.RDB$PROCEDURE_NAME like '%s                   ' or "
-	   "  P.RDB$PROCEDURE_NAME like '%s                    ' or "
-	   "  P.RDB$PROCEDURE_NAME like '%s                     ' or "            // 10
-	   "  P.RDB$PROCEDURE_NAME like '%s                      ' or "
-	   "  P.RDB$PROCEDURE_NAME like '%s                       ' or "
-	   "  P.RDB$PROCEDURE_NAME like '%s                        ' or "
-	   "  P.RDB$PROCEDURE_NAME like '%s                         ' or "
-	   "  P.RDB$PROCEDURE_NAME like '%s                          ' or "       // 5
-	   "  P.RDB$PROCEDURE_NAME like '%s                           ' or "
-	   "  P.RDB$PROCEDURE_NAME like '%s                            ' or "
-	   "  P.RDB$PROCEDURE_NAME like '%s                             ' or "
-	   "  P.RDB$PROCEDURE_NAME like '%s                              ') and " // 1
-	   " (PP.RDB$PARAMETER_NAME like '%s' or "                                 // 31 char patterns
-	   "  PP.RDB$PARAMETER_NAME like '%s ' or "                                // 30 
-	   "  PP.RDB$PARAMETER_NAME like '%s  ' or " 
-	   "  PP.RDB$PARAMETER_NAME like '%s   ' or "
-	   "  PP.RDB$PARAMETER_NAME like '%s    ' or "
-	   "  PP.RDB$PARAMETER_NAME like '%s     ' or "
-	   "  PP.RDB$PARAMETER_NAME like '%s      ' or "                           // 25
-	   "  PP.RDB$PARAMETER_NAME like '%s       ' or "
-	   "  PP.RDB$PARAMETER_NAME like '%s        ' or "
-	   "  PP.RDB$PARAMETER_NAME like '%s         ' or "
-	   "  PP.RDB$PARAMETER_NAME like '%s          ' or "
-	   "  PP.RDB$PARAMETER_NAME like '%s           ' or "                      // 20
-	   "  PP.RDB$PARAMETER_NAME like '%s            ' or "
-	   "  PP.RDB$PARAMETER_NAME like '%s             ' or "
-	   "  PP.RDB$PARAMETER_NAME like '%s              ' or "
-	   "  PP.RDB$PARAMETER_NAME like '%s               ' or "
-	   "  PP.RDB$PARAMETER_NAME like '%s                ' or "                 // 15
-	   "  PP.RDB$PARAMETER_NAME like '%s                 ' or "
-	   "  PP.RDB$PARAMETER_NAME like '%s                  ' or "
-	   "  PP.RDB$PARAMETER_NAME like '%s                   ' or "
-	   "  PP.RDB$PARAMETER_NAME like '%s                    ' or "
-	   "  PP.RDB$PARAMETER_NAME like '%s                     ' or "            // 10
-	   "  PP.RDB$PARAMETER_NAME like '%s                      ' or "
-	   "  PP.RDB$PARAMETER_NAME like '%s                       ' or "
-	   "  PP.RDB$PARAMETER_NAME like '%s                        ' or "
-	   "  PP.RDB$PARAMETER_NAME like '%s                         ' or "
-	   "  PP.RDB$PARAMETER_NAME like '%s                          ' or "       // 5
-	   "  PP.RDB$PARAMETER_NAME like '%s                           ' or "
-	   "  PP.RDB$PARAMETER_NAME like '%s                            ' or "
-	   "  PP.RDB$PARAMETER_NAME like '%s                             ' or "
-	   "  PP.RDB$PARAMETER_NAME like '%s                              ') and " // 1
+	   "where %s%s"
 	   " P.RDB$PROCEDURE_NAME = PP.RDB$PROCEDURE_NAME and"
 	   " PP.RDB$FIELD_SOURCE = F.RDB$FIELD_NAME "
 	   "order by" 
 	   " P.RDB$PROCEDURE_NAME," 
 	   " PP.RDB$PARAMETER_TYPE desc," 
 	   " PP.RDB$PARAMETER_NUMBER",
-	   procedureNamePattern,	// 31
-	   procedureNamePattern,	// 30
-	   procedureNamePattern,
-	   procedureNamePattern,
-	   procedureNamePattern,
-	   procedureNamePattern,
-	   procedureNamePattern,	// 25
-	   procedureNamePattern,
-	   procedureNamePattern,
-	   procedureNamePattern,
-	   procedureNamePattern,
-	   procedureNamePattern,	// 20
-	   procedureNamePattern,
-	   procedureNamePattern,
-	   procedureNamePattern,
-	   procedureNamePattern,
-	   procedureNamePattern,	// 15
-	   procedureNamePattern,
-	   procedureNamePattern,
-	   procedureNamePattern,
-	   procedureNamePattern,
-	   procedureNamePattern,	// 10
-	   procedureNamePattern,
-	   procedureNamePattern,
-	   procedureNamePattern,
-	   procedureNamePattern,
-	   procedureNamePattern,	// 5
-	   procedureNamePattern,
-	   procedureNamePattern,
-	   procedureNamePattern,
-	   procedureNamePattern,	// 1
-	   columnNamePattern,	// 31
-	   columnNamePattern,	// 30
-	   columnNamePattern,
-	   columnNamePattern,
-	   columnNamePattern,
-	   columnNamePattern,
-	   columnNamePattern,	// 25
-	   columnNamePattern,
-	   columnNamePattern,
-	   columnNamePattern,
-	   columnNamePattern,
-	   columnNamePattern,	// 20
-	   columnNamePattern,
-	   columnNamePattern,
-	   columnNamePattern,
-	   columnNamePattern,
-	   columnNamePattern,	// 15
-	   columnNamePattern,
-	   columnNamePattern,
-	   columnNamePattern,
-	   columnNamePattern,
-	   columnNamePattern,	// 10
-	   columnNamePattern,
-	   columnNamePattern,
-	   columnNamePattern,
-	   columnNamePattern,
-	   columnNamePattern,	// 5
-	   columnNamePattern,
-	   columnNamePattern,
-	   columnNamePattern,
-       columnNamePattern);	// 1
+	   procedureNameCondition,
+	   parameterNameCondition);
 
-// CJL-IB6  Old pattern match relies on all spaces are trailing
-/*  sprintf (queryStringBuffer_,  
-	   "select" 
-	   " P.RDB$PROCEDURE_NAME," 
-	   " PP.RDB$PARAMETER_NAME," 
-	   " PP.RDB$PARAMETER_TYPE,"
-	   " F.RDB$FIELD_TYPE," 
-	   " F.RDB$FIELD_SUB_TYPE," 
-	   " F.RDB$FIELD_SCALE," 
-	   " F.RDB$FIELD_LENGTH,"
-	   " F.RDB$NULL_FLAG," 
-	   " PP.RDB$DESCRIPTION "
-	   "from" 
-	   " RDB$PROCEDURES P," 
-	   " RDB$PROCEDURE_PARAMETERS PP," 
-	   " RDB$FIELDS F "
-	   "where" 
-	   " (P.RDB$PROCEDURE_NAME like '%s' or"
-	   "  P.RDB$PROCEDURE_NAME like '%s %%') and"
-	   " (PP.RDB$PARAMETER_NAME like '%s' or"
-	   "  PP.RDB$PARAMETER_NAME like '%s %%') and"
-	   " P.RDB$PROCEDURE_NAME = PP.RDB$PROCEDURE_NAME and"
-	   " PP.RDB$FIELD_SOURCE = F.RDB$FIELD_NAME "
-	   "order by" 
-	   " P.RDB$PROCEDURE_NAME," 
-	   " PP.RDB$PARAMETER_TYPE desc," 
-	   " PP.RDB$PARAMETER_NUMBER",
-	   procedureNamePattern,
-	   procedureNamePattern,
-	   columnNamePattern,
-           columnNamePattern);
-*/
-// CJL-IB6 end change
+  return runCatalogQuery(queryStringBuffer_, CATALOG_GET_PROCEDURE_COLUMNS);
 
-
-  IB_ResultSet* resultSet = statement->prepareNoInput (queryStringBuffer_);
-  resultSet->setCatalogFunction (CATALOG_GET_PROCEDURE_COLUMNS);
-  resultSet->open ();
-  return statement;
 }
 
+//david jencks 1-25-2001 rewritten
 IB_Statement*
 IB_Catalog::getTables (const IB_STRING tableNamePattern,
 		       const IB_BOOLEAN* types)
 {
-  IB_Statement* statement = createStatement ();
-  IB_BOOLEAN firstSelect = IB_TRUE;
 
   // Note: any changes to the SQL query must also be reflected in JIBSRemote
 
@@ -590,256 +432,17 @@ IB_Catalog::getTables (const IB_STRING tableNamePattern,
   // literals TABLE, SYSTEM TABLE, and VIEW are of different lengths, 
   // so they must be substituted for in JIBSRemote.cpp (use 'T', 'S', and 'V' here)
 
-// CJL-IB6 -- modified to support all dialects
+  //david jencks 1-19-2001 Extensive modifications to eliminate ridiculous sql
+  // and fix error when tables of no type are requested
+  //The queries do account for escaped % and _ in identified names:
+  //these will be handled by the exact match form if all wildcards are escaped.
+
+  char nameCondition[128];
+
+  ConstructNameCondition(tableNamePattern, nameCondition, "RDB$RELATION_NAME");
   
-	if (types [SYSTEM_TABLE_TYPE]) {
-    if (!firstSelect) {
-      sprintf (position, " union ");
-      position += strlen (position);
-    }
-    firstSelect = IB_FALSE;
-    sprintf (position,  
-	     "select"
-	     " RDB$RELATION_NAME,"
-	     " 'S',"
-	     " RDB$DESCRIPTION,"
-	     " RDB$OWNER_NAME "
-	     "from"
-	     " RDB$RELATIONS "
-	     "where"
-	     " RDB$SYSTEM_FLAG = 1 and"
-	     " (RDB$RELATION_NAME like '%s' or "                                 // 31 char patterns
-  		 "  RDB$RELATION_NAME like '%s ' or "                                // 30 
-  		 "  RDB$RELATION_NAME like '%s  ' or " 
-	  	 "  RDB$RELATION_NAME like '%s   ' or "
-	  	 "  RDB$RELATION_NAME like '%s    ' or "
-  		 "  RDB$RELATION_NAME like '%s     ' or "
-  		 "  RDB$RELATION_NAME like '%s      ' or "                           // 25
-  		 "  RDB$RELATION_NAME like '%s       ' or "
-  		 "  RDB$RELATION_NAME like '%s        ' or "
-   		 "  RDB$RELATION_NAME like '%s         ' or "
-  		 "  RDB$RELATION_NAME like '%s          ' or "
-  		 "  RDB$RELATION_NAME like '%s           ' or "                      // 20
-  		 "  RDB$RELATION_NAME like '%s            ' or "
-  		 "  RDB$RELATION_NAME like '%s             ' or "
-  		 "  RDB$RELATION_NAME like '%s              ' or "
-  		 "  RDB$RELATION_NAME like '%s               ' or "
-  		 "  RDB$RELATION_NAME like '%s                ' or "                 // 15
-  		 "  RDB$RELATION_NAME like '%s                 ' or "
-  		 "  RDB$RELATION_NAME like '%s                  ' or "
-   		 "  RDB$RELATION_NAME like '%s                   ' or "
-  		 "  RDB$RELATION_NAME like '%s                    ' or "
-  		 "  RDB$RELATION_NAME like '%s                     ' or "            // 10
-  		 "  RDB$RELATION_NAME like '%s                      ' or "
-  		 "  RDB$RELATION_NAME like '%s                       ' or "
-  		 "  RDB$RELATION_NAME like '%s                        ' or "
-  		 "  RDB$RELATION_NAME like '%s                         ' or "
-  		 "  RDB$RELATION_NAME like '%s                          ' or "       // 5
-  		 "  RDB$RELATION_NAME like '%s                           ' or "
-  		 "  RDB$RELATION_NAME like '%s                            ' or "
-  		 "  RDB$RELATION_NAME like '%s                             ' or "
-  		 "  RDB$RELATION_NAME like '%s                              ') and " // 1
-	     " RDB$VIEW_SOURCE is null",
-	     tableNamePattern,	// 31
-	     tableNamePattern,	// 30
-	     tableNamePattern,
-	     tableNamePattern,
-	     tableNamePattern,
-	     tableNamePattern,
-	     tableNamePattern,	// 25
-	     tableNamePattern,
-	     tableNamePattern,
-	     tableNamePattern,
-	     tableNamePattern,
-	     tableNamePattern,	// 20
-	     tableNamePattern,
-	     tableNamePattern,
-	     tableNamePattern,
-	     tableNamePattern,
-	     tableNamePattern,	// 15
-	     tableNamePattern,
-	     tableNamePattern,
-	     tableNamePattern,
-	     tableNamePattern,
-	     tableNamePattern,	// 10
-	     tableNamePattern,
-	     tableNamePattern,
-	     tableNamePattern,
-	     tableNamePattern,
-	     tableNamePattern,	// 5
-	     tableNamePattern,
-	     tableNamePattern,
-	     tableNamePattern,
-         tableNamePattern);	// 1
-    position += strlen (position);
-  }
+  IB_BOOLEAN firstSelect = IB_TRUE;
 
-  if (types [TABLE_TYPE]) {
-    if (!firstSelect) {
-      sprintf (position, " union ");
-      position += strlen (position);
-    }
-    firstSelect = IB_FALSE;
-    sprintf (position,  
-	     "select"
-	     " RDB$RELATION_NAME,"
-	     " 'T',"
-	     " RDB$DESCRIPTION,"
-	     " RDB$OWNER_NAME "
-	     "from"
-	     " RDB$RELATIONS "
-	     "where "
-	     " RDB$SYSTEM_FLAG = 0 and "
-	     " (RDB$RELATION_NAME like '%s' or "                                 // 31 char patterns
-  		 "  RDB$RELATION_NAME like '%s ' or "                                // 30 
-  		 "  RDB$RELATION_NAME like '%s  ' or " 
-	  	 "  RDB$RELATION_NAME like '%s   ' or "
-	  	 "  RDB$RELATION_NAME like '%s    ' or "
-  		 "  RDB$RELATION_NAME like '%s     ' or "
-  		 "  RDB$RELATION_NAME like '%s      ' or "                           // 25
-  		 "  RDB$RELATION_NAME like '%s       ' or "
-  		 "  RDB$RELATION_NAME like '%s        ' or "
-   		 "  RDB$RELATION_NAME like '%s         ' or "
-  		 "  RDB$RELATION_NAME like '%s          ' or "
-  		 "  RDB$RELATION_NAME like '%s           ' or "                      // 20
-  		 "  RDB$RELATION_NAME like '%s            ' or "
-  		 "  RDB$RELATION_NAME like '%s             ' or "
-  		 "  RDB$RELATION_NAME like '%s              ' or "
-  		 "  RDB$RELATION_NAME like '%s               ' or "
-  		 "  RDB$RELATION_NAME like '%s                ' or "                 // 15
-  		 "  RDB$RELATION_NAME like '%s                 ' or "
-  		 "  RDB$RELATION_NAME like '%s                  ' or "
-   		 "  RDB$RELATION_NAME like '%s                   ' or "
-  		 "  RDB$RELATION_NAME like '%s                    ' or "
-  		 "  RDB$RELATION_NAME like '%s                     ' or "            // 10
-  		 "  RDB$RELATION_NAME like '%s                      ' or "
-  		 "  RDB$RELATION_NAME like '%s                       ' or "
-  		 "  RDB$RELATION_NAME like '%s                        ' or "
-  		 "  RDB$RELATION_NAME like '%s                         ' or "
-  		 "  RDB$RELATION_NAME like '%s                          ' or "       // 5
-  		 "  RDB$RELATION_NAME like '%s                           ' or "
-  		 "  RDB$RELATION_NAME like '%s                            ' or "
-  		 "  RDB$RELATION_NAME like '%s                             ' or "
-  		 "  RDB$RELATION_NAME like '%s                              ') and " // 1
-	     " RDB$VIEW_SOURCE is null ",
-	     tableNamePattern,	// 31
-	     tableNamePattern,	// 30
-	     tableNamePattern,
-	     tableNamePattern,
-	     tableNamePattern,
-	     tableNamePattern,
-	     tableNamePattern,	// 25
-	     tableNamePattern,
-	     tableNamePattern,
-	     tableNamePattern,
-	     tableNamePattern,
-	     tableNamePattern,	// 20
-	     tableNamePattern,
-	     tableNamePattern,
-	     tableNamePattern,
-	     tableNamePattern,
-	     tableNamePattern,	// 15
-	     tableNamePattern,
-	     tableNamePattern,
-	     tableNamePattern,
-	     tableNamePattern,
-	     tableNamePattern,	// 10
-	     tableNamePattern,
-	     tableNamePattern,
-	     tableNamePattern,
-	     tableNamePattern,
-	     tableNamePattern,	// 5
-	     tableNamePattern,
-	     tableNamePattern,
-	     tableNamePattern,
-	     tableNamePattern);	// 1
-    position += strlen (position);
-  }
-
-  if (types [VIEW_TYPE]) {
-    if (!firstSelect) {
-      sprintf (position, " union ");
-      position += strlen (position);
-    }
-    firstSelect = IB_FALSE;
-    sprintf (position,  
-	     "select"
-	     " RDB$RELATION_NAME,"
-	     " 'V',"
-	     " RDB$DESCRIPTION,"
-	     " RDB$OWNER_NAME "
-	     "from"
-	     " RDB$RELATIONS "
-	     "where"
-	     " (RDB$RELATION_NAME like '%s' or "                                 // 31 char patterns
-  		 "  RDB$RELATION_NAME like '%s ' or "                                // 30 
-  		 "  RDB$RELATION_NAME like '%s  ' or " 
-	  	 "  RDB$RELATION_NAME like '%s   ' or "
-	  	 "  RDB$RELATION_NAME like '%s    ' or "
-  		 "  RDB$RELATION_NAME like '%s     ' or "
-  		 "  RDB$RELATION_NAME like '%s      ' or "                           // 25
-  		 "  RDB$RELATION_NAME like '%s       ' or "
-  		 "  RDB$RELATION_NAME like '%s        ' or "
-   		 "  RDB$RELATION_NAME like '%s         ' or "
-  		 "  RDB$RELATION_NAME like '%s          ' or "
-  		 "  RDB$RELATION_NAME like '%s           ' or "                      // 20
-  		 "  RDB$RELATION_NAME like '%s            ' or "
-  		 "  RDB$RELATION_NAME like '%s             ' or "
-  		 "  RDB$RELATION_NAME like '%s              ' or "
-  		 "  RDB$RELATION_NAME like '%s               ' or "
-  		 "  RDB$RELATION_NAME like '%s                ' or "                 // 15
-  		 "  RDB$RELATION_NAME like '%s                 ' or "
-  		 "  RDB$RELATION_NAME like '%s                  ' or "
-   		 "  RDB$RELATION_NAME like '%s                   ' or "
-  		 "  RDB$RELATION_NAME like '%s                    ' or "
-  		 "  RDB$RELATION_NAME like '%s                     ' or "            // 10
-  		 "  RDB$RELATION_NAME like '%s                      ' or "
-  		 "  RDB$RELATION_NAME like '%s                       ' or "
-  		 "  RDB$RELATION_NAME like '%s                        ' or "
-  		 "  RDB$RELATION_NAME like '%s                         ' or "
-  		 "  RDB$RELATION_NAME like '%s                          ' or "       // 5
-  		 "  RDB$RELATION_NAME like '%s                           ' or "
-  		 "  RDB$RELATION_NAME like '%s                            ' or "
-  		 "  RDB$RELATION_NAME like '%s                             ' or "
-  		 "  RDB$RELATION_NAME like '%s                              ') and " // 1
-	     " RDB$VIEW_SOURCE is not null ",
-	     tableNamePattern,	// 31
-	     tableNamePattern,	// 30
-	     tableNamePattern,
-	     tableNamePattern,
-	     tableNamePattern,
-	     tableNamePattern,
-	     tableNamePattern,	// 25
-	     tableNamePattern,
-	     tableNamePattern,
-	     tableNamePattern,
-	     tableNamePattern,
-	     tableNamePattern,	// 20
-	     tableNamePattern,
-	     tableNamePattern,
-	     tableNamePattern,
-	     tableNamePattern,
-	     tableNamePattern,	// 15
-	     tableNamePattern,
-	     tableNamePattern,
-	     tableNamePattern,
-	     tableNamePattern,
-	     tableNamePattern,	// 10
-	     tableNamePattern,
-	     tableNamePattern,
-	     tableNamePattern,
-	     tableNamePattern,
-	     tableNamePattern,	// 5
-	     tableNamePattern,
-	     tableNamePattern,
-	     tableNamePattern,
-	     tableNamePattern);	// 1
-    position += strlen (position);
-  }
-
-
-// CJL-IB6  Old pattern match relies on all spaces are trailing
-/*
   if (types [SYSTEM_TABLE_TYPE]) {
     if (!firstSelect) {
       sprintf (position, " union ");
@@ -855,12 +458,9 @@ IB_Catalog::getTables (const IB_STRING tableNamePattern,
 	     "from"
 	     " RDB$RELATIONS "
 	     "where"
-	     " RDB$SYSTEM_FLAG = 1 and"
-	     " (RDB$RELATION_NAME like '%s' or"
-	     "  RDB$RELATION_NAME like '%s %%') and"
+	     " RDB$SYSTEM_FLAG = 1 and %s"
 	     " RDB$VIEW_SOURCE is null",
-	     tableNamePattern,
-             tableNamePattern);
+             nameCondition);
     position += strlen (position);
   }
 
@@ -879,12 +479,9 @@ IB_Catalog::getTables (const IB_STRING tableNamePattern,
 	     "from"
 	     " RDB$RELATIONS "
 	     "where"
-	     " RDB$SYSTEM_FLAG = 0 and"
-	     " (RDB$RELATION_NAME like '%s' or"
-	     "  RDB$RELATION_NAME like '%s %%') and"
+	     " RDB$SYSTEM_FLAG = 0 and %s"
 	     " RDB$VIEW_SOURCE is null",
-	     tableNamePattern,
-	     tableNamePattern);
+             nameCondition);
     position += strlen (position);
   }
 
@@ -902,48 +499,59 @@ IB_Catalog::getTables (const IB_STRING tableNamePattern,
 	     " RDB$OWNER_NAME "
 	     "from"
 	     " RDB$RELATIONS "
-	     "where"
-	     " (RDB$RELATION_NAME like '%s' or"
-	     "  RDB$RELATION_NAME like '%s %%') and"
+	     "where %s"
 	     " RDB$VIEW_SOURCE is not null",
-	     tableNamePattern,
-	     tableNamePattern);
+             nameCondition);
     position += strlen (position);
   }
-*/
-// CJL-IB6 end change
 
-  sprintf (position, " order by 2, 1");
-
-  IB_ResultSet* resultSet = statement->prepareNoInput (queryStringBuffer_);
-  resultSet->setCatalogFunction (CATALOG_GET_TABLES);
-  resultSet->open ();
-  return statement;
+  if (!firstSelect) {
+    sprintf (position, " order by 2, 1");
+  }
+  else { //no types were requested, generate a query with correct columns
+         //  returning no rows
+    sprintf (position,  
+	     "select"
+	     " RDB$RELATION_NAME,"
+	     " 'S',"
+	     " RDB$DESCRIPTION,"
+	     " RDB$OWNER_NAME "
+	     "from"
+	     " RDB$RELATIONS "
+	     "where 1=2");
+  }
+  
+  return runCatalogQuery(queryStringBuffer_, CATALOG_GET_TABLES);
 }
 
+//david jencks 1-25-2001 rewritten
 IB_Statement*
 IB_Catalog::getTableTypes ()
 {
-  IB_Statement* statement = createStatement ();
 
   sprintf (queryStringBuffer_,  
            "select 'S' from RDB$DATABASE union "
-	   "select 'T' from RDB$DATABASE union "
+	       "select 'T' from RDB$DATABASE union "
            "select 'V' from RDB$DATABASE "
            "order by 1");
 
-  IB_ResultSet* resultSet = statement->prepareNoInput (queryStringBuffer_);
-  resultSet->setCatalogFunction (CATALOG_GET_TABLE_TYPES);
-  resultSet->open ();
-  return statement;
+  return runCatalogQuery(queryStringBuffer_, CATALOG_GET_TABLE_TYPES);
 }
 
 IB_Statement*
 IB_Catalog::getColumns (const IB_STRING tableNamePattern,
 			const IB_STRING columnNamePattern)
 {
-// CJL-IB6 modified to support all dialects
-  IB_Statement* statement = createStatement ();
+//heavily modified by david jencks 1-25-2001 to remove ridiculous SQL
+
+
+  char tableNameCondition[128];
+  ConstructNameCondition(tableNamePattern, tableNameCondition, "RF.RDB$RELATION_NAME");
+  
+
+  char columnNameCondition[128];
+  ConstructNameCondition(columnNamePattern, columnNameCondition, "RF.RDB$FIELD_NAME");
+  
    sprintf (queryStringBuffer_,  
 	   "select"
 	   " RF.RDB$RELATION_NAME,"
@@ -961,178 +569,24 @@ IB_Catalog::getColumns (const IB_STRING tableNamePattern,
 	   "from"
 	   " RDB$RELATION_FIELDS RF,"
 	   " RDB$FIELDS F "
-	   "where"
-	   " (RF.RDB$RELATION_NAME like '%s' or "                                 // 31 char patterns
-		"  RF.RDB$RELATION_NAME like '%s ' or "                                // 30 
-		"  RF.RDB$RELATION_NAME like '%s  ' or " 
-		"  RF.RDB$RELATION_NAME like '%s   ' or "
-		"  RF.RDB$RELATION_NAME like '%s    ' or "
-		"  RF.RDB$RELATION_NAME like '%s     ' or "
-		"  RF.RDB$RELATION_NAME like '%s      ' or "                           // 25
-		"  RF.RDB$RELATION_NAME like '%s       ' or "
-		"  RF.RDB$RELATION_NAME like '%s        ' or "
-		"  RF.RDB$RELATION_NAME like '%s         ' or "
-		"  RF.RDB$RELATION_NAME like '%s          ' or "
-		"  RF.RDB$RELATION_NAME like '%s           ' or "                      // 20
-		"  RF.RDB$RELATION_NAME like '%s            ' or "
-		"  RF.RDB$RELATION_NAME like '%s             ' or "
-		"  RF.RDB$RELATION_NAME like '%s              ' or "
-		"  RF.RDB$RELATION_NAME like '%s               ' or "
-		"  RF.RDB$RELATION_NAME like '%s                ' or "                 // 15
-		"  RF.RDB$RELATION_NAME like '%s                 ' or "
-		"  RF.RDB$RELATION_NAME like '%s                  ' or "
-		"  RF.RDB$RELATION_NAME like '%s                   ' or "
-		"  RF.RDB$RELATION_NAME like '%s                    ' or "
-		"  RF.RDB$RELATION_NAME like '%s                     ' or "            // 10
-		"  RF.RDB$RELATION_NAME like '%s                      ' or "
-		"  RF.RDB$RELATION_NAME like '%s                       ' or "
-		"  RF.RDB$RELATION_NAME like '%s                        ' or "
-		"  RF.RDB$RELATION_NAME like '%s                         ' or "
-		"  RF.RDB$RELATION_NAME like '%s                          ' or "       // 5
-		"  RF.RDB$RELATION_NAME like '%s                           ' or "
-		"  RF.RDB$RELATION_NAME like '%s                            ' or "
-		"  RF.RDB$RELATION_NAME like '%s                             ' or "
-		"  RF.RDB$RELATION_NAME like '%s                              ') and " // 1
-	   " (RF.RDB$FIELD_NAME like '%s' or "                                 // 31 char patterns
-		"  RF.RDB$FIELD_NAME like '%s ' or "                                // 30 
-		"  RF.RDB$FIELD_NAME like '%s  ' or " 
-		"  RF.RDB$FIELD_NAME like '%s   ' or "
-		"  RF.RDB$FIELD_NAME like '%s    ' or "
-		"  RF.RDB$FIELD_NAME like '%s     ' or "
-		"  RF.RDB$FIELD_NAME like '%s      ' or "                           // 25
-		"  RF.RDB$FIELD_NAME like '%s       ' or "
-		"  RF.RDB$FIELD_NAME like '%s        ' or "
-		"  RF.RDB$FIELD_NAME like '%s         ' or "
-		"  RF.RDB$FIELD_NAME like '%s          ' or "
-		"  RF.RDB$FIELD_NAME like '%s           ' or "                      // 20
-		"  RF.RDB$FIELD_NAME like '%s            ' or "
-		"  RF.RDB$FIELD_NAME like '%s             ' or "
-		"  RF.RDB$FIELD_NAME like '%s              ' or "
-		"  RF.RDB$FIELD_NAME like '%s               ' or "
-		"  RF.RDB$FIELD_NAME like '%s                ' or "                 // 15
-		"  RF.RDB$FIELD_NAME like '%s                 ' or "
-		"  RF.RDB$FIELD_NAME like '%s                  ' or "
-		"  RF.RDB$FIELD_NAME like '%s                   ' or "
-		"  RF.RDB$FIELD_NAME like '%s                    ' or "
-		"  RF.RDB$FIELD_NAME like '%s                     ' or "            // 10
-		"  RF.RDB$FIELD_NAME like '%s                      ' or "
-		"  RF.RDB$FIELD_NAME like '%s                       ' or "
-		"  RF.RDB$FIELD_NAME like '%s                        ' or "
-		"  RF.RDB$FIELD_NAME like '%s                         ' or "
-		"  RF.RDB$FIELD_NAME like '%s                          ' or "       // 5
-		"  RF.RDB$FIELD_NAME like '%s                           ' or "
-		"  RF.RDB$FIELD_NAME like '%s                            ' or "
-		"  RF.RDB$FIELD_NAME like '%s                             ' or "
-		"  RF.RDB$FIELD_NAME like '%s                              ') and " // 1
+	   "where %s%s"
 	   " RF.RDB$FIELD_SOURCE = F.RDB$FIELD_NAME "
 	   "order by 1, 10",
-	   tableNamePattern,	// 31
-	   tableNamePattern,	// 30
-	   tableNamePattern,
-	   tableNamePattern,
-	   tableNamePattern,
-	   tableNamePattern,
-	   tableNamePattern,	// 25
-	   tableNamePattern,
-	   tableNamePattern,
-	   tableNamePattern,
-	   tableNamePattern,
-	   tableNamePattern,	// 20
-	   tableNamePattern,
-	   tableNamePattern,
-	   tableNamePattern,
-	   tableNamePattern,
-	   tableNamePattern,	// 15
-	   tableNamePattern,
-	   tableNamePattern,
-	   tableNamePattern,
-	   tableNamePattern,
-	   tableNamePattern,	// 10
-	   tableNamePattern,
-	   tableNamePattern,
-	   tableNamePattern,
-	   tableNamePattern,
-	   tableNamePattern,	// 5
-	   tableNamePattern,
-	   tableNamePattern,
-	   tableNamePattern,
-	   tableNamePattern,	// 1
-	   columnNamePattern,	// 31
-	   columnNamePattern,	// 30
-	   columnNamePattern,
-	   columnNamePattern,
-	   columnNamePattern,
-	   columnNamePattern,
-	   columnNamePattern,	// 25
-	   columnNamePattern,
-	   columnNamePattern,
-	   columnNamePattern,
-	   columnNamePattern,
-	   columnNamePattern,	// 20
-	   columnNamePattern,
-	   columnNamePattern,
-	   columnNamePattern,
-	   columnNamePattern,
-	   columnNamePattern,	// 15
-	   columnNamePattern,
-	   columnNamePattern,
-	   columnNamePattern,
-	   columnNamePattern,
-	   columnNamePattern,	// 10
-	   columnNamePattern,
-	   columnNamePattern,
-	   columnNamePattern,
-	   columnNamePattern,
-	   columnNamePattern,	// 5
-	   columnNamePattern,
-	   columnNamePattern,
-	   columnNamePattern,
-       columnNamePattern);	// 1
+	   tableNameCondition,
+	   columnNameCondition);
 
-// CJL-IB6 old code relied on all spaces being trailing  
-/*   sprintf (queryStringBuffer_,  
-	   "select"
-	   " RF.RDB$RELATION_NAME,"
-	   " RF.RDB$FIELD_NAME,"
-	   " F.RDB$FIELD_TYPE,"
-	   " F.RDB$FIELD_SUB_TYPE,"
-	   " F.RDB$FIELD_SCALE,"
-	   " F.RDB$FIELD_LENGTH,"
-	   " F.RDB$NULL_FLAG,"
-	   " RF.RDB$DESCRIPTION,"
-	   " RF.RDB$DEFAULT_SOURCE,"
-	   " RF.RDB$FIELD_POSITION, "
-	   " RF.RDB$NULL_FLAG, "
-           " F.RDB$DEFAULT_SOURCE "
-	   "from"
-	   " RDB$RELATION_FIELDS RF,"
-	   " RDB$FIELDS F "
-	   "where"
-	   " (RF.RDB$RELATION_NAME like '%s' or"
-	   "  RF.RDB$RELATION_NAME like '%s %%') and"
-	   " (RF.RDB$FIELD_NAME like '%s' or"
-	   "  RF.RDB$FIELD_NAME like '%s %%') and"
-	   " RF.RDB$FIELD_SOURCE = F.RDB$FIELD_NAME "
-	   "order by 1, 10",
-	   tableNamePattern, 
-	   tableNamePattern,
-	   columnNamePattern,
-           columnNamePattern);
-*/
-// CJL-IB6 -- end 
-
-  IB_ResultSet* resultSet = statement->prepareNoInput (queryStringBuffer_);
-  resultSet->setCatalogFunction (CATALOG_GET_COLUMNS);
-  resultSet->open ();
-  return statement;
+  return runCatalogQuery(queryStringBuffer_, CATALOG_GET_COLUMNS);
 }
 
+//david jencks 1-25-2001 rewritten
 IB_Statement*
 IB_Catalog::getColumnPrivileges (const IB_STRING table,
 				 const IB_STRING columnNamePattern)
 {
-  IB_Statement* statement = createStatement ();
-// CJL-IB6 -- modifed to support all dialects
+
+  char columnNameCondition[128];
+  ConstructNameCondition(columnNamePattern, columnNameCondition, "RF.RDB$FIELD_NAME");
+
   sprintf (queryStringBuffer_,  
 	"select "
             "RF.RDB$RELATION_NAME, "
@@ -1149,116 +603,25 @@ IB_Catalog::getColumnPrivileges (const IB_STRING table,
             "RF.RDB$RELATION_NAME = UP.RDB$RELATION_NAME and "
             "RF.RDB$FIELD_SOURCE = F.RDB$FIELD_NAME  and "
             "(UP.RDB$FIELD_NAME is null or "
-             "UP.RDB$FIELD_NAME = RF.RDB$FIELD_NAME) and "
-	    "UP.RDB$RELATION_NAME = '%s' and "
-		" (RF.RDB$FIELD_NAME like '%s' or "                                 // 31 char patterns
- 		 "  RF.RDB$FIELD_NAME like '%s ' or "                                // 30 
-		 "  RF.RDB$FIELD_NAME like '%s  ' or " 
-	  	 "  RF.RDB$FIELD_NAME like '%s   ' or "
-	  	 "  RF.RDB$FIELD_NAME like '%s    ' or "
-		 "  RF.RDB$FIELD_NAME like '%s     ' or "
-		 "  RF.RDB$FIELD_NAME like '%s      ' or "                           // 25
-		 "  RF.RDB$FIELD_NAME like '%s       ' or "
-		 "  RF.RDB$FIELD_NAME like '%s        ' or "
- 		 "  RF.RDB$FIELD_NAME like '%s         ' or "
- 		 "  RF.RDB$FIELD_NAME like '%s          ' or "
- 		 "  RF.RDB$FIELD_NAME like '%s           ' or "                      // 20
- 		 "  RF.RDB$FIELD_NAME like '%s            ' or "
- 		 "  RF.RDB$FIELD_NAME like '%s             ' or "
- 		 "  RF.RDB$FIELD_NAME like '%s              ' or "
- 		 "  RF.RDB$FIELD_NAME like '%s               ' or "
- 		 "  RF.RDB$FIELD_NAME like '%s                ' or "                 // 15
- 		 "  RF.RDB$FIELD_NAME like '%s                 ' or "
- 		 "  RF.RDB$FIELD_NAME like '%s                  ' or "
- 		 "  RF.RDB$FIELD_NAME like '%s                   ' or "
-		 "  RF.RDB$FIELD_NAME like '%s                    ' or "
- 		 "  RF.RDB$FIELD_NAME like '%s                     ' or "            // 10
-		 "  RF.RDB$FIELD_NAME like '%s                      ' or "
- 		 "  RF.RDB$FIELD_NAME like '%s                       ' or "
-		 "  RF.RDB$FIELD_NAME like '%s                        ' or "
- 		 "  RF.RDB$FIELD_NAME like '%s                         ' or "
- 		 "  RF.RDB$FIELD_NAME like '%s                          ' or "       // 5
- 		 "  RF.RDB$FIELD_NAME like '%s                           ' or "
- 		 "  RF.RDB$FIELD_NAME like '%s                            ' or "
- 		 "  RF.RDB$FIELD_NAME like '%s                             ' or "
-		 "  RF.RDB$FIELD_NAME like '%s                              ' or "   // 1
-		 "  RF.RDB$FIELD_NAME is null) and "
-         " UP.RDB$OBJECT_TYPE = 0 "
-	"order by 1, 2, 5 ",
+            "UP.RDB$FIELD_NAME = RF.RDB$FIELD_NAME) and "
+    	    "UP.RDB$RELATION_NAME = '%s' and "
+            "((%s UP.RDB$OBJECT_TYPE = 0) or "
+            "(RF.RDB$FIELD_NAME is null and UP.RDB$OBJECT_TYPE = 0)) "
+	        "order by 1, 2, 5 ",
    table, 
-   columnNamePattern,	// 31
-   columnNamePattern,	// 30
-   columnNamePattern,
-   columnNamePattern,
-   columnNamePattern,
-   columnNamePattern,
-   columnNamePattern,	// 25
-   columnNamePattern,
-   columnNamePattern,
-   columnNamePattern,
-   columnNamePattern,
-   columnNamePattern,	// 20
-   columnNamePattern,
-   columnNamePattern,
-   columnNamePattern,
-   columnNamePattern,	// 15
-   columnNamePattern,
-   columnNamePattern,
-   columnNamePattern,
-   columnNamePattern,
-   columnNamePattern,	// 10
-   columnNamePattern,
-   columnNamePattern,
-   columnNamePattern,
-   columnNamePattern,
-   columnNamePattern,	// 5
-   columnNamePattern,
-   columnNamePattern,
-   columnNamePattern,
-   columnNamePattern);
+   columnNameCondition);
 
-
-// CJL-IB6 obsolete, assumes all spaces are trailing  
-/*  sprintf (queryStringBuffer_,  
-	"select "
-            "RF.RDB$RELATION_NAME, "
-            "RF.RDB$FIELD_NAME, "
-            "UP.RDB$GRANTOR, "
-            "UP.RDB$USER, "
-            "UP.RDB$PRIVILEGE, "
-            "UP.RDB$GRANT_OPTION "
-        "from "
-            "RDB$RELATION_FIELDS RF, "
-            "RDB$FIELDS F, "
-            "RDB$USER_PRIVILEGES UP "
-        "where "
-            "RF.RDB$RELATION_NAME = UP.RDB$RELATION_NAME and "
-            "RF.RDB$FIELD_SOURCE = F.RDB$FIELD_NAME  and "
-            "(UP.RDB$FIELD_NAME is null or "
-             "UP.RDB$FIELD_NAME = RF.RDB$FIELD_NAME) and "
-	    "UP.RDB$RELATION_NAME = '%s' and "
-            "(RF.RDB$FIELD_NAME like '%s' or "
-            "RF.RDB$FIELD_NAME like '%s %%' or "
-            "RF.RDB$FIELD_NAME is null) and "
-            "UP.RDB$OBJECT_TYPE = 0 "
-	"order by 1, 2, 5 ",
-   table, 
-   columnNamePattern,
-   columnNamePattern);
-*/
-// CJL-IB6 -- end change
-
-  IB_ResultSet* resultSet = statement->prepareNoInput (queryStringBuffer_);
-  resultSet->setCatalogFunction (CATALOG_GET_COLUMN_PRIVILEGES);
-  resultSet->open ();
-  return statement;
+  return runCatalogQuery(queryStringBuffer_, CATALOG_GET_COLUMN_PRIVILEGES);
 }
 
+//david jencks 1-25-2001 rewritten
 IB_Statement*
 IB_Catalog::getTablePrivileges (const IB_STRING tableNamePattern)
 {
-  IB_Statement* statement = createStatement ();
-// CJL-IB6 -- modifed to support all dialects 
+
+  char tableNameCondition[128];
+  ConstructNameCondition(tableNamePattern, tableNameCondition, "RDB$RELATION_NAME");
+  
   sprintf (queryStringBuffer_,  
 	   "select"
 	   " RDB$RELATION_NAME,"
@@ -1268,106 +631,21 @@ IB_Catalog::getTablePrivileges (const IB_STRING tableNamePattern)
 	   " RDB$GRANT_OPTION "
 	   "from" 
 	   " RDB$USER_PRIVILEGES "
-	   "where"
-	   " (RDB$RELATION_NAME like '%s' or "                                 // 31 char patterns
-	   "  RDB$RELATION_NAME like '%s ' or "                                // 30 
-	   "  RDB$RELATION_NAME like '%s  ' or " 
-	   "  RDB$RELATION_NAME like '%s   ' or "
-	   "  RDB$RELATION_NAME like '%s    ' or "
-	   "  RDB$RELATION_NAME like '%s     ' or "
-	   "  RDB$RELATION_NAME like '%s      ' or "                           // 25
-	   "  RDB$RELATION_NAME like '%s       ' or "
-	   "  RDB$RELATION_NAME like '%s        ' or "
-	   "  RDB$RELATION_NAME like '%s         ' or "
-	   "  RDB$RELATION_NAME like '%s          ' or "
-	   "  RDB$RELATION_NAME like '%s           ' or "                      // 20
-	   "  RDB$RELATION_NAME like '%s            ' or "
-	   "  RDB$RELATION_NAME like '%s             ' or "
-	   "  RDB$RELATION_NAME like '%s              ' or "
-	   "  RDB$RELATION_NAME like '%s               ' or "
-	   "  RDB$RELATION_NAME like '%s                ' or "                 // 15
-	   "  RDB$RELATION_NAME like '%s                 ' or "
-	   "  RDB$RELATION_NAME like '%s                  ' or "
-	   "  RDB$RELATION_NAME like '%s                   ' or "
-	   "  RDB$RELATION_NAME like '%s                    ' or "
-	   "  RDB$RELATION_NAME like '%s                     ' or "            // 10
-	   "  RDB$RELATION_NAME like '%s                      ' or "
-	   "  RDB$RELATION_NAME like '%s                       ' or "
-	   "  RDB$RELATION_NAME like '%s                        ' or "
-	   "  RDB$RELATION_NAME like '%s                         ' or "
-	   "  RDB$RELATION_NAME like '%s                          ' or "       // 5
-	   "  RDB$RELATION_NAME like '%s                           ' or "
-	   "  RDB$RELATION_NAME like '%s                            ' or "
-	   "  RDB$RELATION_NAME like '%s                             ' or "
-	   "  RDB$RELATION_NAME like '%s                              ') and " // 1
-	   " RDB$OBJECT_TYPE = 0 and "
-	   " RDB$FIELD_NAME is null "
-	   "order by 1, 4",
-	   tableNamePattern,	// 31
-	   tableNamePattern,	// 30
-	   tableNamePattern,
-	   tableNamePattern,
-	   tableNamePattern,
-	   tableNamePattern,
-	   tableNamePattern,	// 25
-	   tableNamePattern,
-	   tableNamePattern,
-	   tableNamePattern,
-	   tableNamePattern,
-	   tableNamePattern,	// 20
-	   tableNamePattern,
-	   tableNamePattern,
-	   tableNamePattern,
-	   tableNamePattern,
-	   tableNamePattern,	// 15
-	   tableNamePattern,
-	   tableNamePattern,
-	   tableNamePattern,
-	   tableNamePattern,
-	   tableNamePattern,	// 10
-	   tableNamePattern,
-	   tableNamePattern,
-	   tableNamePattern,
-	   tableNamePattern,
-	   tableNamePattern,	// 5
-	   tableNamePattern,
-	   tableNamePattern,
-	   tableNamePattern,
-	   tableNamePattern);	// 1
-
-// CJL-IB6 obsolete -- assumes all spaces are trailing  
-/*  sprintf (queryStringBuffer_,  
-	   "select"
-	   " RDB$RELATION_NAME,"
-	   " RDB$GRANTOR,"
-	   " RDB$USER,"
-	   " RDB$PRIVILEGE,"
-	   " RDB$GRANT_OPTION "
-	   "from" 
-	   " RDB$USER_PRIVILEGES "
-	   "where"
-	   " (RDB$RELATION_NAME like '%s' or"
-	   "  RDB$RELATION_NAME like '%s %%') and"
+	   "where %s"
            " RDB$OBJECT_TYPE = 0 and"
            " RDB$FIELD_NAME is null "
 	   "order by 1, 4",
-	   tableNamePattern,
-	   tableNamePattern);
-*/
-// CJL-IB6 -- end
+	   tableNameCondition);
 
-  IB_ResultSet* resultSet = statement->prepareNoInput (queryStringBuffer_);
-  resultSet->setCatalogFunction (CATALOG_GET_TABLE_PRIVILEGES);
-  resultSet->open ();
-  return statement;
+  return runCatalogQuery(queryStringBuffer_, CATALOG_GET_TABLE_PRIVILEGES);
 }
 
+//david jencks 1-25-2001 modified
 IB_Statement*
 IB_Catalog::getBestRowIdentifier (const IB_STRING table, 
 				  int scope, 
 				  IB_BOOLEAN nullable)
 {
-  IB_Statement* statement = createStatement ();
  
   // for now at least, scope is ignored.
   // also nullable is ignored for now. If nullable is true, then we can include
@@ -1465,16 +743,13 @@ IB_Catalog::getBestRowIdentifier (const IB_STRING table,
 	     table);
   ***/
 
-  IB_ResultSet* resultSet = statement->prepareNoInput (queryStringBuffer_);
-  resultSet->setCatalogFunction (CATALOG_GET_BEST_ROW_IDENTIFIER);
-  resultSet->open ();
-  return statement;
+  return runCatalogQuery(queryStringBuffer_, CATALOG_GET_BEST_ROW_IDENTIFIER);
 }
 
+//david jencks 1-25-2001 modified
 IB_Statement*
 IB_Catalog::getVersionColumns (const IB_STRING table)
 {
-  IB_Statement* statement = createStatement ();
  
   // Added 0=1 to force an empty result set.
   // BUG 9010 -- DatabaseMetaData.getVersionColumns() should always return empty result set 
@@ -1530,16 +805,13 @@ IB_Catalog::getVersionColumns (const IB_STRING table)
 	   " F.RDB$COMPUTED_BLR IS NOT NULL",
 	   table);
 
-  IB_ResultSet* resultSet = statement->prepareNoInput (queryStringBuffer_);
-  resultSet->setCatalogFunction (CATALOG_GET_VERSION_COLUMNS);
-  resultSet->open ();
-  return statement;
+  return runCatalogQuery(queryStringBuffer_, CATALOG_GET_VERSION_COLUMNS);
 }
 
+//david jencks 1-25-2001 modified
 IB_Statement*
 IB_Catalog::getPrimaryKeys (const IB_STRING table)
 {
-  IB_Statement* statement = createStatement ();
 
 // CJL -- This query is suitable for InterBase 6.0  
  
@@ -1559,16 +831,13 @@ IB_Catalog::getPrimaryKeys (const IB_STRING table)
            "order by ISGMT.RDB$FIELD_NAME",
 	   table);
 
-  IB_ResultSet* resultSet = statement->prepareNoInput (queryStringBuffer_);
-  resultSet->setCatalogFunction (CATALOG_GET_PRIMARY_KEYS);
-  resultSet->open ();
-  return statement;
+  return runCatalogQuery(queryStringBuffer_, CATALOG_GET_PRIMARY_KEYS);
 }
 
+//david jencks 1-25-2001 modified
 IB_Statement*
 IB_Catalog::getImportedKeys (const IB_STRING table)
 {
-  IB_Statement* statement = createStatement ();
  
 // CJL -- This query is suitable for InterBase 6.0
 
@@ -1605,16 +874,13 @@ IB_Catalog::getImportedKeys (const IB_STRING table)
 	   " IS_FOR.RDB$FIELD_POSITION",
            table);
 
-  IB_ResultSet* resultSet = statement->prepareNoInput (queryStringBuffer_);
-  resultSet->setCatalogFunction (CATALOG_GET_IMPORTED_KEYS);
-  resultSet->open ();
-  return statement;
+  return runCatalogQuery(queryStringBuffer_, CATALOG_GET_IMPORTED_KEYS);
 }
 
+//david jencks 1-25-2001 modified
 IB_Statement*
 IB_Catalog::getExportedKeys (const IB_STRING table)
 {
-  IB_Statement* statement = createStatement ();
 
 // CJL -- This query is suitable for InterBase 6.0 (no 'likes')  
  
@@ -1651,17 +917,14 @@ IB_Catalog::getExportedKeys (const IB_STRING table)
 	   " IS_FOR.RDB$FIELD_POSITION", 
 	   table);
 
-  IB_ResultSet* resultSet = statement->prepareNoInput (queryStringBuffer_);
-  resultSet->setCatalogFunction (CATALOG_GET_EXPORTED_KEYS);
-  resultSet->open ();
-  return statement;
+  return runCatalogQuery(queryStringBuffer_, CATALOG_GET_EXPORTED_KEYS);
 }
 
+//david jencks 1-25-2001 modified
 IB_Statement*
 IB_Catalog::getCrossReference (const IB_STRING primaryTable, 
 			       const IB_STRING foreignTable)
 {
-  IB_Statement* statement = createStatement ();
  
 // CJL -- This query is suitable for InterBase 6.0.
 
@@ -1700,18 +963,15 @@ IB_Catalog::getCrossReference (const IB_STRING primaryTable,
            primaryTable, 
            foreignTable);
 
-  IB_ResultSet* resultSet = statement->prepareNoInput (queryStringBuffer_);
-  resultSet->setCatalogFunction (CATALOG_GET_CROSS_REFERENCE);
-  resultSet->open ();
-  return statement;
+  return runCatalogQuery(queryStringBuffer_, CATALOG_GET_CROSS_REFERENCE);
 }
 
+//david jencks 1-25-2001 modified
 IB_Statement*
 IB_Catalog::getIndexInfo (const IB_STRING table, 
 			  const IB_BOOLEAN unique,
 			  const IB_BOOLEAN approximate)
 {
-  IB_Statement* statement = createStatement ();
   char queryStringBufferPart2[512];
 
   sprintf (queryStringBuffer_,  
@@ -1753,16 +1013,13 @@ IB_Catalog::getIndexInfo (const IB_STRING table,
            table);
   strcat (queryStringBuffer_, queryStringBufferPart2);
 
-  IB_ResultSet* resultSet = statement->prepareNoInput (queryStringBuffer_);
-  resultSet->setCatalogFunction (CATALOG_GET_INDEX_INFO);
-  resultSet->open ();
-  return statement;
+  return runCatalogQuery(queryStringBuffer_, CATALOG_GET_INDEX_INFO);
 }
 
+//david jencks 1-25-2001 modified
 IB_Statement*
 IB_Catalog::getTypeInfo ()
 {
-  IB_Statement* statement = createStatement ();
 
   // !!! order by 2
 
@@ -1817,17 +1074,14 @@ IB_Catalog::getTypeInfo ()
 	}
 // CJL-IB6 end
 
-  IB_ResultSet* resultSet = statement->prepareNoInput (queryStringBuffer_);
-  resultSet->setCatalogFunction (CATALOG_GET_TYPE_INFO);
-  resultSet->open ();
-  return statement;
+  return runCatalogQuery(queryStringBuffer_, CATALOG_GET_TYPE_INFO);
 }
 
 // Note: this won't be called if you're sysdba
+//david jencks 1-25-2001 modified
 IB_BOOLEAN
 IB_Catalog::allProceduresAreCallable (const IB_STRING user)
 {
-  IB_Statement* statement = createStatement ();
 
   sprintf (queryStringBuffer_,  
 	   "select"
@@ -1850,19 +1104,24 @@ IB_Catalog::allProceduresAreCallable (const IB_STRING user)
            user);
 
 
+  IB_Statement* statement = runCatalogQuery(queryStringBuffer_, 0); //catalog function irrelevant
+  IB_BOOLEAN result = !statement->getResultSet ()->next ();
+  statement->close (); //closes resultset
+  return result;
+/*  IB_Statement* statement = createStatement ();
   IB_ResultSet* resultSet = statement->prepareNoInput (queryStringBuffer_);
   resultSet->open ();
   IB_BOOLEAN result = !resultSet->next ();
   resultSet->close ();
   statement->close ();
-  return result;
+  return result;*/
 }
 
 // Note: this won't be called if you're sysdba
+//david jencks 1-25-2001 modified
 IB_BOOLEAN
 IB_Catalog::allTablesAreSelectable (const IB_STRING user)
 {
-  IB_Statement* statement = createStatement ();
 
   sprintf (queryStringBuffer_,  
 	" select "
@@ -1884,12 +1143,17 @@ IB_Catalog::allTablesAreSelectable (const IB_STRING user)
                " (RDB$PRIVILEGE IN ('S',  'A')))", 
            user);
 
+  IB_Statement* statement = runCatalogQuery(queryStringBuffer_, 0); //catalog function irrelevant
+  IB_BOOLEAN result = !statement->getResultSet ()->next ();
+  statement->close (); //closes resultset
+  return result;
+/*  IB_Statement* statement = createStatement ();
   IB_ResultSet* resultSet = statement->prepareNoInput (queryStringBuffer_);
   resultSet->open ();
   IB_BOOLEAN result = !resultSet->next ();
   resultSet->close ();
   statement->close ();
-  return result;
+  return result;*/
 }
 
 IB_LDString
