@@ -11,11 +11,11 @@ then
   exit 1
 fi
 
-if [ ! "$J2EE_HOME" ]
-then
-  echo "J2EE_HOME is not set."
-  exit 1
-fi
+#if [ ! "$J2EE_HOME" ]
+#then
+#  echo "J2EE_HOME is not set."
+#  exit 1
+#fi
 
 if [ ! $1 ]
 then
@@ -68,13 +68,17 @@ elif [ $IC_PLATFORM = "linux" ]
 then
 	JAVAC=`which javac`
    export JAVAC
-#  CLASSPATH="$ROOT/packages:$ROOT/packages/javax.jar"
+  CLASSPATH="$ROOT/packages:$ROOT/packages/javax.jar"
 #
 #  The j2ee license is restrictive, but there are deprecation errors using
 #  the distributed javax.jar.  We should find a workaround so that j2ee.jar
 #  is not required.
 #
-	CLASSPATH="$ROOT/packages":$J2EE_HOME/lib/j2ee.jar
+#  I've updated only those required classes in javax.jar to make it jdbc2
+#  compliant.  
+#
+#	CLASSPATH="$ROOT/packages":$J2EE_HOME/lib/j2ee.jar
+
    export CLASSPATH 
    PATH=$PATH:/usr/bin
    export PATH 
@@ -142,8 +146,11 @@ then
   then : ; else exit 1 ; fi
   if make -fMakefile.w32 interserver.exe
   then : ; else exit 1 ; fi
-  if make -DDELPHI -fMakefile.w32 isconfig.exe
-  then : ; else exit 1 ; fi
+  if [ ! $IC_SKIP_ISCONFIG ]
+  then
+    if make -DDELPHI -fMakefile.w32 isconfig.exe
+    then : ; else exit 1 ; fi
+  fi
 else
   echo "IC_PLATFORM must be set to solaris, hpux, linux, or win32."
   exit 1

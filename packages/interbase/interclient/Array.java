@@ -807,27 +807,15 @@ final public class Array implements java.sql.Array
     for (int i = 0; i < length; i++) {
       Object element = ((Object[])array)[i];
       if (element instanceof java.sql.Date) {
-        tmpElem = new IBTimestamp (((java.sql.Date)element).getYear (),
-                                   ((java.sql.Date)element).getMonth (),
-                                   ((java.sql.Date)element).getDate ());
+          tmpElem = new IBTimestamp ((java.sql.Date)element);
       }
       else if (element instanceof java.sql.Timestamp) {
-        tmpElem = new IBTimestamp (((java.sql.Timestamp)element).getYear (),
-                                   ((java.sql.Timestamp)element).getMonth (),
-                                   ((java.sql.Timestamp)element).getDate (),
-                                   ((java.sql.Timestamp)element).getHours (),
-                                   ((java.sql.Timestamp)element).getMinutes (),
-                                   ((java.sql.Timestamp)element).getSeconds ());
+        tmpElem = new IBTimestamp ((java.sql.Timestamp)element);
       }
       else if (element instanceof String) {
         try {
           java.sql.Timestamp tmpTimestamp = java.sql.Timestamp.valueOf ((String)element);
-          tmpElem = new IBTimestamp (tmpTimestamp.getYear (),
-                                     tmpTimestamp.getMonth (),
-                                     tmpTimestamp.getDate (),
-                                     tmpTimestamp.getHours (),
-                                     tmpTimestamp.getMinutes (),
-                                     tmpTimestamp.getSeconds ());
+          tmpElem = new IBTimestamp (tmpTimestamp);
         }
         catch (java.lang.IllegalArgumentException e) {
           throw new ParameterConversionException (ErrorKey.parameterConversion__array_element_instance_conversion_0__,
@@ -1033,14 +1021,9 @@ final public class Array implements java.sql.Array
           int timestampId[] = recvMsg.readTimestampId ();
           IBTimestamp ibTimestamp = new IBTimestamp (IBTimestamp.DATETIME,
                                                      timestampId);
-	        ((java.sql.Timestamp[])array)[i] = new java.sql.Timestamp (
-                                             ibTimestamp.getYear (),
-                                             ibTimestamp.getMonth (),
-                                             ibTimestamp.getDate (),
-                                             ibTimestamp.getHours (),
-                                             ibTimestamp.getMinutes (),
-                                             ibTimestamp.getSeconds (),
-                                             ibTimestamp.getNanos ());
+          ((java.sql.Timestamp[])array)[i] = new java.sql.Timestamp(ibTimestamp.getTimeInMillis());
+          ((java.sql.Timestamp[])array)[i].setNanos(ibTimestamp.getNanos());
+
         }
         return;
       default:

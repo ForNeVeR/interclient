@@ -50,6 +50,39 @@ final class IBTimestamp
   static final int TIME = 1;
   static final int DATETIME = 2;
 
+  //Torsten-start 08-11-2000
+  class FooCalendar extends java.util.GregorianCalendar {
+    public long getTheTimeInMillis() {
+      return super.getTimeInMillis();
+    }
+  }
+  private FooCalendar cal = new FooCalendar();
+
+  public long getTimeInMillis() {
+    cal.set(java.util.Calendar.YEAR, year_ + 1900);
+    cal.set(java.util.Calendar.MONTH, month_);
+    cal.set(java.util.Calendar.DATE, date_);
+    cal.set(java.util.Calendar.HOUR_OF_DAY, hour_);
+    cal.set(java.util.Calendar.MINUTE, minute_);
+    cal.set(java.util.Calendar.SECOND, second_);
+    cal.set(java.util.Calendar.MILLISECOND, 0);
+    return cal.getTheTimeInMillis();
+  }
+
+  IBTimestamp(java.util.Date aDate) {
+    cal.setTime(aDate);
+    year_ = cal.get(java.util.Calendar.YEAR) - 1900;
+    month_ = cal.get(java.util.Calendar.MONTH);
+    date_ = cal.get(java.util.Calendar.DATE);
+    hour_ = cal.get(java.util.Calendar.HOUR_OF_DAY);
+    minute_ = cal.get(java.util.Calendar.MINUTE);
+    second_ = cal.get(java.util.Calendar.SECOND);
+
+    encodeYearMonthDay ();
+    encodeHourMinuteSecond ();
+  }
+  //Torsten-end 08-11-2000
+
   // Construct an interbase date from encoded data recv'd from server
   IBTimestamp (int datetimeType, int[] timestampId) throws BugCheckException
   {

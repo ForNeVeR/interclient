@@ -109,7 +109,7 @@ const IB_BOOLEAN IB_FALSE = 0;
 #include <string.h>
 
 // preship: turn off TRACEON before ship!!!
-//define TRACEON
+//#define TRACEON
 #ifdef TRACEON
 void debugTraceALine (char* where, char* what);
 void debugTraceAnInt (char* where, int what);

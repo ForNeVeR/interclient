@@ -311,6 +311,10 @@ final public class ResultSet implements java.sql.ResultSet,
     if (recvMsg_ == null) 
       throw new InvalidOperationException (ErrorKey.invalidOperation__read_at_end_of_cursor__);
 
+    if ((statement_.maxRows_ > 0) && (rowsRead_ >= statement_.maxRows_)) {
+	    return false;
+    }
+
     try {
       // !!! this currently only accounts for no message streaming
       restoreRowPosition ();  // reset position to beginning of next row
@@ -320,9 +324,6 @@ final public class ResultSet implements java.sql.ResultSet,
 	try {
 	  if (recvMsg_.getHeaderEndOfStream ()) {
 	    openOnServer_ = false; // auto-close result set after last row is read
-	    return false;
-	  }
-	  if ((statement_.maxRows_ > 0) && (rowsRead_ >= statement_.maxRows_)) {
 	    return false;
 	  }
 	}
@@ -1138,44 +1139,40 @@ final public class ResultSet implements java.sql.ResultSet,
    **/
   synchronized public java.sql.Date getDate (int column) throws java.sql.SQLException
   {
+
     if (isNullPreamble (column))
       return null;
 
     switch (resultTypes_[column-1]) {
-    case IBTypes.DATE__:
+    case IBTypes.DATE__: {
       // !!! any way to get this in a long rather than int[]
       int timestampId[] = getRowData_timestampId (column-1);
+      //Torsten-start 08-11-2000
+      IBTimestamp ibTimestamp = new IBTimestamp (IBTimestamp.DATE, timestampId);
       if (adaptToSingleInstanceTime_) {
-        adaptableIBTimestamp_.setTimestampId (IBTimestamp.DATE, timestampId);
-        adaptableDate_.setYear (adaptableIBTimestamp_.getYear ());
-        adaptableDate_.setMonth (adaptableIBTimestamp_.getMonth ());
-        adaptableDate_.setDate (adaptableIBTimestamp_.getDate ());
+        adaptableDate_.setTime(ibTimestamp.getTimeInMillis());
         return adaptableDate_;
+      } else {
+        return new java.sql.Date(ibTimestamp.getTimeInMillis());
       }
-      else {
-	// !!! if we use the same representation java uses, rather than
-	// !!! the ib representation, then i can avoid this constructor call
-        IBTimestamp ibTimestamp = new IBTimestamp (IBTimestamp.DATE, timestampId);
-        return (new java.sql.Date (ibTimestamp.getYear (),
-                                   ibTimestamp.getMonth (),
-                                   ibTimestamp.getDate ()));
-      }
+      //Torsten-end 08-11-2000
+    }
 // CJL-IB6 support for new types
-    case IBTypes.SQLDATE__:
+    case IBTypes.SQLDATE__: {
       int encodedDate = getRowData_int (column-1);
+
+      //ODonohue -start 01-Feb-2001
+
+      IBTimestamp ibTimestamp = new IBTimestamp (IBTimestamp.DATE, encodedDate);
       if (adaptToSingleInstanceTime_) {
-        adaptableIBTimestamp_.setDateTime (IBTimestamp.DATE, encodedDate);
-        adaptableDate_.setYear (adaptableIBTimestamp_.getYear ());
-        adaptableDate_.setMonth (adaptableIBTimestamp_.getMonth ());
-        adaptableDate_.setDate (adaptableIBTimestamp_.getDate ());
+        adaptableDate_.setTime(ibTimestamp.getTimeInMillis());
         return adaptableDate_;
+      } else {
+        return new java.sql.Date(ibTimestamp.getTimeInMillis());
       }
-      else {
-        IBTimestamp ibTimestamp = new IBTimestamp (IBTimestamp.DATE, encodedDate);
-        return (new java.sql.Date (ibTimestamp.getYear (),
-                                   ibTimestamp.getMonth (),
-                                   ibTimestamp.getDate ()));
-      }
+    }
+      //ODonohue - end 01-Feb-2001
+
 // CJL-IB6 end change
     case IBTypes.CHAR__:
     case IBTypes.VARCHAR__:
@@ -1215,6 +1212,16 @@ final public class ResultSet implements java.sql.ResultSet,
       int timestampId[] = getRowData_timestampId (column-1);
       if (adaptToSingleInstanceTime_) {
         adaptableIBTimestamp_.setTimestampId (IBTimestamp.TIME, timestampId);
+        adaptableTime_.setTime(adaptableIBTimestamp_.getTimeInMillis());
+        return adaptableTime_;
+      } else {
+        IBTimestamp ibTimestamp = new IBTimestamp (IBTimestamp.TIME, timestampId);
+        return new java.sql.Time(ibTimestamp.getTimeInMillis());
+      }
+      //old code-start
+      /*
+      if (adaptToSingleInstanceTime_) {
+        adaptableIBTimestamp_.setTimestampId (IBTimestamp.TIME, timestampId);
         adaptableTime_.setHours (adaptableIBTimestamp_.getHours ());
         adaptableTime_.setMinutes (adaptableIBTimestamp_.getMinutes ());
         adaptableTime_.setSeconds (adaptableIBTimestamp_.getSeconds ());
@@ -1226,6 +1233,10 @@ final public class ResultSet implements java.sql.ResultSet,
 			  ibTimestamp.getMinutes (),
 			  ibTimestamp.getSeconds ()));
       }
+      */
+      //old code-end
+      //Torsten-end 08-11-2000
+
 // CJL-IB6 add support for new types (
     case IBTypes.TIME__:
       int encodedTime = getRowData_int (column-1);
@@ -1278,30 +1289,23 @@ final public class ResultSet implements java.sql.ResultSet,
       return null;
 
     switch (resultTypes_[column-1]) {
-    case IBTypes.DATE__:
+    case IBTypes.DATE__: {
       int timestampId[] = getRowData_timestampId (column-1);
+      //Torsten-start 08-11-2000
       if (adaptToSingleInstanceTime_) {
         adaptableIBTimestamp_.setTimestampId (IBTimestamp.DATETIME, timestampId);
-        adaptableTimestamp_.setYear (adaptableIBTimestamp_.getYear ());
-        adaptableTimestamp_.setMonth (adaptableIBTimestamp_.getMonth ());
-        adaptableTimestamp_.setDate (adaptableIBTimestamp_.getDate ());
-        adaptableTimestamp_.setHours (adaptableIBTimestamp_.getHours ());
-        adaptableTimestamp_.setMinutes (adaptableIBTimestamp_.getMinutes ());
-        adaptableTimestamp_.setSeconds (adaptableIBTimestamp_.getSeconds ());
-        adaptableTimestamp_.setNanos (adaptableIBTimestamp_.getNanos ());
+        adaptableTimestamp_.setTime(adaptableIBTimestamp_.getTimeInMillis());
+        adaptableTimestamp_.setNanos(adaptableIBTimestamp_.getNanos());
         return adaptableTimestamp_;
+      } else {
+        IBTimestamp ibTimestamp = new IBTimestamp (IBTimestamp.DATETIME,timestampId);
+        java.sql.Timestamp result = new java.sql.Timestamp(ibTimestamp.getTimeInMillis());
+        result.setNanos(ibTimestamp.getNanos());
+        return result;
       }
-      else {
-	IBTimestamp ibTimestamp = new IBTimestamp (IBTimestamp.DATETIME,
-						   timestampId);
-	return (new java.sql.Timestamp (ibTimestamp.getYear (),
-			       ibTimestamp.getMonth (),
-			       ibTimestamp.getDate (),
-			       ibTimestamp.getHours (),
-			       ibTimestamp.getMinutes (),
-			       ibTimestamp.getSeconds (),
-			       ibTimestamp.getNanos ()));
-      }
+      //Torsten-end 08-11-2000
+    }
+
 // CJL-IB6 add support for new types
     // fills timestamp with dummy time (12:00:00.00000000 a.m.)
     case IBTypes.SQLDATE__:
@@ -1328,6 +1332,7 @@ final public class ResultSet implements java.sql.ResultSet,
 			       0,
 			       0 ) );
       }
+        
     // fills timestamp with dummy date (1/1/1900)
     case IBTypes.TIME__:
       int encodedTime = getRowData_int (column-1);
@@ -1985,7 +1990,14 @@ final public class ResultSet implements java.sql.ResultSet,
 
     // Ok, we'll have to search the metadata
     for (int col = 0; col < resultCols_; col++) {
-      if (resultColumnNames_[col].equalsIgnoreCase (columnName)) {
+      //Torsten-start 08-11-2000
+      //old code-start
+      if ( resultColumnNames_[col].equalsIgnoreCase(columnName) ||
+           resultColumnLabels_[col].equalsIgnoreCase(columnName)) {
+      //if (resultColumnNames_[col].equalsIgnoreCase (columnName)) {
+      //old code-end
+      //Torsten-end 08-11-2000
+
 	// Found it, add it to the cache
 	columnNameToIndexCache_.put (columnName, new Integer (col+1));
 	return col+1;

@@ -845,7 +845,7 @@ public class Statement implements java.sql.Statement
    **/ //*start jre12*
   synchronized public int getFetchSize() throws java.sql.SQLException
   {
-    throw new DriverNotCapableException (ErrorKey.driverNotCapable__jdbc2_not_yet_supported__);
+      return fetchSize_;
   }
   //*end jre12*
 

@@ -11,11 +11,11 @@ then
   exit 1
 fi
 
-if [ ! "$J2EE_HOME" ]
-then
-  echo "J2EE_HOME is not set."
-  exit 1
-fi
+#if [ ! "$J2EE_HOME" ]
+#then
+#  echo "J2EE_HOME is not set."
+#  exit 1
+#fi
 
 if [ ! $1 ]
 then
@@ -66,7 +66,8 @@ fi
 #fi
 
 # !!! this doesn't port to windows
-CLASSPATH="$ROOT/packages:$J2EE_HOME/lib/j2ee.jar"
+CLASSPATH="$ROOT/packages:$ROOT/packages/javax.jar"
+#CLASSPATH="$ROOT/packages:$J2EE_HOME/lib/j2ee.jar"
 export CLASSPATH 
 
 umask 022
