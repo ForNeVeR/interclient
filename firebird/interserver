@@ -1,0 +1,25 @@
+# default: on
+# description: Interserver, java JDBC for Interbase/Firebird
+
+service interserver
+{
+        type = UNLISTED
+	port	= 3060
+        protocol = tcp
+	socket_type	= stream
+	wait 	= no
+#	only_from = localhost
+	user	= root
+	server	= /opt/interbase/interclient/interserver
+        server_args = -l
+        log_type = FILE /opt/interbase/interclient/xinetd.log
+        log_on_success += PID
+        log_on_success += HOST
+        log_on_success += USERID
+        log_on_success += EXIT
+        log_on_success += DURATION
+	log_on_failure	+= USERID
+	log_on_failure	+= HOST
+	disable = no
+        per_source = UNLIMITED
+}

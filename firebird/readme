@@ -1,0 +1,21 @@
+"Bringing installation scripts to new levels of simplicity and non-existence"
+
+I can't write those fancy scripts that go on for pages and pages, so this is how to install interclient on an xinetd system such as Redhat Linux 7.1:
+
+Put interserver in /opt/interbase/interclient or change the xinetd.d/interserver to point to where you put it.
+
+Put interclient somewhere convenient for your application and add it to your applications classpath
+
+Put xinetd.d/interserver in /etc/xinetd.d
+
+As root, run kill -s SIGUSR2 `pidof xinetd`
+
+Who knows, maybe it worked!
+
+
+---------------
+David Jencks d_jencks@users.sourceforge.net
+2 Nov 2001
+
+
+

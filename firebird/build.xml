@@ -13,26 +13,30 @@ This may be used under the MPL or  LGPL (see gnu.org)-->
   <property name="src.dir.java" value="${basedir}/dev/packages"/>
   <property name="src.dir.cpp" value="${basedir}/dev/interserver"/>
   <property name="jar.dir" value="${basedir}/build/interclient"/>
-  <property name="dist.dir" value="${basedir}"/>
-  <property name="dist.dir.jar" value="${dist.dir}"/>
-  <property name="dist.dir.bin" value="${dist.dir}/bin"/>
+  <property name="dist.dir" value="${basedir}/dist"/>
+  <property name="resource.dir" value="${basedir}/dev/firebird"/>
 
   <target name="setup.java">
     <mkdir dir="${build.dir.java}"/>
     <mkdir dir="${jar.dir}"/>
-    <mkdir dir="${dist.dir.jar}"/>
+    <mkdir dir="${dist.dir}"/>
   </target>
 
   <target name="compile.java" depends="setup.java">
     <javac srcdir="${src.dir.java}" destdir="${build.dir.java}"/>
   </target>
+  
+  <target name="test" depends="compile.java">
+    <java classpath="${jar.dir}/interclient.jar:${build.dir.java}" classname="test.TestPreparedStatementInputBlobs"/>
+  </target>
+  
 
   <target name="jar" depends="compile.java">
     <jar jarfile="${jar.dir}/interclient.jar" basedir="${build.dir.java}"/>
   </target>
 
   <target name="dist.jar" depends="jar">
-    <copy file="${jar.dir}/interclient.jar" todir="${dist.dir.jar}"/>
+    <copy file="${jar.dir}/interclient.jar" todir="${dist.dir}"/>
   </target>
   
 <!--LINUX_LDLIBS=		 -lgds  -L/usr/local/lib -lstdc++ -lc -ldl -lcrypt
@@ -61,7 +65,6 @@ This may be used under the MPL or  LGPL (see gnu.org)-->
   <target name="setup.cpp" depends="set.cpp.os.options">
     <mkdir dir="${build.dir.cpp}"/>
     <mkdir dir="${build.dir.bin}"/>
-    <mkdir dir="${dist.dir.bin}"/>
   </target>
   
 <!--		$(CC) $(CCFLAGS) $(INCLUDES) -c $*.cpp -o $*.o   -->
@@ -90,10 +93,25 @@ This may be used under the MPL or  LGPL (see gnu.org)-->
   </target>
 
   <target name="dist.cpp" depends="link.cpp">
-    <copy file="${build.dir.bin}/interserver" todir="${dist.dir.bin}"/>
+    <copy file="${build.dir.bin}/interserver" todir="${dist.dir}"/>
   </target>
 
   <target name="dist.all" depends="dist.jar, dist.cpp">
+  </target>
+
+  <target name="targz" depends="dist.all">
+    <mkdir dir="${dist.dir}/xinetd.d"/>
+    <copy file="${resource.dir}/interserver" todir="${dist.dir}/xinetd.d"/>
+    <copy file="${resource.dir}/readme" todir="${dist.dir}"/>
+    <tar tarfile="${dist.dir}/interclient-2.0-linux-xinetd.tar"
+      basedir="${dist.dir}"
+      includes="interclient.jar,interserver,xinetd.d/interserver,readme"/>
+    <gzip src="${dist.dir}/interclient-2.0-linux-xinetd.tar" zipfile="${dist.dir}/interclient-2.0-linux-xinetd.tar.gz"/>
+  </target>
+
+  <target name="clean">
+    <delete dir="${dist.dir}"/>
+    <delete dir="${build.dir}"/>
   </target>
   
 </project>
