@@ -1,17 +1,17 @@
 <!--ant build script for interclient 20/ interserver
 See ant project (jakarta-ant) at www.apache.org
-author: david jencks davidjencks@earthlinkl.net
+author: david jencks davidjencks@earthlink.net
 copyright 2001 david jencks
-This may be used under the LGPL (see gnu.org)-->
+This may be used under the MPL or  LGPL (see gnu.org)-->
 
-<project name="Interclient" default="dist.all" basedir="../../../../..">
+<project name="Interclient" default="dist.all" basedir="../..">
 
-  <property name="build.dir" value="${basedir}/build/interclient/dev"/>
+  <property name="build.dir" value="${basedir}/build"/>
   <property name="build.dir.java" value="${build.dir}/classes"/>
   <property name="build.dir.cpp" value="${build.dir}/interserver"/>
   <property name="build.dir.bin" value="${build.dir}/bin"/>
-  <property name="src.dir.java" value="${basedir}/CVS/interclient/20/dev/packages"/>
-  <property name="src.dir.cpp" value="${basedir}/CVS/interclient/20/dev/interserver"/>
+  <property name="src.dir.java" value="${basedir}/dev/packages"/>
+  <property name="src.dir.cpp" value="${basedir}/dev/interserver"/>
   <property name="jar.dir" value="${basedir}/build/interclient"/>
   <property name="dist.dir" value="${basedir}"/>
   <property name="dist.dir.jar" value="${dist.dir}"/>
@@ -45,7 +45,7 @@ This may be used under the LGPL (see gnu.org)-->
 LINUX_CCFLAGS= 	 -w -fhandle-exceptions -DUSE_INETD -DUNIX -DARCH_32
 INCLUDES=	-I/usr/interbase/include -->
   <target name="compile.cpp" depends="setup.cpp">
-    <transform executable="gcc" dest="${build.dir.cpp}" parallel="false">
+    <apply executable="gcc" dest="${build.dir.cpp}" parallel="false">
        <arg value="-w"/>
        <!--arg value="-ggdb"/--><!--for debug-->
        <arg value="-fhandle-exceptions"/>
@@ -60,7 +60,7 @@ INCLUDES=	-I/usr/interbase/include -->
        <targetfile/>
        <fileset dir="${src.dir.cpp}" includes="*.cpp" excludes="Property.cpp, Window.cpp, interservice.cpp"/>
        <mapper type="glob" from="*.cpp" to="*.o"/>
-    </transform>  
+    </apply>  
   </target>
 
 <!--		$(CC) $(OBJS) interserver.o -o interserver $(LDLIBS)-->
