@@ -48,6 +48,7 @@ static char commandLine[200];
 #endif
 
 #include "NetTCP.h"
+
 #include "Error.h"
 #include "IB_Defines.h" // for debug trace
 
@@ -123,7 +124,7 @@ NetTCP::netInit (const char * const service, // the name of the service we provi
 	      TCP_NODELAY,
 	      (char*) &optValue, // Non zero value disables Nagle Algorithm
 	      sizeof (int));
-
+  
   if (bind(sockfd, 
 	   (struct sockaddr *) &tcpSrvAddr,
 	   sizeof (tcpSrvAddr)) < 0)
@@ -142,15 +143,13 @@ int
 NetTCP::netOpen (int sockfd, int *newSockfd, int inetdflag)
 {
   register int tmpSockfd, childpid;
-// fredt@users.sourceforge.net changed socklen_t type to int
-  //david jencks 1-19-2001 begin
-  //  int clilen, on;
-#ifndef socklen_t //problem on ms compiler
-#define socklen_t int  //problem on rhlinux 7, socklen_t is uint, size_t is int
-#endif
   int on;
-  socklen_t clilen;
-  //david jencks 1-19-2001 end
+  //david jencks 8-5-2001
+  //clilen needs to be int on some systems and uint on others.
+  //rh7, 7.1 linux uint == size_t. either will work.
+  //windows int ==???? size_t (thanks to fredt@users.sourceforge.net)
+  //Please add your system here and what size_t is.
+  size_t clilen;
   struct sockaddr_in tcpCliAddr;
 
   on = 1;
