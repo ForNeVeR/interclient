@@ -32,11 +32,22 @@ This may be used under the MPL or  LGPL (see gnu.org)-->
   
 
   <target name="jar" depends="compile.java">
-    <jar jarfile="${jar.dir}/interclient.jar" basedir="${build.dir.java}"/>
+    <jar jarfile="${jar.dir}/interclient.jar" basedir="${build.dir.java}"
+        excludes="**/test/**"/>
+    <jar jarfile="${jar.dir}/interclient-utils.jar" basedir="${build.dir.java}"
+        includes="**/utils/**"
+        excludes="**/utils/Resources_ru.class"/>
+    <jar jarfile="${jar.dir}/interclient-res.jar" basedir="${build.dir.java}"
+        includes="**/Resources_ru.class"/>
+    <jar jarfile="${jar.dir}/interclient-core.jar" basedir="${build.dir.java}"
+        excludes="**/utils/**,**/Resources_ru.class,test/**"/>
   </target>
 
   <target name="dist.jar" depends="jar">
     <copy file="${jar.dir}/interclient.jar" todir="${dist.dir}"/>
+    <copy file="${jar.dir}/interclient-core.jar" todir="${dist.dir}"/>
+    <copy file="${jar.dir}/interclient-res.jar" todir="${dist.dir}"/>
+    <copy file="${jar.dir}/interclient-utils.jar" todir="${dist.dir}"/>
   </target>
   
 <!--LINUX_LDLIBS=		 -lgds  -L/usr/local/lib -lstdc++ -lc -ldl -lcrypt
@@ -103,9 +114,10 @@ This may be used under the MPL or  LGPL (see gnu.org)-->
     <mkdir dir="${dist.dir}/xinetd.d"/>
     <copy file="${resource.dir}/interserver" todir="${dist.dir}/xinetd.d"/>
     <copy file="${resource.dir}/readme" todir="${dist.dir}"/>
+    <copy file="${src.dir.java}/interbase/interclient/utils/CommDiag.html" todir="${dist.dir}"/>
     <tar tarfile="${dist.dir}/interclient-2.0-linux-xinetd.tar"
       basedir="${dist.dir}"
-      includes="interclient.jar,interserver,xinetd.d/interserver,readme"/>
+      includes="interclient.jar,interclient-core.jar,interclient-utils.jar,interclient-res.jar,interserver,xinetd.d/interserver,readme,CommDiag.html"/>
     <gzip src="${dist.dir}/interclient-2.0-linux-xinetd.tar" zipfile="${dist.dir}/interclient-2.0-linux-xinetd.tar.gz"/>
   </target>
 
