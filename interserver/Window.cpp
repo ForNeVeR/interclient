@@ -275,7 +275,7 @@ switch (message)
 	        HICON           hIcon;
 	        NOTIFYICONDATA  nid;
 
-           	hIcon = LoadImage(hInstance, 
+           	hIcon = (HICON) LoadImage(hInstance, 
 	 			MAKEINTRESOURCE(IDI_IBSVR_SMALL),
 				IMAGE_ICON, 0, 0, LR_DEFAULTCOLOR);
    	    	nid.cbSize     = sizeof(NOTIFYICONDATA); 
@@ -372,7 +372,7 @@ return FALSE;
  */
 void __stdcall WIN_shutdown(HANDLE hWnd)
 {
-PostMessage(hWnd, WM_DESTROY, 0, 0);
+PostMessage((HWND) hWnd, WM_DESTROY, 0, 0);
 }
 
 
