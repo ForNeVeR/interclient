@@ -48,6 +48,8 @@
 #include "NetTCP.h"
 #include "VersionInformation.h"
 
+bool sql_logging_ = false;
+
 // This is not thread safe.
 // Just hope that this doesn't happen too often.
 void errorLog (char* what)
@@ -63,6 +65,32 @@ void errorLog (char* what)
   FILE* f = fopen ("/usr/interclient/interserver.log", "a");
 #else
   FILE* f = fopen ("interserver.log", "a");
+#endif
+  if (f) {
+    fprintf (f, "%s\n", what);
+    fflush (f);
+    fclose (f);
+  }
+}
+
+
+// michael wyraz, 2001-06-12: added sql logging with parameter "-l"
+// This is not thread safe.
+// Just hope that this doesn't happen too often.
+void sqlLog (char* what)
+{
+  if (!sql_logging_) return;
+  // For an InterServer application, this log file goes
+  // to the proper directory, but for a service on NT,
+  // the log file goes to win32 or some such system directory.
+  // !!! When we get time, extract the root directory from
+  // !!! the registry to prefix interserver.log.
+  // !!! See ISC_get_registry_var and GetProfileString as used
+  // !!! in gds.c::gds__prefix and gds.c::gds__log
+#ifdef UNIX
+  FILE* f = fopen ("/usr/interclient/interserver_sql.log", "a");
+#else
+  FILE* f = fopen ("interserver_sql.log", "a");
 #endif
   if (f) {
     fprintf (f, "%s\n", what);
@@ -133,7 +161,7 @@ int main(int argc, char *argv[])
   // forked by services manager or by user initiated daemon
   if (newSockfd != 0)
     goto fork_start;
-
+  
 #else
   register char	*s;
 
@@ -172,6 +200,11 @@ int main(int argc, char *argv[])
 	EXIT(0);
 
       default:
+
+      case 'l':
+	// sql logging enabled
+        sql_logging_ = true;
+	break;
 	Error::err_quit ("unknown command line option: %c", *s);
       }
 #endif

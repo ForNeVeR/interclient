@@ -119,4 +119,7 @@ void debugTraceAPointer (char* where, void* what);
 
 void errorLog (char* what);
 
+//Sql logging by Michael Wyraz
+void sqlLog (char* what);
+
 #endif

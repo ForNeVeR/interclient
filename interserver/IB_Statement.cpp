@@ -155,7 +155,7 @@ void
 IB_Statement::prepareNoInputNoOutput (const IB_STRING sqlString)
 {
   //david jencks 2-4-2001
-//  errorLog(sqlString);//uncomment to log all sql statements executed
+  sqlLog(sqlString);// logging all sql statements
 
   if (!stmtHandle_)
     open ();
@@ -195,7 +195,7 @@ IB_Statement::prepareNoInput (const IB_STRING sqlString,
 			      const IB_SSHORT16 maxFieldSize)
 {
   //david jencks 2-4-2001
-//  errorLog(sqlString);//uncomment to log all sql statements executed
+  sqlLog(sqlString); // logg all sql statements
 
 
   if (!stmtHandle_)
