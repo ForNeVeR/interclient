@@ -80,6 +80,11 @@ IB_Catalog::timestampName__ = "TIMESTAMP";
 const char* const
 IB_Catalog::decimalName__ = "DECIMAL";
 
+const char* const
+IB_Catalog::spaces = "                               "; //31 spaces, max identifier length
+
+
+
 // CJL-IB6 -- end
 
 // See RDB$FIELDS
@@ -327,6 +332,11 @@ void IB_Catalog::stripEscape(IB_STRING pattern, IB_STRING stripped)
 void IB_Catalog::ConstructNameCondition(IB_STRING pattern, IB_STRING target,
     IB_STRING column)
 {
+    if (strlen(pattern) > 2 * 31) {  //this would have every char an escaped wildcard
+        throw new IB_SQLException (IB_SQLException::engine__default_0__,
+			     IB_SQLException::invalidArgumentException__); //not a very informative message
+    }
+    
     if (strcmp(pattern, "%") == 0) { 
           //all tables requested, leave out name condition
         sprintf(target, "");
@@ -346,19 +356,23 @@ void IB_Catalog::ConstructNameCondition(IB_STRING pattern, IB_STRING target,
           // identifier> (=31) spaces.
           //
         sprintf(target, 
-	        "%s || '%s' like '%s%s%%' escape '\\' and ",
-            column,
-            spaces,
-            pattern,
-            spaces);
+	        "%s || '%s' like '%s%s%%' escape '\\' and ", //31 chars + insertions
+            column, // <=31 chars, supplied by us
+            spaces, //31
+            pattern, //legal is <= 2 * 31: every char is escaped wildcard
+            spaces); //31
+            //total is 5*31 + 31 = 186
     }
 }
+
+#define maxConditionBufferLength 186 //see calculation above.
+
 
 //david jencks 1-25-2001 rewritten
 IB_Statement*
 IB_Catalog::getProcedures (const IB_STRING procedureNamePattern)
 {
-  char nameCondition[128];
+  char nameCondition[maxConditionBufferLength];
 
   ConstructNameCondition(procedureNamePattern, nameCondition, "RDB$PROCEDURE_NAME");
 
@@ -384,10 +398,10 @@ IB_Catalog::getProcedureColumns (const IB_STRING procedureNamePattern,
 {
 
 
-  char procedureNameCondition[128];
+  char procedureNameCondition[maxConditionBufferLength];
   ConstructNameCondition(procedureNamePattern, procedureNameCondition, "P.RDB$PROCEDURE_NAME");
   
-  char parameterNameCondition[128];
+  char parameterNameCondition[maxConditionBufferLength];
   ConstructNameCondition(columnNamePattern, parameterNameCondition, "PP.RDB$PARAMETER_NAME");
   
   sprintf (queryStringBuffer_,  
@@ -437,7 +451,7 @@ IB_Catalog::getTables (const IB_STRING tableNamePattern,
   //The queries do account for escaped % and _ in identified names:
   //these will be handled by the exact match form if all wildcards are escaped.
 
-  char nameCondition[128];
+  char nameCondition[maxConditionBufferLength];
 
   ConstructNameCondition(tableNamePattern, nameCondition, "RDB$RELATION_NAME");
   
@@ -544,12 +558,11 @@ IB_Catalog::getColumns (const IB_STRING tableNamePattern,
 {
 //heavily modified by david jencks 1-25-2001 to remove ridiculous SQL
 
+  char tableNameCondition[maxConditionBufferLength];
 
-  char tableNameCondition[128];
   ConstructNameCondition(tableNamePattern, tableNameCondition, "RF.RDB$RELATION_NAME");
-  
 
-  char columnNameCondition[128];
+  char columnNameCondition[maxConditionBufferLength];
   ConstructNameCondition(columnNamePattern, columnNameCondition, "RF.RDB$FIELD_NAME");
   
    sprintf (queryStringBuffer_,  
@@ -569,7 +582,7 @@ IB_Catalog::getColumns (const IB_STRING tableNamePattern,
 	   "from"
 	   " RDB$RELATION_FIELDS RF,"
 	   " RDB$FIELDS F "
-	   "where %s%s"
+	   "where \n%s\n%s\n"
 	   " RF.RDB$FIELD_SOURCE = F.RDB$FIELD_NAME "
 	   "order by 1, 10",
 	   tableNameCondition,
@@ -584,7 +597,7 @@ IB_Catalog::getColumnPrivileges (const IB_STRING table,
 				 const IB_STRING columnNamePattern)
 {
 
-  char columnNameCondition[128];
+  char columnNameCondition[maxConditionBufferLength];
   ConstructNameCondition(columnNamePattern, columnNameCondition, "RF.RDB$FIELD_NAME");
 
   sprintf (queryStringBuffer_,  
@@ -619,7 +632,7 @@ IB_Statement*
 IB_Catalog::getTablePrivileges (const IB_STRING tableNamePattern)
 {
 
-  char tableNameCondition[128];
+  char tableNameCondition[maxConditionBufferLength];
   ConstructNameCondition(tableNamePattern, tableNameCondition, "RDB$RELATION_NAME");
   
   sprintf (queryStringBuffer_,  

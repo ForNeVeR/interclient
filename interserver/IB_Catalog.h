@@ -276,7 +276,7 @@ public:
 private:
 
   //david jencks 1-24-2001
-  static const char* const spaces = "                               ";
+  static const char* const spaces;
 
   IB_Statement* createStatement ();
 
