@@ -122,7 +122,7 @@ LINK=                   link -machine:i386
 IMPLIB=                 lib -machine:i386
 VENDOR_CFLAGS=          -W3 -G4 -Gd -ML -Fo$(.path.obj)\ -DWIN32_LEAN_AND_MEAN
 #VENDOR_CPPFLAGS=	-W3 -GX -ML -YX -Fo$(.path.obj)\ -Fp$(.path.obj)\interserver.pch  
-VENDOR_CPPFLAGS=	-W3 -GX -ML -Fo$(.path.obj)\ -DWIN32_LEAN_AND_MEAN
+VENDOR_CPPFLAGS=	-W3 -GX -ML -Fo$(.path.obj)\ -DWIN32_LEAN_AND_MEAN -DFD_SETSIZE=256
 O_OBJ_SWITCH=           -Fo
 O_EXE_SWITCH=           -o
 DLLENTRY=               @12
