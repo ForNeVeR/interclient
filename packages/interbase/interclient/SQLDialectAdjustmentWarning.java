@@ -14,7 +14,10 @@
  * Copyright (C) Inprise Corporation.
  * All Rights Reserved.
  * Contributor(s): ______________________________________.
+ *
+ * $Id$
  */
+
 package interbase.interclient;
 
 /**
@@ -25,10 +28,12 @@ package interbase.interclient;
  * An attempt to set a connection SQL dialect to negative value or to
  * a value that exceeds the database's SQL dialect may throw this warning.
  * Connection SQL dialects that are too high are adjusted to match the
- * database's SQL dialect.  A connection SQL dialect of 0 (zero), which is the
+ * database's SQL dialect. Negative connection SQL dialects are adjusted
+ * to dialect 1. A connection SQL dialect of 0 (zero), which is the
  * default, uses the SQL dialect of the database (but no warning is thrown).
  * <p>
 // CJL-IB6 change the link to conform <!>
+// CJL-IB6  <!!!> perhaps we should delete this class entirely.
  * The error code associated with this warning is
  * always {@link ErrorCodes#unlicensedComponent ErrorCodes.unlicensedComponent}.
  *
@@ -37,18 +42,12 @@ package interbase.interclient;
  * @since <font color=red>Extension, since InterClient 2.00</font>
  **/
 
-final public class SQLDialectException extends InvalidArgumentException
+final public class SQLDialectAdjustmentWarning extends SQLWarning
 {
-  final private static String className__ = "SQLDialectException";
+  final private static String className__ = "SQLDialectAdjustmentWarning";
   // *** InterClient constructor ****
-  SQLDialectException ( ErrorKey errorKey, String invalidDialect)
-  {
-    super (className__, errorKey, (Object) invalidDialect);
-  }
-  // *** InterServer constructor as a warning ***
-  SQLDialectException ( int errorKeyIndex, int newDialect)
+  SQLDialectAdjustmentWarning ( int errorKeyIndex, int newDialect)
   {
     super (className__, errorKeyIndex, (Object) new Integer(newDialect) );
   }
-
 }
