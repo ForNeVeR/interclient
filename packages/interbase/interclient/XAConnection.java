@@ -38,7 +38,9 @@ public class XAConnection extends PooledConnection implements javax.sql.XAConnec
    * @since <font color=red>JDBC 2 Standard Extension, proposed for future release, not yet supported</font>
    */
   //Torsten-start 08-11-2000
-  synchronized public javax.transaction.xa.XAResource getXAResource () throws java.sql.SQLException
+
+//synchronized public javax.transaction.xa.XAResource getXAResource () throws java.sql.SQLException
+  synchronized public javax.jts.xa.XAResource getXAResource () throws java.sql.SQLException
   {
     throw new DriverNotCapableException (ErrorKey.driverNotCapable__jdbc2_not_yet_supported__);
   }

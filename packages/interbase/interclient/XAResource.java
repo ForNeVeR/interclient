@@ -258,9 +258,10 @@ public class XAResource implements javax.transaction.xa.XAResource
    * are XAER_RMERR, XAER_RMFAIL, or XAER_INVAL.
    * @since <font color=red>JDBC 2 Standard Extension, proposed for future release, not yet supported</font>
    **/
+
   //Torsten-start 08-11-2000
-  synchronized public boolean setTransactionTimeout(int seconds) throws javax.transaction.xa.XAException {
-    return false; //not yet supported
+  synchronized public void setTransactionTimeout(int seconds) throws javax.transaction.xa.XAException {
+//  return false; //not yet supported
   }
   //Torsten-end 08-11-2000
 
@@ -281,6 +282,7 @@ public class XAResource implements javax.transaction.xa.XAResource
   {}
 
   //Torsten-start 08-11-2000
+
   /**
    * This method is called to determine if the resource manager instance
    * represented by the target object is the same as the resouce manager instance
@@ -294,8 +296,10 @@ public class XAResource implements javax.transaction.xa.XAResource
    *
    * @since <font color=red>JDBC 2 Standard Extension, proposed for future release, not yet supported</font>
    * **/
+
   synchronized public boolean isSameRM(javax.transaction.xa.XAResource xares) throws javax.transaction.xa.XAException {
     return false;
   }
+
   //Torsten-end 08-11-2000
 }
