@@ -13,9 +13,13 @@
  * and its predecessors. Portions created by Inprise Corporation are
  * Copyright (C) Inprise Corporation.
  * All Rights Reserved.
- * Contributor(s): ______________________________________.
+ * Contributor(s): Friedrich von Never.
  */
 package interbase.interclient;
+
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.sql.SQLFeatureNotSupportedException;
 
 /**
  * Represents an SQL 3 Binary Large Object.
@@ -100,6 +104,34 @@ final public class Blob implements java.sql.Blob
   {
     throw new DriverNotCapableException (ErrorKey.driverNotCapable__jdbc2_not_yet_supported__);
   }
+
+    @Override
+    public int setBytes(long pos, byte[] bytes) throws java.sql.SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    @Override
+    public int setBytes(long pos, byte[] bytes, int offset, int len) throws java.sql.SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    @Override
+    public OutputStream setBinaryStream(long pos) throws java.sql.SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    @Override
+    public void truncate(long len) throws java.sql.SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    @Override
+    public void free() throws java.sql.SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    @Override
+    public InputStream getBinaryStream(long pos, long length) throws java.sql.SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
 }
-
-

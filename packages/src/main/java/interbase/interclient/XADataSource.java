@@ -13,9 +13,12 @@
  * and its predecessors. Portions created by Inprise Corporation are
  * Copyright (C) Inprise Corporation.
  * All Rights Reserved.
- * Contributor(s): ______________________________________.
+ * Contributor(s): Friedrich von Never.
  */
 package interbase.interclient;
+
+import java.sql.SQLFeatureNotSupportedException;
+import java.util.logging.Logger;
 
 /**
  * A factory for XAConnection objects.  An object that implements the
@@ -132,10 +135,9 @@ public class XADataSource implements javax.sql.XADataSource
   {
     throw new DriverNotCapableException (ErrorKey.driverNotCapable__jdbc2_not_yet_supported__);
   }
-   
-} 
 
-
-
-
-
+    @Override
+    public Logger getParentLogger() throws SQLFeatureNotSupportedException {
+        throw new SQLFeatureNotSupportedException();
+    }
+}

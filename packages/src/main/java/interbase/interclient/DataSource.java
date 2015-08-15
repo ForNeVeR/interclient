@@ -13,9 +13,13 @@
  * and its predecessors. Portions created by Inprise Corporation are
  * Copyright (C) Inprise Corporation.
  * All Rights Reserved.
- * Contributor(s): ______________________________________.
+ * Contributor(s): Friedrich von Never.
  */
 package interbase.interclient;
+
+import java.sql.*;
+import java.sql.SQLException;
+import java.util.logging.Logger;
 
 /**
  * A factory for Connection and ServerManager objects.
@@ -64,7 +68,7 @@ package interbase.interclient;
  * JNDI.
  * <p>
  * The DataSource facility provides an alternative to the JDBC DriverManager, essentially
- * duplicating all of the driver managerís useful functionality. Although, both mechanisms
+ * duplicating all of the driver manager‚Äôs useful functionality. Although, both mechanisms
  * may be used by the same application if desired, JavaSoft encourages developers to
  * regard the DriverManager as a legacy feature of the JDBC API. Applications should
  * use the DataSource API whenever possible.
@@ -86,21 +90,21 @@ package interbase.interclient;
  * The example below registers an InterClient data source object with a JNDI naming service.
  * <pre>
  * interbase.interclient.DataSource dataSource = new interbase.interclient.DataSource ();
- * dataSource.setServerName (ìpongoî);
- * dataSource.setDatabaseName (ì/databases/employee.gdbî);
+ * dataSource.setServerName (‚Äúpongo‚Äù);
+ * dataSource.setDatabaseName (‚Äú/databases/employee.gdb‚Äù);
  * javax.naming.Context context = new javax.naming.InitialContext();
- * context.bind (ìjdbc/EmployeeDBî, dataSource);
+ * context.bind (‚Äújdbc/EmployeeDB‚Äù, dataSource);
  * </pre>
  * The first line of code in the example creates a data source object.
- * The next two lines initialize the data sourceís properties.
+ * The next two lines initialize the data source‚Äôs properties.
  * Then a Java object that references the initial JNDI naming
  * context is created by calling the InitialContext() constructor, which is provided by
  * JNDI. System properties (not shown) are used to tell JNDI the service provider to use.
  * The JNDI name space is hierarchical, similar to the directory structure of many file
  * systems. The data source object is bound to a logical JNDI name by calling
  * Context.bind().
- * In this case the JNDI name identifies a subcontext, ìjdbcî, of the root
- * naming context and a logical name, ìEmployeeDBî, within the jdbc subcontext. This
+ * In this case the JNDI name identifies a subcontext, ‚Äújdbc‚Äù, of the root
+ * naming context and a logical name, ‚ÄúEmployeeDB‚Äù, within the jdbc subcontext. This
  * is all of the code required to deploy a data source object within JNDI.
  * This example is provided mainly for illustrative purposes. We expect
  * that developers or system administrators will normally use a GUI tool to deploy a data
@@ -110,8 +114,8 @@ package interbase.interclient;
  * as is shown in the following example.
  * <pre>
  * javax.naming.Context context = new javax.naming.InitialContext ();
- * javax.sql.DataSource dataSource = (javax.sql.DataSource) context.lookup (ìjdbc/EmployeeDBî);
- * java.sql.Connection con = dataSource.getConnection (ìsysdbaî, ìmasterkeyî);
+ * javax.sql.DataSource dataSource = (javax.sql.DataSource) context.lookup (‚Äújdbc/EmployeeDB‚Äù);
+ * java.sql.Connection con = dataSource.getConnection (‚Äúsysdba‚Äù, ‚Äúmasterkey‚Äù);
  * </pre>
  * The first line in the example creates a Java object that references the initial JNDI naming
  * context. Next, the initial naming context is used to do a lookup operation using the
@@ -738,5 +742,19 @@ public class DataSource implements javax.sql.DataSource,
 
     return serverManager;
   }
-}
 
+    @Override
+    public Logger getParentLogger() throws SQLFeatureNotSupportedException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    @Override
+    public <T> T unwrap(Class<T> iface) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    @Override
+    public boolean isWrapperFor(Class<?> iface) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+}

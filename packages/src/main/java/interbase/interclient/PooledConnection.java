@@ -13,9 +13,11 @@
  * and its predecessors. Portions created by Inprise Corporation are
  * Copyright (C) Inprise Corporation.
  * All Rights Reserved.
- * Contributor(s): ______________________________________.
+ * Contributor(s): Friedrich von Never.
  */
 package interbase.interclient;
+
+import javax.sql.StatementEventListener;
 
 /**
  * A PooledConnection object is a connection object that provides
@@ -69,6 +71,16 @@ public class PooledConnection implements javax.sql.PooledConnection
   {
     // !!!
   }
+
+    @Override
+    public void addStatementEventListener(StatementEventListener listener) {
+        throw new Error("Not supported");
+    }
+
+    @Override
+    public void removeStatementEventListener(StatementEventListener listener) {
+        throw new Error("Not supported");
+    }
 }
 
 

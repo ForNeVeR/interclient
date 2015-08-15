@@ -13,9 +13,7 @@
  * and its predecessors. Portions created by Inprise Corporation are
  * Copyright (C) Inprise Corporation.
  * All Rights Reserved.
- * Contributor(s): ______________________________________.
- *
- * $Id$
+ * Contributor(s): Friedrich von Never.
  */
 
 package interbase.interclient;
@@ -258,12 +256,9 @@ public class XAResource implements javax.transaction.xa.XAResource
    * are XAER_RMERR, XAER_RMFAIL, or XAER_INVAL.
    * @since <font color=red>JDBC 2 Standard Extension, proposed for future release, not yet supported</font>
    **/
-
-  //Torsten-start 08-11-2000
-  synchronized public void setTransactionTimeout(int seconds) throws javax.transaction.xa.XAException {
-//  return false; //not yet supported
+  synchronized public boolean setTransactionTimeout(int seconds) throws javax.transaction.xa.XAException {
+    return false; //not yet supported
   }
-  //Torsten-end 08-11-2000
 
   /**
    * Start work on behalf of a transaction branch specified in xid

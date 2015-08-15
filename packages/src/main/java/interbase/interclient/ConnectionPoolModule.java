@@ -13,10 +13,14 @@
  * and its predecessors. Portions created by Inprise Corporation are
  * Copyright (C) Inprise Corporation.
  * All Rights Reserved.
- * Contributor(s): ______________________________________.
+ * Contributor(s): Friedrich von Never.
  */
 package interbase.interclient;
 
+
+import java.sql.*;
+import java.sql.SQLException;
+import java.util.logging.Logger;
 
 /**
  * The ConnectionPoolModule class implements the javax.sql.DataSource interface
@@ -230,4 +234,19 @@ public class ConnectionPoolModule implements javax.sql.DataSource,
     // !!! complete this...
     return ref;
   }
+
+    @Override
+    public Logger getParentLogger() throws SQLFeatureNotSupportedException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    @Override
+    public <T> T unwrap(Class<T> iface) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    @Override
+    public boolean isWrapperFor(Class<?> iface) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
 }

@@ -13,9 +13,12 @@
  * and its predecessors. Portions created by Inprise Corporation are
  * Copyright (C) Inprise Corporation.
  * All Rights Reserved.
- * Contributor(s): ______________________________________.
+ * Contributor(s): Friedrich von Never.
  */
 package interbase.interclient;
+
+import java.sql.SQLFeatureNotSupportedException;
+import java.util.logging.Logger;
 
 /**
  * A ConnectionPoolDataSource object is a factory for PooledConnection objects.
@@ -132,10 +135,9 @@ public class ConnectionPoolDataSource implements javax.sql.ConnectionPoolDataSou
   {
     throw new DriverNotCapableException (ErrorKey.driverNotCapable__jdbc2_not_yet_supported__);
   }
-   
-} 
 
-
-
-
-
+    @Override
+    public Logger getParentLogger() throws SQLFeatureNotSupportedException {
+        throw new SQLFeatureNotSupportedException();
+    }
+}

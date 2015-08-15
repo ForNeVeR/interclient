@@ -17,6 +17,12 @@
  */
 package interbase.interclient;
 
+import java.io.OutputStream;
+import java.io.Reader;
+import java.io.Writer;
+import java.sql.*;
+import java.sql.SQLException;
+
 /**
  * Represents an SQL 3 Character Large Object (CLOb).
  * By default, a Clob is a transaction duration reference to a
@@ -111,4 +117,39 @@ final public class Clob implements java.sql.Clob
   {
     throw new DriverNotCapableException (ErrorKey.driverNotCapable__jdbc2_not_yet_supported__);
   }
+
+    @Override
+    public int setString(long pos, String str) throws java.sql.SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    @Override
+    public int setString(long pos, String str, int offset, int len) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    @Override
+    public OutputStream setAsciiStream(long pos) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    @Override
+    public Writer setCharacterStream(long pos) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    @Override
+    public void truncate(long len) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    @Override
+    public void free() throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    @Override
+    public Reader getCharacterStream(long pos, long length) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
 }

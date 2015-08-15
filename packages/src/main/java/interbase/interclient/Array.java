@@ -13,9 +13,11 @@
  * and its predecessors. Portions created by Inprise Corporation are
  * Copyright (C) Inprise Corporation.
  * All Rights Reserved.
- * Contributor(s): ______________________________________.
+ * Contributor(s): Friedrich von Never.
  */
 package interbase.interclient;
+
+import java.sql.SQLFeatureNotSupportedException;
 
 /**
  * The Java mapping for an SQL Array.
@@ -296,10 +298,10 @@ final public class Array implements java.sql.Array
     if (elementClass.isPrimitive()) {
       if (elementClass.equals (short.class))
         for (int i = 0; i < length; i++)
-          sendMsg.writeShort (((short[])array)[i]);
+          sendMsg.writeShort(((short[]) array)[i]);
       else if (elementClass.equals (byte.class))
         for (int i = 0; i < length; i++)
-          sendMsg.writeShort (((byte[])array)[i]);
+          sendMsg.writeShort(((byte[]) array)[i]);
       else if (elementClass.equals (int.class))
         for (int i = 0; i < length; i++) {
           int tmp = ((int[])array)[i];
@@ -314,7 +316,7 @@ final public class Array implements java.sql.Array
           if (tmp > Short.MAX_VALUE || tmp < Short.MIN_VALUE)
             throw new ParameterConversionException (ErrorKey.parameterConversion__array_element_instance_conversion_0__,
                                                     String.valueOf (tmp));
-          sendMsg.writeShort ((short)tmp);
+          sendMsg.writeShort((short) tmp);
         }
       else if (elementClass.equals (float.class))
         for (int i = 0; i < length; i++) {
@@ -322,7 +324,7 @@ final public class Array implements java.sql.Array
           if (tmp > Short.MAX_VALUE || tmp < Short.MIN_VALUE)
             throw new ParameterConversionException (ErrorKey.parameterConversion__array_element_instance_conversion_0__,
                                                     String.valueOf (tmp));
-          sendMsg.writeShort ((short)tmp);
+          sendMsg.writeShort((short) tmp);
         }
       else if (elementClass.equals (double.class))
         for (int i = 0; i < length; i++) {
@@ -330,11 +332,11 @@ final public class Array implements java.sql.Array
           if (tmp > Short.MAX_VALUE || tmp < Short.MIN_VALUE)
             throw new ParameterConversionException (ErrorKey.parameterConversion__array_element_instance_conversion_0__,
                                                     String.valueOf (tmp));
-          sendMsg.writeShort ((short)tmp);
+          sendMsg.writeShort((short) tmp);
         }
       else if (elementClass.equals (boolean.class))
         for (int i = 0; i < length; i++)
-          sendMsg.writeShort (((boolean[])array)[i] ? 1 : 0);
+          sendMsg.writeShort(((boolean[]) array)[i] ? 1 : 0);
       else
         throw new ParameterConversionException (ErrorKey.parameterConversion__array_element_type_conversion__);
     }
@@ -379,7 +381,7 @@ final public class Array implements java.sql.Array
         }
         else if (element instanceof String) {
           try {
-            tmpElem = Short.parseShort ((String)element);
+            tmpElem = Short.parseShort((String) element);
           }
           catch (java.lang.NumberFormatException e) {
             throw new ParameterConversionException (ErrorKey.parameterConversion__array_element_instance_conversion_0__,
@@ -389,7 +391,7 @@ final public class Array implements java.sql.Array
         else if (element instanceof Boolean)
           tmpElem = (short)(((Boolean)element).booleanValue() ? 1 : 0);
         else throw new ParameterConversionException (ErrorKey.parameterConversion__array_element_type_conversion__);
-        sendMsg.writeShort (tmpElem);
+        sendMsg.writeShort(tmpElem);
       }
   }
 
@@ -405,13 +407,13 @@ final public class Array implements java.sql.Array
     if (elementClass.isPrimitive()) {
       if (elementClass.equals (int.class))
         for (int i = 0; i < length; i++)
-          sendMsg.writeInt (((int[])array)[i]);
+          sendMsg.writeInt(((int[]) array)[i]);
       else if (elementClass.equals (byte.class))
         for (int i = 0; i < length; i++)
-          sendMsg.writeInt (((byte[])array)[i]);
+          sendMsg.writeInt(((byte[]) array)[i]);
       else if (elementClass.equals (short.class))
         for (int i = 0; i < length; i++)
-          sendMsg.writeInt (((short[])array)[i]);
+          sendMsg.writeInt(((short[]) array)[i]);
       else if (elementClass.equals (long.class))
         for (int i = 0; i < length; i++) {
           // I was hoping that something simplier like
@@ -439,11 +441,11 @@ final public class Array implements java.sql.Array
           if (tmp > Integer.MAX_VALUE || tmp < Integer.MIN_VALUE)
             throw new ParameterConversionException (ErrorKey.parameterConversion__array_element_instance_conversion_0__,
                                                     String.valueOf (tmp));
-          sendMsg.writeInt ((int)tmp);
+          sendMsg.writeInt((int) tmp);
         }
       else if (elementClass.equals (boolean.class))
         for (int i = 0; i < length; i++)
-          sendMsg.writeInt (((boolean[])array)[i] ? 1 : 0);
+          sendMsg.writeInt(((boolean[]) array)[i] ? 1 : 0);
       else
         throw new ParameterConversionException (ErrorKey.parameterConversion__array_element_type_conversion__);
     }
@@ -488,7 +490,7 @@ final public class Array implements java.sql.Array
         }
         else if (element instanceof String) {
           try {
-            tmpElem = Integer.parseInt ((String)element);
+            tmpElem = Integer.parseInt((String) element);
           }
           catch (java.lang.NumberFormatException e) {
             throw new ParameterConversionException (ErrorKey.parameterConversion__array_element_instance_conversion_0__,
@@ -498,7 +500,7 @@ final public class Array implements java.sql.Array
         else if (element instanceof Boolean)
           tmpElem = ((Boolean)element).booleanValue() ? 1 : 0;
         else throw new ParameterConversionException (ErrorKey.parameterConversion__array_element_type_conversion__);
-        sendMsg.writeInt (tmpElem);
+        sendMsg.writeInt(tmpElem);
       }
   }
 
@@ -514,19 +516,19 @@ final public class Array implements java.sql.Array
     if (elementClass.isPrimitive()) {
       if (elementClass.equals (float.class))
         for (int i = 0; i < length; i++)
-          sendMsg.writeFloat (((float[])array)[i]);
+          sendMsg.writeFloat(((float[]) array)[i]);
       else if (elementClass.equals (byte.class))
         for (int i = 0; i < length; i++)
-          sendMsg.writeFloat (((byte[])array)[i]);
+          sendMsg.writeFloat(((byte[]) array)[i]);
       else if (elementClass.equals (short.class))
         for (int i = 0; i < length; i++)
-          sendMsg.writeFloat (((short[])array)[i]);
+          sendMsg.writeFloat(((short[]) array)[i]);
       else if (elementClass.equals (int.class))
         for (int i = 0; i < length; i++)
-          sendMsg.writeFloat (((int[])array)[i]);
+          sendMsg.writeFloat(((int[]) array)[i]);
       else if (elementClass.equals (long.class))
         for (int i = 0; i < length; i++)
-          sendMsg.writeFloat (((long[])array)[i]);
+          sendMsg.writeFloat(((long[]) array)[i]);
       else if (elementClass.equals (double.class))
         for (int i = 0; i < length; i++) {
           double tmp = ((double[])array)[i];
@@ -537,7 +539,7 @@ final public class Array implements java.sql.Array
         }
       else if (elementClass.equals (boolean.class))
         for (int i = 0; i < length; i++)
-          sendMsg.writeFloat (((boolean[])array)[i] ? 1 : 0);
+          sendMsg.writeFloat(((boolean[]) array)[i] ? 1 : 0);
       else
         throw new ParameterConversionException (ErrorKey.parameterConversion__array_element_type_conversion__);
     }
@@ -582,7 +584,7 @@ final public class Array implements java.sql.Array
         else if (element instanceof Boolean)
           tmpElem = ((Boolean)element).booleanValue() ? 1 : 0;
         else throw new ParameterConversionException (ErrorKey.parameterConversion__array_element_type_conversion__);
-        sendMsg.writeFloat (tmpElem);
+        sendMsg.writeFloat(tmpElem);
       }
   }
 
@@ -1049,7 +1051,7 @@ final public class Array implements java.sql.Array
 // CJL-IB6 changed reference to InterClient 2.0
   synchronized public String getBaseTypeName () throws java.sql.SQLException
   {
-    return IBTypes.getIBTypeName (descriptor_.elementDataType_);
+    return IBTypes.getIBTypeName(descriptor_.elementDataType_);
   }
 
   /**
@@ -1361,6 +1363,9 @@ final public class Array implements java.sql.Array
   {
     throw new DriverNotCapableException (ErrorKey.driverNotCapable__extension_not_yet_supported__);
   }
-}
-// MMM - end
 
+    @Override
+    public void free() throws SQLFeatureNotSupportedException {
+        throw new SQLFeatureNotSupportedException();
+    }
+}

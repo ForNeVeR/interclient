@@ -13,9 +13,15 @@
  * and its predecessors. Portions created by Inprise Corporation are
  * Copyright (C) Inprise Corporation.
  * All Rights Reserved.
- * Contributor(s): ______________________________________.
+ * Contributor(s): Friedrich von Never.
  */
 package interbase.interclient;
+
+import java.io.InputStream;
+import java.io.Reader;
+import java.net.URL;
+import java.sql.*;
+import java.sql.SQLException;
 
 /**
  * Represents a precompiled SQL statement, possibly parameterized.
@@ -1415,7 +1421,7 @@ public class PreparedStatement extends Statement implements java.sql.PreparedSta
    *
    * @param parameterIndex The first parameter is 1, the second is 2, ...
    * @param x The object containing the input parameter value
-   * @param targetSqlType The SQL type (as defined in java.sql.Types) to be
+   * @param targetSQLType The SQL type (as defined in java.sql.Types) to be
    *     sent to the database. The scale argument may further qualify this type.
    * @param scale For java.sql.Types.DECIMAL or java.sql.Types.NUMERIC types
    *     this is the number of digits after the decimal.  For all other
@@ -1743,7 +1749,7 @@ public class PreparedStatement extends Statement implements java.sql.PreparedSta
    * standard interface.
    *
    * @param parameterIndex the first parameter is 1, the second is 2, ...
-   * @param x the java reader which contains the UNICODE data
+   * @param reader the java reader which contains the UNICODE data
    * @param length the number of characters in the stream
    * @throws java.sql.SQLException if a database access error occurs.
    * @since <font color=red>JDBC 2, not yet supported</font>
@@ -1932,7 +1938,7 @@ public class PreparedStatement extends Statement implements java.sql.PreparedSta
    * If the parameter does not have a user-named or REF type, the given
    * typeName is ignored.
    *
-   * @param parameterIndex the first parameter is 1, the second is 2, ...
+   * @param paramIndex the first parameter is 1, the second is 2, ...
    * @param sqlType a value from java.sql.Types
    * @param typeName the fully-qualified name of an SQL user-named type,
    *   ignored if the parameter is not a user-named type or REF
@@ -2021,7 +2027,179 @@ public class PreparedStatement extends Statement implements java.sql.PreparedSta
     remote_GET_ARRAY_DESCRIPTOR (parameterIndex-1, tableName, columnName);
     connection_.transactionStartedOnServer_ = true;
   }
-  //*end jre12*
-  // MMM - end
-}
 
+    @Override
+    public void setURL(int parameterIndex, URL x) throws java.sql.SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    @Override
+    public void setRowId(int parameterIndex, RowId x) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    @Override
+    public void setNString(int parameterIndex, String value) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    @Override
+    public void setNCharacterStream(int parameterIndex, Reader value, long length) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    @Override
+    public void setNClob(int parameterIndex, NClob value) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    @Override
+    public void setClob(int parameterIndex, Reader reader, long length) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    @Override
+    public void setBlob(int parameterIndex, InputStream inputStream, long length) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    @Override
+    public void setNClob(int parameterIndex, Reader reader, long length) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    @Override
+    public void setSQLXML(int parameterIndex, SQLXML xmlObject) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    @Override
+    public void setAsciiStream(int parameterIndex, InputStream x, long length) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    @Override
+    public void setBinaryStream(int parameterIndex, InputStream x, long length) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    @Override
+    public void setCharacterStream(int parameterIndex, Reader reader, long length) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    @Override
+    public void setAsciiStream(int parameterIndex, InputStream x) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    @Override
+    public void setBinaryStream(int parameterIndex, InputStream x) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    @Override
+    public void setCharacterStream(int parameterIndex, Reader reader) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    @Override
+    public void setNCharacterStream(int parameterIndex, Reader value) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    @Override
+    public void setClob(int parameterIndex, Reader reader) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    @Override
+    public void setBlob(int parameterIndex, InputStream inputStream) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    @Override
+    public void setNClob(int parameterIndex, Reader reader) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    @Override
+    public boolean getMoreResults(int current) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    @Override
+    public java.sql.ResultSet getGeneratedKeys() throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    @Override
+    public int executeUpdate(String sql, int autoGeneratedKeys) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    @Override
+    public int executeUpdate(String sql, int[] columnIndexes) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    @Override
+    public int executeUpdate(String sql, String[] columnNames) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    @Override
+    public boolean execute(String sql, int autoGeneratedKeys) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    @Override
+    public boolean execute(String sql, int[] columnIndexes) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    @Override
+    public boolean execute(String sql, String[] columnNames) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    @Override
+    public int getResultSetHoldability() throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    @Override
+    public boolean isClosed() throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    @Override
+    public void setPoolable(boolean poolable) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    @Override
+    public boolean isPoolable() throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    @Override
+    public void closeOnCompletion() throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    @Override
+    public boolean isCloseOnCompletion() throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    @Override
+    public <T> T unwrap(Class<T> iface) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    @Override
+    public boolean isWrapperFor(Class<?> iface) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+}
