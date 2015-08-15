@@ -13,7 +13,7 @@
  * and its predecessors. Portions created by Inprise Corporation are
  * Copyright (C) Inprise Corporation.
  * All Rights Reserved.
- * Contributor(s): ______________________________________.
+ * Contributor(s): Friedrich von Never.
  */
 package interbase.interclient;
 
