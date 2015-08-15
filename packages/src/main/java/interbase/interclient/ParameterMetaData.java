@@ -13,9 +13,12 @@
  * and its predecessors. Portions created by Inprise Corporation are
  * Copyright (C) Inprise Corporation.
  * All Rights Reserved.
- * Contributor(s): ______________________________________.
+ * Contributor(s): Friedrich von Never.
  */
 package interbase.interclient;
+
+import java.sql.*;
+import java.sql.SQLException;
 
 /**
  * Describes input column information for the parameters
@@ -39,7 +42,7 @@ package interbase.interclient;
  * @author Mikhail Melnikov
  * @since <font color=red>Extension, since InterClient 1.0</font>
  **/ 
-final public class ParameterMetaData 
+final public class ParameterMetaData implements java.sql.ParameterMetaData
 {
   PreparedStatement preparedStatement_;
 
@@ -60,7 +63,12 @@ final public class ParameterMetaData
     return preparedStatement_.inputCols_;
   }
 
-  /**
+    @Override
+    public boolean isSigned(int param) throws SQLException {
+        return false;
+    }
+
+    /**
    * Gets the parameter SQL type for an input column of a prepared statement.
    *
    * @return a sql type from {@link java.sql.Types java.sql.Types}
@@ -96,6 +104,11 @@ final public class ParameterMetaData
 						    parameterIndex);
     }
   }
+
+    @Override
+    public String getParameterClassName(int param) throws java.sql.SQLException {
+        return IBTypes.getClassName(preparedStatement_.inputTypes_[param-1]);
+    }
 
   /**
    * Gets the number of decimal digits for an input column.
@@ -176,11 +189,13 @@ final public class ParameterMetaData
    * @since <font color=red>Extension, since InterClient 1.0</font>
    * @throws java.sql.SQLException if a database access error occurs
    **/
-  public boolean isNullable (int parameterIndex) throws java.sql.SQLException
+  public int isNullable (int parameterIndex) throws java.sql.SQLException
   {
     // sqlvar->sqlind
     try {
-      return preparedStatement_.inputNullables_[parameterIndex-1];
+      return preparedStatement_.inputNullables_[parameterIndex-1]
+              ? ParameterMetaData.parameterNullable
+              : ParameterMetaData.parameterNoNulls;
     }
     catch (ArrayIndexOutOfBoundsException e) {
       throw new ParameterIndexOutOfBoundsException (ErrorKey.parameterIndexOutOfBounds__0__,
@@ -188,7 +203,11 @@ final public class ParameterMetaData
     }
   }
 
-  // MMM -added method getArrayBaseType()
+    @Override
+    public int getParameterMode(int param) throws SQLException {
+        return ParameterMetaData.parameterModeUnknown;
+    }
+
   /**
    * Gets an array parameter's base SQL type.
    * The input column must be of sql type
@@ -208,8 +227,8 @@ final public class ParameterMetaData
 
       // !!!INSQLDA_NONAMES - need the null check for IB < 6
       if (preparedStatement_.arrayDescriptors_[parameterIndex-1] != null)
-        return IBTypes.getSQLType (
-          preparedStatement_.arrayDescriptors_[parameterIndex-1].elementDataType_);
+        return IBTypes.getSQLType(
+                preparedStatement_.arrayDescriptors_[parameterIndex - 1].elementDataType_);
       else
         throw new DriverNotCapableException (ErrorKey.driverNotCapable__input_array_metadata__);
     }
@@ -250,6 +269,14 @@ final public class ParameterMetaData
 						    parameterIndex);
     }
   }
-  //*end jre12*
-  // MMM - end
+
+    @Override
+    public <T> T unwrap(Class<T> iface) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
+
+    @Override
+    public boolean isWrapperFor(Class<?> iface) throws SQLException {
+        throw new SQLFeatureNotSupportedException();
+    }
 }

@@ -13,9 +13,12 @@
  * and its predecessors. Portions created by Inprise Corporation are
  * Copyright (C) Inprise Corporation.
  * All Rights Reserved.
- * Contributor(s): ______________________________________.
+ * Contributor(s): Friedrich von Never.
  */
 package interbase.interclient;
+
+import java.math.BigDecimal;
+import java.sql.Timestamp;
 
 /**
  * @author Paul Ostler
@@ -167,4 +170,32 @@ final class IBTypes
       return "";
     }
   }
+
+    static String getClassName(int ibType) {
+        switch (ibType) {
+            case SMALLINT__:
+                return Short.class.getName();
+            case INTEGER__:
+                return Integer.class.getName();
+            case FLOAT__:
+                return Float.class.getName();
+            case DOUBLE__:
+                return Double.class.getName();
+            case NUMERIC_DOUBLE__:
+            case NUMERIC_INTEGER__:
+            case NUMERIC_SMALLINT__:
+            case DECIMAL_INTEGER__:
+            case DECIMAL_INT64__:
+                return BigDecimal.class.getName();
+            case CHAR__:
+            case VARCHAR__:
+                return String.class.getName();
+            case DATE__:
+                return Timestamp.class.getName();
+            case NULL_TYPE__:
+                return "";
+            default:
+                throw new Error("Invalid type value: " + ibType);
+        }
+    }
 }
