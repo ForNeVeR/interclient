@@ -1,5 +1,3 @@
-package test;
-
 public class TestCommDiag1 {
 
   public TestCommDiag1() {

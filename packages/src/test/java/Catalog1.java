@@ -1,5 +1,3 @@
-package test;
-
 import java.sql.*;
 
 public class Catalog1 {

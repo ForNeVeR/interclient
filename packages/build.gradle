@@ -1,0 +1,13 @@
+apply plugin: 'java'
+
+jar {
+	baseName = 'interclient'
+	version =  '2.2'
+}
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+task wrapper(type: Wrapper) {
+	gradleVersion = '2.3'
+}

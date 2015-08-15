@@ -1,5 +1,3 @@
-package test;
-
 public class RunTests {
 
   public RunTests() {

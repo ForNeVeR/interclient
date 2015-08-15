@@ -1,5 +1,3 @@
-package test;
-
 public class ConnectProps1 {
 
   public ConnectProps1() {
