@@ -1,7 +1,7 @@
 InterClient
 ===========
 That is the client for old InterBase. It was originated from [FireBird
-repository][firebird], but not is supported here separately.
+repository][firebird], but now is supported here separately.
 
 Currently only Java connector is supported.
 
